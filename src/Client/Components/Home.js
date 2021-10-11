@@ -109,9 +109,9 @@ export default class Home extends Component{
                                 </div>
                             </div>
                         </div>
-                    <h1>
-                        play from youtube
-                    </h1>
+                    {/*<h1>*/}
+                    {/*    play from youtube*/}
+                    {/*</h1>*/}
 
                     {/*<div>*/}
                     {/*<YouTube videoId="kXYiU_JCYtU" opts={opts}*/}
