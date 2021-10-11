@@ -1,6 +1,6 @@
 import React, { Component} from 'react';
 import {loadPage}from "./AllPages";
-import YouTube from "react-youtube";
+// import YouTube from "react-youtube";
 
 export default class Home extends Component{
 
@@ -14,20 +14,21 @@ export default class Home extends Component{
     }
 
     render() {
-        const opts = {
-            height: '390',
-            width: '640',
-            playerVars: {
-                // https://developers.google.com/youtube/player_parameters
-                autoplay: 0,// 0 - not autoplay / 1 - autoplay
-                controls:1,// 0 - without controller / 1 - with controller
-                // start:214, //This parameter causes the player to begin playing the video at the given number of seconds from the start of the video
-                rel:1,
-                cc_load_policy:1,
-                modestbranding:1,
-
-            },
-        }
+        // youtube options
+        // const opts = {
+        //     height: '390',
+        //     width: '640',
+        //     playerVars: {
+        //         // https://developers.google.com/youtube/player_parameters
+        //         autoplay: 0,// 0 - not autoplay / 1 - autoplay
+        //         controls:1,// 0 - without controller / 1 - with controller
+        //         // start:214, //This parameter causes the player to begin playing the video at the given number of seconds from the start of the video
+        //         rel:1,
+        //         cc_load_policy:1,
+        //         modestbranding:1,
+        //
+        //     },
+        // }
 
         return(
 
@@ -112,13 +113,15 @@ export default class Home extends Component{
                         play from youtube
                     </h1>
 
-                    <YouTube videoId="kXYiU_JCYtU" opts={opts}
-                             onReady={(e)=>{this.onReady(e.target)}}
-                             onPlay={(e)=>{this.onPlay(e.target)}}
-                             onPause={(e)=>{this.onPause(e.target)}}
-                             onEnd={(e)=>{this.onEnd(e.target)}}
+                    {/*<div>*/}
+                    {/*<YouTube videoId="kXYiU_JCYtU" opts={opts}*/}
+                    {/*         onReady={(e)=>{this.onReady(e.target)}}*/}
+                    {/*         onPlay={(e)=>{this.onPlay(e.target)}}*/}
+                    {/*         onPause={(e)=>{this.onPause(e.target)}}*/}
+                    {/*         onEnd={(e)=>{this.onEnd(e.target)}}*/}
 
-                    />
+                    {/*/>*/}
+                    {/*</div>*/}
                 </div>
 
             </div>
@@ -126,51 +129,49 @@ export default class Home extends Component{
         );
     }
 
-
-    onReady(player)
-    {
-        console.log(player)
-        player.seekTo(80,true)
-
-        // player.pauseVideo()
-        // player.playVideo()
-        console.log("onReady")
-
-    }
-    onPlay(player)
-    {
-
-        console.log("onPlay")
-    }
-    onPause(player)
-    {
-        // player.loadVideoById({videoId:"eVTXPUF4Oz4",
-        //     startSeconds:30,//start clip in sec
-        //     // endSeconds:35//end clip
-        // })
-        var time  = this.convert(player.getCurrentTime())
-        // console.log("you paused "+ time +"\n "+this.convertHMS(time) +"sec")
-        console.log(`you paused  ${time} \n ${this.convertHMS(time)} sec`)
-    }
-    onEnd(player)
-    {
-        console.log("onEnd")
-    }
-
-    convert(SECONDS)
-    {
-        if(SECONDS<3600)
-            return new Date(SECONDS * 1000).toISOString().substr(14, 5)
-        return new Date(SECONDS * 1000).toISOString().substr(11, 8)
-
-    }
-     convertHMS(timeString){
-        if(timeString.length < 6)
-            timeString="00:"+timeString
-        const arr = timeString.split(":");
-        const seconds = arr[0]*3600+arr[1]*60+(+arr[2]);
-        return seconds;
-
-    }
+    //
+    // onReady(player) {
+    //     console.log(player)
+    //     player.seekTo(80,true)
+    //
+    //     // player.pauseVideo()
+    //     // player.playVideo()
+    //     console.log("onReady")
+    //
+    // }
+    //
+    // onPlay(player) {
+    //     console.log("onPlay")
+    // }
+    //
+    // onPause(player) {
+    //     // player.loadVideoById({videoId:"eVTXPUF4Oz4",
+    //     //     startSeconds:30,//start clip in sec
+    //     //     // endSeconds:35//end clip
+    //     // })
+    //     var time  = this.convert(player.getCurrentTime())
+    //     // console.log("you paused "+ time +"\n "+this.convertHMS(time) +"sec")
+    //     console.log(`you paused  ${time} \n ${this.convertHMS(time)} sec`)
+    // }
+    //
+    // onEnd(player) {
+    //     console.log("onEnd")
+    // }
+    //
+    // convert(SECONDS) {
+    //     if(SECONDS<3600)
+    //         return new Date(SECONDS * 1000).toISOString().substr(14, 5)
+    //     return new Date(SECONDS * 1000).toISOString().substr(11, 8)
+    //
+    // }
+    //
+    // convertHMS(timeString){
+    //     if(timeString.length < 6)
+    //         timeString="00:"+timeString
+    //     const arr = timeString.split(":");
+    //     const seconds = arr[0]*3600+arr[1]*60+(+arr[2]);
+    //     return seconds;
+    //
+    // }
 
 }
