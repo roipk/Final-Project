@@ -1,5 +1,6 @@
 import React, { Component} from 'react';
 import {loadPage}from "./AllPages";
+import axios from "axios";
 // import YouTube from "react-youtube";
 
 export default class Home extends Component{
@@ -46,8 +47,22 @@ export default class Home extends Component{
 
                                     <button id='playlist' type='button' className="contact100-form-btn"
                                             onClick={()=> {
-                                                alert("click Login");
-                                                loadPage(this.props,"login",this.state)
+                                                    this.userData = JSON.parse(localStorage.getItem('user'));
+                                                    console.log(this.userData)
+                                                    axios.post("http://localhost:5000/users/login",this.userData)
+                                                        .then(res=>{
+                                                            if(res.data)
+                                                            {
+                                                                this.userData = res.data
+                                                                localStorage.setItem("user", JSON.stringify(res.data));
+
+                                                                console.log(res.data)
+                                                                console.log("good login")
+                                                                // loadPage(this.props,"",this.state)
+                                                            }
+                                                        }).catch(e=>{
+                                                        loadPage(this.props,"login",this.state)
+                                                    })
                                             }
                                             }>
                                              {/*onClick="location.href='/userLoginPage'">*/}
@@ -109,6 +124,26 @@ export default class Home extends Component{
                                 </div>
                             </div>
                         </div>
+
+                    <div className="container-section">
+                        <div className="container-contact100-form-btn">
+                            <div className="wrap-contact100-form-btn">
+                                <div className="user contact100-form-bgbtn"></div>
+
+                                <button id='playlist' type='button' className="contact100-form-btn"
+                                        onClick={()=> {
+                                            loadPage(this.props,"register",this.state)
+                                        }
+                                        }>
+                                    {/*onClick="location.href='/userLoginPage'">*/}
+                                    <i className="fa fa-blind fa-2x" aria-hidden="true"></i>&nbsp;
+                                    <span>
+                                User Signup
+                            </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     {/*<h1>*/}
                     {/*    play from youtube*/}
                     {/*</h1>*/}

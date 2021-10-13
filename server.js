@@ -6,7 +6,6 @@ const bodyParser = require("body-parser");
 const path = require("path")
 
 require('dotenv').config()
-
 const mongo = require("./Server/Mongo/mongodb").mongo;
 const app = express()
 const port = process.env.Port || 5000
@@ -44,7 +43,11 @@ const userRouter = require('./Server/routes/users')
 app.use('/admo',exerciseRouter)
 app.use('/users',userRouter)
 
+const auth = require("./Server/middleware/auth");
 
+app.post("/welcome", auth, (req, res) => {
+    res.status(200).send("Welcome 🙌 ");
+});
 
 app.listen(port,async ()=>{
     console.log(`server is running on port: ${port}`)
