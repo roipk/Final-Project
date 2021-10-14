@@ -62,13 +62,13 @@ export default class SignUp extends Component{
                                 onChange={e=>{
                                     var newRole=[]
                                     roles.forEach(role=>{
-                                        console.log(role)
+                                        // console.log(role)
                                         if(role.value!==e.value)
                                             newRole.push(role)
                                     })
                                     this.setState({type:e.value,permissions:newRole})
-                                    console.log(e.value)
-                                    console.log(newRole)
+                                    // console.log(e.value)
+                                    // console.log(newRole)
 
                                 }}
                                 style={{zIndex:10}}
@@ -106,7 +106,7 @@ export default class SignUp extends Component{
                                         onClick={()=>{
                                             if(!(this.state.firstName||this.state.lastName||this.state.password))
                                                 return alert("Fill in all required fields")
-                                            console.log(this.state.firstName)
+                                            // console.log(this.state.firstName)
                                             const user = {
                                                 first_name:this.state.firstName,
                                                 last_name:this.state.lastName,
@@ -115,7 +115,8 @@ export default class SignUp extends Component{
                                                 permissions:this.state.roles?this.state.roles:[]
                                             }
                                             axios.post("http://localhost:5000/users/register",user)
-                                                .then(res=>{console.log(res.data)
+                                                .then(res=>{
+                                                    // console.log(res.data)
                                                     loadPage(this.props,"",this.state)
                                                 })
                                         }}>

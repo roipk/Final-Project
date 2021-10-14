@@ -16,15 +16,15 @@ export default class GuidePage extends Component{
 
     async componentDidMount() {
         var href =  window.location.href.split("/",5)
-        console.log("in")
+        // console.log("in")
         user = JSON.parse(localStorage.getItem("user"));
 
-        console.log(user)
+        // console.log(user)
         if(!user)
             return;
-        console.log(user)
+        // console.log(user)
         user =  (await axios.post("http://localhost:5000/login",{user:user})).data.user
-        console.log(user)
+        // console.log(user)
         if(!user)
         {
             // return loadPage(this.props,`${user.data.item.type}/${user.data.item._id}`)
@@ -36,7 +36,7 @@ export default class GuidePage extends Component{
         }
         localStorage.setItem("user", JSON.stringify(user));
         this.setState({first_name:user.first_name})
-        console.log(this.state.first_name)
+        // console.log(this.state.first_name)
     }
 
 

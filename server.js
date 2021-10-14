@@ -12,7 +12,7 @@ const app = express()
 const port = process.env.Port || 5000
 
 
-
+// const page=require("./Server/middleware/user")
 const db = require("./Server/Mongo/mongodb").db
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
@@ -35,18 +35,29 @@ app.listen(port,async ()=>{
     console.log(`server is running on port: ${port}`)
 })
 
+//
+// app.post('/login',async  function (req, res) {
+//     console.log("in")
+//     var t = page(req,res);
+//     console.log(t)
+//     return res.status(200).send("hi")
+// });
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTY3MzgyOTA0M2M2NDUxY2JhZjlkODMiLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE2MzQyNDA4NjQsImV4cCI6MTYzNDI0MjY2NH0.9_xUWwd6xgNW2DX0Ysti82qv_PajMwnn0y_xdjeq3jo
+
+
 
 app.post('/login',async  function (req, res) {
 
     try {
         // Get user input
         const { first_name,password ,user} = req.body ;
-        console.log(148)
-        console.log(user)
+        // console.log(148)
+        // console.log(user)
         // console.log(req.body)
         //check token
         if(user && user.t) {
-            let t = user.t
+        let t = user.t
+
             if(jwt.decode(t).exp<Date.now() / 1000) {
                 return res.status(204).json({user:null,massage:"Invalid Token"});
             }
@@ -54,18 +65,18 @@ app.post('/login',async  function (req, res) {
             {
 
                 let data =jwt.decode(t)
-                console.log(data)
+                // console.log(data)
                 const token = jwt.sign(
                     {_id: data._id, type: data.type},
                     "" + process.env.TOKEN_KEY,
                     {
-                        expiresIn: "2m",
+                        expiresIn: "30m",
                     }
                 );
                 console.log(token)
                 // save user token
                 user.t = token;
-                console.log(user)
+                // console.log(user)
                 return res.status(200).json({user:user,massage:"welcome "+data.type});
 
             }
@@ -84,7 +95,7 @@ app.post('/login',async  function (req, res) {
                     {_id: user._id, type: user.type},
                     "" + process.env.TOKEN_KEY,
                     {
-                        expiresIn: "2m",
+                        expiresIn: "30m",
                     }
                 );
                 // save user token
@@ -92,7 +103,7 @@ app.post('/login',async  function (req, res) {
                 user.t = token;
                 delete user.password
                 delete user.permissions
-                console.log(user)
+                console.log(token)
 
                 // user
                 return res.status(200).json({user:user,massage:"login"});
@@ -119,8 +130,8 @@ app.post('/login',async  function (req, res) {
 
 
 app.get('/', function (req, res) {
-    console.log(req)
-    console.log(path.join(__dirname, 'src', 'App.js'))
+    // console.log(req)
+    // console.log(path.join(__dirname, 'src', 'App.js'))
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 

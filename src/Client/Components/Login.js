@@ -73,7 +73,7 @@ export default class Login extends Component{
                                 <div className="contact100-form-bgbtn"></div>
                                 <button type="button" id='login' className="contact100-form-btn"
                                         onClick={()=>{
-                                            console.log(this.state.first_name)
+                                            // console.log(this.state.first_name)
                                             if(!(this.state.first_name || this.state.password))
                                             {
                                                 alert("first name and password required")
@@ -89,7 +89,7 @@ export default class Login extends Component{
                                                 password: this.state.password,
                                                 // Authorization: 'Bearer ' + token //the token is a variable which holds the token
                                             }).then(res=>{
-                                                console.log(res.data.user)
+                                                // console.log(res.data.user)
                                                 user = res.data.user
                                                 localStorage.setItem("user",JSON.stringify(user))
                                                 loadPage(this.props,`${user.type}/${user._id}`)

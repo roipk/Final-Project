@@ -5,7 +5,7 @@ let User = require('../models/Authentication.model')
 
 router.route('/add').post((req,res)=>{
     const userName = req.body.userName
-    console.log(userName)
+    // console.log(userName)
     const newUser = new User({ userName : userName })
     newUser.save()
         .then(()=>res.json('User Add'))

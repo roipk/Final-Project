@@ -52,8 +52,8 @@ router.route('/register').post( async (req, res) => {
 });
 
 router.route('/login').get( async (req, res,next) => {
-    console.log("in")
-    console.log(req.headers)
+    // console.log("in")
+    // console.log(req.headers)
     return res.status(200).send(req.headers)
 })
 // Login
@@ -80,7 +80,7 @@ router.route('/login').post( async (req, res,next) => {
                         expiresIn: "2m",
                     }
                 );
-                console.log(token)
+                // console.log(token)
                 // save user token
                 req.body.t = token;
 

@@ -48,21 +48,21 @@ export default class Home extends Component {
 
                                 <button id='playlist' type='button' className="contact100-form-btn"
                                         onClick={() => {
-                                            console.log("click")
+                                            // console.log("click")
                                             this.userData = JSON.parse(localStorage.getItem('user'))
-                                            console.log(this.userData)
+                                            // console.log(this.userData)
                                             if (!this.userData) {
                                                 localStorage.removeItem("user");
                                                 return loadPage(this.props, "login",)
                                             }
                                             ;
-                                            console.log("userData")
-                                            console.log(this.userData)
+                                            // console.log("userData")
+                                            // console.log(this.userData)
                                             axios.post('http://localhost:5000/login',{
                                                 user:this.userData
                                             }).then(res => {
-                                                console.log("in home")
-                                                    console.log(res.data.user)
+                                                // console.log("in home")
+                                                //     console.log(res.data.user)
                                                     user = res.data.user
                                                     localStorage.setItem("user", JSON.stringify(user))
                                                     loadPage(this.props, `${user.type}/${user._id}`)
