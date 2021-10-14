@@ -352,6 +352,7 @@ textarea.input100 {
 }
 
 .wrap-contact100-form-btn {
+    zIndex:0;
     width: 100%;
     display: block;
     position: relative;

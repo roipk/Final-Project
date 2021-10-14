@@ -83,10 +83,10 @@ export default class LoginAdminPage extends Component{
                                          alert("password or user name empty or not correct")
                                          return
                                      }
-                                    var researcherData = {
-                                        researcherId: this.state.userName,
-                                        researcherPassword: this.state.password,
-                                    };
+                                    // var researcherData = {
+                                    //     researcherId: this.state.userName,
+                                    //     researcherPassword: this.state.password,
+                                    // };
 
 
                                         // console.log(this.state.userName)

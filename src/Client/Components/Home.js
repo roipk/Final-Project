@@ -3,15 +3,17 @@ import {loadPage}from "./AllPages";
 import axios from "axios";
 // import YouTube from "react-youtube";
 
-export default class Home extends Component{
+var user
+export default class Home extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            email:'',
-            password:'',
-        };
+        this.state = {};
 
+    }
+
+    componentDidMount() {
+// localStorage.removeItem("user")
     }
 
     render() {
@@ -31,8 +33,7 @@ export default class Home extends Component{
         //     },
         // }
 
-        return(
-
+        return (
 
 
             <div className="container-contact100">
@@ -40,90 +41,100 @@ export default class Home extends Component{
 				<span className="contact100-form-title">
 					TAMARINGA
 				</span>
-                        <div className="container-section">
-                            <div className="container-contact100-form-btn">
-                                <div className="wrap-contact100-form-btn">
-                                    <div className="user contact100-form-bgbtn"></div>
+                    <div className="container-section">
+                        <div className="container-contact100-form-btn">
+                            <div className="wrap-contact100-form-btn">
+                                <div className="user contact100-form-bgbtn"></div>
 
-                                    <button id='playlist' type='button' className="contact100-form-btn"
-                                            onClick={()=> {
-                                                    this.userData = JSON.parse(localStorage.getItem('user'));
-                                                    console.log(this.userData)
-                                                    axios.post("http://localhost:5000/users/login",this.userData)
-                                                        .then(res=>{
-                                                            if(res.data)
-                                                            {
-                                                                this.userData = res.data
-                                                                localStorage.setItem("user", JSON.stringify(res.data));
-
-                                                                console.log(res.data)
-                                                                console.log("good login")
-                                                                // loadPage(this.props,"",this.state)
-                                                            }
-                                                        }).catch(e=>{
-                                                        loadPage(this.props,"login",this.state)
-                                                    })
+                                <button id='playlist' type='button' className="contact100-form-btn"
+                                        onClick={() => {
+                                            console.log("click")
+                                            this.userData = JSON.parse(localStorage.getItem('user'))
+                                            console.log(this.userData)
+                                            if (!this.userData) {
+                                                localStorage.removeItem("user");
+                                                return loadPage(this.props, "login",)
                                             }
-                                            }>
-                                             {/*onClick="location.href='/userLoginPage'">*/}
-                                        <i className="fa fa-blind fa-2x" aria-hidden="true"></i>&nbsp;
-                                        <span>
+                                            ;
+                                            console.log("userData")
+                                            console.log(this.userData)
+                                            axios.post('http://localhost:5000/login',{
+                                                user:this.userData
+                                            }).then(res => {
+                                                console.log("in home")
+                                                    console.log(res.data.user)
+                                                    user = res.data.user
+                                                    localStorage.setItem("user", JSON.stringify(user))
+                                                    loadPage(this.props, `${user.type}/${user._id}`)
+                                                }).catch(e => {
+                                                console.log("Error " + e)
+                                                localStorage.removeItem("user")
+                                                loadPage(this.props, "login")
+                                            })
+
+                                        }
+                                        }>
+                                    {/*onClick="location.href='/userLoginPage'">*/}
+                                    <i className="fa fa-blind fa-2x" aria-hidden="true"></i>&nbsp;
+                                    <span>
                                 User Login
                             </span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="container-contact100-form-btn">
-                                <div className="wrap-contact100-form-btn">
-                                    <div className="user contact100-form-bgbtn"></div>
-                                    <button id='guideLogin' type='button' className="contact100-form-btn"
-                                            onClick={()=> {
-                                                // alert("click Login");
-                                                loadPage(this.props,"signup",this.state)
-                                            }
-                                            }>
-                                            {/*onClick="location.href='/guideLoginPage'">*/}
-
-                                        <i className="fa fa-address-card-o fa-2x" aria-hidden="true"></i>&nbsp;
-                                        <span>
-                                &nbsp;&nbsp;Guide Login
-                          </span>
-                                    </button>
-                                </div>
+                                </button>
                             </div>
                         </div>
-                        <div className="container-section-space"></div>
 
-                        <div className="container-section">
-                            <div className="container-contact100-form-btn">
-                                <div className="wrap-contact100-form-btn">
-                                    <div className="research contact100-form-bgbtn"></div>
+                        <div className="container-contact100-form-btn">
+                            <div className="wrap-contact100-form-btn">
+                                <div className="user contact100-form-bgbtn"></div>
+                                <button id='guideLogin' type='button' className="contact100-form-btn"
+                                        onClick={() => {
+                                            // alert("click Login");
+                                            loadPage(this.props, "signup", this.state)
+                                        }
+                                        }>
+                                    {/*onClick="location.href='/guideLoginPage'">*/}
 
-                                    <button id='resarchers' type='button' className="contact100-form-btn"
-                                            onClick={()=>{alert("click")}}>
+                                    <i className="fa fa-address-card-o fa-2x" aria-hidden="true"></i>&nbsp;
+                                    <span>
+                                &nbsp;&nbsp;Guide Login
+                          </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="container-section-space"></div>
+
+                    <div className="container-section">
+                        <div className="container-contact100-form-btn">
+                            <div className="wrap-contact100-form-btn">
+                                <div className="research contact100-form-bgbtn"></div>
+
+                                <button id='resarchers' type='button' className="contact100-form-btn"
+                                        onClick={() => {
+                                            alert("click")
+                                        }}>
                             <span>
                             <i className="fa fa-users fa-lg fa-fw" aria-hidden="true"></i>&nbsp;&nbsp;
                                 Research Group
                             </span>
-                                    </button>
-                                </div>
+                                </button>
                             </div>
+                        </div>
 
-                            <div className="container-contact100-form-btn">
-                                <div className="wrap-contact100-form-btn">
-                                    <div className="research contact100-form-bgbtn"></div>
-                                    <button id='adminLogin' type='button' className="contact100-form-btn"
-                                            onClick={()=>{
-                                                loadPage(this.props,"admin",this.state)
-                                            }}>
+                        <div className="container-contact100-form-btn">
+                            <div className="wrap-contact100-form-btn">
+                                <div className="research contact100-form-bgbtn"></div>
+                                <button id='adminLogin' type='button' className="contact100-form-btn"
+                                        onClick={() => {
+                                            loadPage(this.props, "admin", this.state)
+                                        }}>
                          <span>
                              Admin Login
                             </span>
-                                    </button>
-                                </div>
+                                </button>
                             </div>
                         </div>
+                    </div>
 
                     <div className="container-section">
                         <div className="container-contact100-form-btn">
@@ -131,8 +142,8 @@ export default class Home extends Component{
                                 <div className="user contact100-form-bgbtn"></div>
 
                                 <button id='playlist' type='button' className="contact100-form-btn"
-                                        onClick={()=> {
-                                            loadPage(this.props,"register",this.state)
+                                        onClick={() => {
+                                            loadPage(this.props, "register", this.state)
                                         }
                                         }>
                                     {/*onClick="location.href='/userLoginPage'">*/}
@@ -163,7 +174,6 @@ export default class Home extends Component{
 
         );
     }
-
     //
     // onReady(player) {
     //     console.log(player)

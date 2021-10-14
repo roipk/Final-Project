@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import {loadPage} from "./AllPages";
 import axios from "axios";
+
+
+var user;
 export default class Login extends Component{
 
     constructor(props) {
@@ -9,8 +12,32 @@ export default class Login extends Component{
             first_name:'',
             password:'',
         };
-        var userData = {}
+        // user = props.location
     }
+
+    async componentDidMount() {
+      //   console.log("in")
+      // user = JSON.parse(localStorage.getItem("user"));
+      // console.log(user)
+      // if(user)
+      // {
+      //     user =  await axios.get("http://localhost:5000/login",user)
+      // }
+      //   console.log(user)
+      //   if(!user)
+      //       return;
+      //   console.log(user)
+      // user =  await axios.post("http://localhost:5000/users/login",user)
+      //   console.log(user.data.item)
+      //   if(!user.data.item)
+      //   {
+      //       // return loadPage(this.props,`${user.data.item.type}/${user.data.item._id}`)
+      //       return loadPage(this.props,"")
+      //   }
+      //
+      //   localStorage.setItem("user", JSON.stringify(user.data.item));
+    }
+
 
     render() {
         return(
@@ -24,17 +51,22 @@ export default class Login extends Component{
                         <div className="wrap-input100 validate-input" data-validate="Name is required">
                             <span className="label-input100">First name</span>
                             <input id='userName' className="input100" type="text" name='firstName'
-                                   placeholder="Enter First Name" onChange={(e)=>{this.setState({first_name:e.target.value})}}/>
+                                   placeholder="Enter First Name"
+                                   value={this.state.first_name}
+                                   onChange={(e)=>{this.setState({first_name:e.target.value})}}
+                            />
                             <span className="focus-input100"></span>
                         </div>
 
                         <div className="wrap-input100 validate-input" data-validate="Password is required">
                             <span className="label-input100">Password</span>
                             <input id='password' className="input100" type="password" name="password"
-                                   placeholder="Enter Password" onChange={(e)=>{this.setState({password:e.target.value})}}/>
+                                   value={this.state.password}
+                                   placeholder="Enter Password"
+                                   onChange={(e)=>{this.setState({password:e.target.value})}}
+                            />
                             <span className="focus-input100"></span>
                         </div>
-
 
                         <div className="container-contact100-form-btn">
                             <div className="wrap-contact100-form-btn">
@@ -44,33 +76,29 @@ export default class Login extends Component{
                                             console.log(this.state.first_name)
                                             if(!(this.state.first_name || this.state.password))
                                             {
-                                                this.userData = JSON.parse(localStorage.getItem('user'));
-                                                console.log(this.userData)
-                                                axios.post("http://localhost:5000/users/login",this.userData)
-                                                    .then(res=>{
-                                                        this.userData = res.data
-                                                        localStorage.setItem("user", JSON.stringify(res.data));
-
-                                                        console.log(res.data)
-                                                        // loadPage(this.props,"",this.state)
-                                                    })
-
-
+                                                alert("first name and password required")
                                             }
                                             else{
-                                            const user = {
+                                            let user = {
                                                 first_name:this.state.first_name,
                                                 password:this.state.password,
                                             }
-                                            axios.post("http://localhost:5000/users/login",user)
-                                                .then(res=>{
-                                                    this.userData = res.data
-                                                    localStorage.setItem("user", JSON.stringify(res.data));
-                                                    console.log(this.userData)
-                                            // loadPage(this.props,"",this.state)
-                                                })
-                                        }}}>
-                                >
+
+                                            axios.post('http://localhost:5000/login', {
+                                                first_name: this.state.first_name,
+                                                password: this.state.password,
+                                                // Authorization: 'Bearer ' + token //the token is a variable which holds the token
+                                            }).then(res=>{
+                                                console.log(res.data.user)
+                                                user = res.data.user
+                                                localStorage.setItem("user",JSON.stringify(user))
+                                                loadPage(this.props,`${user.type}/${user._id}`)
+                                            }).catch(e=>{
+                                                console.log("Error "+e)
+                                            })
+                                        }
+                                        }}>
+
 							<span>
 								Log In
 								<i className="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
