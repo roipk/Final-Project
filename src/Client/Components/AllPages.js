@@ -32,7 +32,7 @@ export default class AllPages extends Component{
                     <Route exact path="/admin" component={AdminPage}/>
                     <Route exact path="/admin/:id" component={AdminPage}/>
                     {/*<Route exact path="/admin" component={NotFoundPage}/>*/}
-                    <Route exact path="/404" component={NotFoundPage}/>
+                    {/*<Route exact path="/404" component={NotFoundPage}/>*/}
 
                     {/*<Route exact path="/admin/:404" component={NotFoundPage}/>*/}
                 </Switch>
@@ -65,12 +65,11 @@ export const verifyUser = async(page)=>
                 return user.data.user
             }
             else {
-                loadPage(this.props,"404")
-
+                // loadPage(this.props,"404")
             }
         }
         catch (e){
-            window.location.href = "404"
+            // window.location.href = "404"
             console.log("need new token")
         }
     }

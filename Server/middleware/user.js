@@ -15,14 +15,7 @@ const VerifyToken = (req,res,token) => {
         {
             return res.status(404).send("Invalid user");
         }
-        const t = jwt.sign(
-            {user: decoded.user},
-            "" +secret,
-            {
-                expiresIn: expiresIn,
-            }
-        );
-        return res.status(200).json({token: t, user:decoded.user});
+        CreateToken(decoded.user,res)
 
     } catch (err) {
         return res.status(401).send("Invalid Token");
