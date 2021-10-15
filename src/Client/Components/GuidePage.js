@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {loadPage} from "./AllPages";
+import {loadPage, verifyUser} from "./AllPages";
 import axios from "axios";
 
 
@@ -9,36 +9,21 @@ export default class GuidePage extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            first_name:'',
+            user:props.location.data,
+            loadData:false
         };
-        user = props.location
-    }
 
+    }
     async componentDidMount() {
-        var href =  window.location.href.split("/",5)
-        // console.log("in")
-        user = JSON.parse(localStorage.getItem("user"));
-
-        // console.log(user)
-        if(!user)
-            return;
-        // console.log(user)
-        user =  (await axios.post("http://localhost:5000/login",{user:user})).data.user
-        // console.log(user)
-        if(!user)
-        {
-            // return loadPage(this.props,`${user.data.item.type}/${user.data.item._id}`)
-            return loadPage(this.props,"")
+        let currentUser =await verifyUser("guide")
+        if(currentUser) {
+            this.setState({user: currentUser})
         }
-        else if(href[4] !==  user._id || href[3] !== user.type)
+        else
         {
-            return loadPage(this.props,"404")
+            loadPage(this.props,"404")
         }
-        localStorage.setItem("user", JSON.stringify(user));
-        this.setState({first_name:user.first_name})
-        // console.log(this.state.first_name)
     }
-
 
     render() {
         return(
@@ -47,7 +32,7 @@ export default class GuidePage extends Component{
                     <div className="wrap-contact1100-mobile">
                         <form className="contact100-form validate-form">
 				<span className="contact100-form-title-mobile" id="guideTitle">
-					Guide main Screen
+					Guide main Screen - Hello {this.state.user?" "+this.state.user.first_name:""}
 				</span>
 
                             <div id="mainDiv">

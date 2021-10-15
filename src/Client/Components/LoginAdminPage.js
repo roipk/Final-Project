@@ -12,8 +12,7 @@ export default class LoginAdminPage extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            userName:'',
-            password:'',
+
         };
 
 

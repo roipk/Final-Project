@@ -12,7 +12,8 @@ const app = express()
 const port = process.env.Port || 5000
 
 
-// const page=require("./Server/middleware/user")
+const VerifyToken = require("./Server/middleware/user").VerifyToken
+const CreateToken = require("./Server/middleware/user").CreateToken
 const db = require("./Server/Mongo/mongodb").db
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
@@ -35,99 +36,48 @@ app.listen(port,async ()=>{
     console.log(`server is running on port: ${port}`)
 })
 
-//
-// app.post('/login',async  function (req, res) {
-//     console.log("in")
-//     var t = page(req,res);
-//     console.log(t)
-//     return res.status(200).send("hi")
-// });
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTY3MzgyOTA0M2M2NDUxY2JhZjlkODMiLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE2MzQyNDA4NjQsImV4cCI6MTYzNDI0MjY2NH0.9_xUWwd6xgNW2DX0Ysti82qv_PajMwnn0y_xdjeq3jo
 
+app.get('/login',async  function (req, res) {
 
+    const token = req.body.token || req.query.token || req.headers["x-access-token"];
+    const {first_name,password} =  req.headers;
 
-app.post('/login',async  function (req, res) {
-
-    try {
-        // Get user input
-        const { first_name,password ,user} = req.body ;
-        // console.log(148)
-        // console.log(user)
-        // console.log(req.body)
-        //check token
-        if(user && user.t) {
-        let t = user.t
-
-            if(jwt.decode(t).exp<Date.now() / 1000) {
-                return res.status(204).json({user:null,massage:"Invalid Token"});
-            }
-            else
-            {
-
-                let data =jwt.decode(t)
-                // console.log(data)
-                const token = jwt.sign(
-                    {_id: data._id, type: data.type},
-                    "" + process.env.TOKEN_KEY,
-                    {
-                        expiresIn: "30m",
-                    }
-                );
-                console.log(token)
-                // save user token
-                user.t = token;
-                // console.log(user)
-                return res.status(200).json({user:user,massage:"welcome "+data.type});
-
-            }
-
-        }
-        // Validate user input
-
-
-        else if(first_name && password) {
-            const user = await db.collection("users").findOne({first_name: first_name})
-            let pass = await bcrypt.compare(password, user.password)
-
-            if (user && pass) {
-                // Create token
-                const token = jwt.sign(
-                    {_id: user._id, type: user.type},
-                    "" + process.env.TOKEN_KEY,
-                    {
-                        expiresIn: "30m",
-                    }
-                );
-                // save user token
-
-                user.t = token;
-                delete user.password
-                delete user.permissions
-                console.log(token)
-
-                // user
-                return res.status(200).json({user:user,massage:"login"});
-            }
-
-            else {
-                return res.status(400).send("Invalid Credentials");
-            }
-        }
-
-        else {
-            return res.status(200).json({massage:"need Login"})
-        }
-
+    if(token) {
+        VerifyToken(req,res,token)
     }
 
-    catch (err) {
-        console.log(err)
-        return res.status(400).send("Error "+err);
+    else if(first_name && password) {
+        const user = await db.collection("users").findOne({first_name: first_name})
+        let pass = await bcrypt.compare(password, user.password)
+        if (user && pass) {
+            delete user.password
+            delete user.permissions
+            CreateToken(user,res)
+        }
     }
 
-
+    else {
+        return res.status(401).send("Invalid params");
+    }
 });
 
+
+app.get('/admin',async  function (req, res) {
+
+    const token = req.body.token || req.query.token || req.headers["x-access-token"];
+
+    if (token) {
+        VerifyToken(req,res,token)
+    }
+})
+app.get('/guide',async  function (req, res) {
+
+    const token = req.body.token || req.query.token || req.headers["x-access-token"];
+
+    if (token) {
+        VerifyToken(req,res,token)
+    }
+})
 
 app.get('/', function (req, res) {
     // console.log(req)

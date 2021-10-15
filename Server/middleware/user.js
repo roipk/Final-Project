@@ -1,27 +1,47 @@
 const jwt = require("jsonwebtoken");
 
-const config = process.env;
+const secret = process.env.TOKEN_KEY;
+const expiresIn="2m"
 
-const userPage = (req, res, next) => {
-    // console.log("in user Page")
-    // console.log(req.body)
-    // console.log(req.query)
-    // console.log(req.headers["x-access-token"])
-    const token =
-        req.body.token || req.query.token || req.headers["x-access-token"];
-    // console.log("the token")
-    // console.log(token)
 
+const VerifyToken = (req,res,token) => {
+    let type = (req.url.split("/",2))[1]
     if (!token) {
         return res.status(403).send("A token is required for authentication");
     }
     try {
-        const decoded = jwt.verify(token, config.TOKEN_KEY);
-        req.user = decoded;
+        const decoded = jwt.verify(token, "" + secret);
+        if(type!==decoded.user.type)
+        {
+            return res.status(404).send("Invalid user");
+        }
+        const t = jwt.sign(
+            {user: decoded.user},
+            "" +secret,
+            {
+                expiresIn: expiresIn,
+            }
+        );
+        return res.status(200).json({token: t, user:decoded.user});
+
     } catch (err) {
         return res.status(401).send("Invalid Token");
     }
-    return next();
 };
 
-module.exports = userPage;
+const CreateToken = (data,res)=>{
+    const token = jwt.sign(
+        {user: data},
+        "" + secret,
+        {
+            expiresIn: expiresIn,
+        }
+    );
+    // save user token
+    return res.status(200).json({token:token,user:data});
+}
+
+module.exports = {
+    CreateToken:CreateToken,
+    VerifyToken:VerifyToken,
+};

@@ -1,45 +1,26 @@
 import React, { Component } from 'react';
-import {loadPage} from "./AllPages";
+import {loadPage,verifyUser,url} from "./AllPages";
 import axios from "axios";
 
 
-var user;
 export default class AdminPage extends Component{
 
     constructor(props) {
         super(props);
         this.state = {
-            first_name:'',
+            user:props.location.data
         };
-        user = props.location
     }
 
     async componentDidMount() {
-
-
-        // var href =  window.location.href.split("/",5)
-        // // console.log("in")
-        // user = JSON.parse(localStorage.getItem("user"));
-        //
-        // // console.log(user)
-        // if(!user)
-        //     return;
-        // // console.log(user)
-        user =  (await axios.post("http://localhost:5000/login",{user:user})).data.user
-        // // console.log(user)
-        // if(!user)
-        // {
-        //     // return loadPage(this.props,`${user.data.item.type}/${user.data.item._id}`)
-        //     return loadPage(this.props,"")
-        // }
-        // else if(href[4] !==  user._id || href[3] !== user.type)
-        // {
-        //     return loadPage(this.props,"404")
-        // }
-        // localStorage.setItem("user", JSON.stringify(user));
-        // this.setState({first_name:user.first_name})
-        // // console.log(this.state.first_name)
-
+        let currentUser =await verifyUser("admin")
+        if(currentUser) {
+            this.setState({user: currentUser})
+        }
+        else
+        {
+            loadPage(this.props,"404")
+        }
     }
 
 
@@ -49,8 +30,8 @@ export default class AdminPage extends Component{
                 <div className="container-contact100">
                     <div className="wrap-contact1100">
                         <form className="contact100-form validate-form">
-				<span className="contact100-form-title" hidden={!this.state.first_name}>
-					Admin Screen - Hello {this.state.first_name}
+				<span className="contact100-form-title">
+					Admin Screen - Hello {this.state.user?" "+this.state.user.first_name:""}
 				</span>
 
                             <div className="container-section-space">

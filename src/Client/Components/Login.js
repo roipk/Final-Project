@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {loadPage} from "./AllPages";
+import {loadPage,url} from "./AllPages";
 import axios from "axios";
 
 
@@ -16,26 +16,24 @@ export default class Login extends Component{
     }
 
     async componentDidMount() {
-      //   console.log("in")
-      // user = JSON.parse(localStorage.getItem("user"));
-      // console.log(user)
-      // if(user)
-      // {
-      //     user =  await axios.get("http://localhost:5000/login",user)
-      // }
-      //   console.log(user)
-      //   if(!user)
-      //       return;
-      //   console.log(user)
-      // user =  await axios.post("http://localhost:5000/users/login",user)
-      //   console.log(user.data.item)
-      //   if(!user.data.item)
-      //   {
-      //       // return loadPage(this.props,`${user.data.item.type}/${user.data.item._id}`)
-      //       return loadPage(this.props,"")
-      //   }
-      //
-      //   localStorage.setItem("user", JSON.stringify(user.data.item));
+      let token = localStorage.getItem("token");
+
+      if(token)
+      {
+          try {
+              user = await axios.get(url+"/login", {headers: {"x-access-token": token}})
+              if (user&&user.data.token) {
+                  localStorage.setItem("token", user.data.token)
+              }
+              else {
+                  localStorage.removeItem("token")
+                  console.log(user.data.massage)
+              }
+          }
+          catch (e){
+              console.log("need new token")
+          }
+      }
     }
 
 
@@ -79,23 +77,38 @@ export default class Login extends Component{
                                                 alert("first name and password required")
                                             }
                                             else{
-                                            let user = {
-                                                first_name:this.state.first_name,
-                                                password:this.state.password,
-                                            }
 
-                                            axios.post('http://localhost:5000/login', {
-                                                first_name: this.state.first_name,
-                                                password: this.state.password,
-                                                // Authorization: 'Bearer ' + token //the token is a variable which holds the token
-                                            }).then(res=>{
-                                                // console.log(res.data.user)
-                                                user = res.data.user
-                                                localStorage.setItem("user",JSON.stringify(user))
-                                                loadPage(this.props,`${user.type}/${user._id}`)
-                                            }).catch(e=>{
-                                                console.log("Error "+e)
-                                            })
+                                                axios.get(url+'/login',{headers:{
+                                                        first_name:this.state.first_name,
+                                                        password:this.state.password,
+                                                    }}).then(res=>{
+                                                    localStorage.setItem("token",res.data.token)
+
+                                                    loadPage(this.props,`${res.data.user.type}`,res.data.user)
+                                                }).catch(e=> {
+                                                    console.log(e)
+                                                })
+
+
+
+
+                                            // let user = {
+                                            //     first_name:this.state.first_name,
+                                            //     password:this.state.password,
+                                            // }
+                                            //
+                                            // axios.post('http://localhost:5000/login', {
+                                            //     first_name: this.state.first_name,
+                                            //     password: this.state.password,
+                                            //     // Authorization: 'Bearer ' + token //the token is a variable which holds the token
+                                            // }).then(res=>{
+                                            //     // console.log(res.data.user)
+                                            //     user = res.data.user
+                                            //     localStorage.setItem("user",JSON.stringify(user))
+                                            //     loadPage(this.props,`${user.type}/${user._id}`)
+                                            // }).catch(e=>{
+                                            //     console.log("Error "+e)
+                                            // })
                                         }
                                         }}>
 
