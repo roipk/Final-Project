@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {loadPage, verifyUser} from "./AllPages";
+import {loadPage, verifyUser} from "./ManagerComponents";
 import axios from "axios";
 import NotFound from "./404";
 

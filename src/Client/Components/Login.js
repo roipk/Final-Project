@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {loadPage,url} from "./AllPages";
+import {url} from "./AllPages";
+import {getServer, loadPage} from "./ManagerComponents";
 import axios from "axios";
 
 
@@ -77,16 +78,19 @@ export default class Login extends Component{
                                                 alert("first name and password required")
                                             }
                                             else{
-
-                                                axios.get(url+'/login',{headers:{
+                                                let page =url+'/login'
+                                                let config = {headers:{
                                                         first_name:this.state.first_name,
                                                         password:this.state.password,
-                                                    }}).then(res=>{
-                                                    localStorage.setItem("token",res.data.token)
+                                                    }}
 
+                                                getServer(page,config).then(res=>{
+                                                    console.log(res)
+                                                    localStorage.setItem("token",res.data.token)
                                                     loadPage(this.props,`${res.data.user.type}`,res.data.user)
                                                 }).catch(e=> {
                                                     console.log(e)
+                                                    alert("user name or password not correct")
                                                 })
 
 

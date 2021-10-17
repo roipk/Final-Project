@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {loadPage} from "./AllPages";
+import {loadPage} from "./ManagerComponents";
 import axios from "axios";
 // import { MongoClient } from 'mongodb'
 // const { MongoClient } = require('mongodb');

@@ -8,8 +8,6 @@ connect();
 
 async function connect() {
     try {
-
-
         await client.connect();
         console.log('Mongo Connected successfully to server');
 

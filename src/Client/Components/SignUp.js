@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from "axios";
-import {loadPage} from "./AllPages";
+import {loadPage} from "./ManagerComponents";
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 const animatedComponents = makeAnimated();

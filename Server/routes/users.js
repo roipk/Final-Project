@@ -9,128 +9,55 @@ const {ObjectId} = require("mongodb");
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const VerifyToken = require("../middleware/user").VerifyToken
+const CreateToken = require("../middleware/user").CreateToken
+
+router.route('/login').get(async  function (req, res) {
+
+    const token = req.body.token || req.query.token || req.headers["x-access-token"];
+    const {first_name,password} =  req.headers;
+
+    if(token) {
+        VerifyToken(req,res,token)
+    }
+
+    else if(first_name && password) {
+        const user = await db.collection("users").findOne({first_name: first_name})
+        if(!user)
+            return res.status(400).send("USER_NOT_FOUND");
+        let pass = await bcrypt.compare(password, user.password)
+        if(!pass)
+            return res.status(400).send("INVALID_PASSWORD");
 
 
-
-
-// Register
-router.route('/register').post( async (req, res) => {
-
-    // Our register logic starts here
-    try {
-        // Get user input
-        const { first_name, last_name, password } = req.body;
-
-        // Validate user input
-        if (!(password && first_name && last_name)) {
-            res.status(400).send("All input is required");
-        }
-
-
-        // check if user already exist
-        // Validate if user exist in our database
-        const oldUser = await db.collection("users").findOne({first_name:first_name})
-        if (oldUser) {
-            return res.status(409).send("User Already Exist. Please Login");
-        }
-
-        //Encrypt user password
-       let encryptedPassword = await bcrypt.hash(password, 10);
-
-        // Create user in our database
-        req.body.password = encryptedPassword
-        const user = await db.collection("users").insertOne(req.body)
         delete user.password
         delete user.permissions
-
-        // return new user
-        res.status(200).json(user);
-    } catch (err) {
-        console.log(err);
-    }
-    // Our register logic ends here
-});
-
-router.route('/login').get( async (req, res,next) => {
-    // console.log("in")
-    // console.log(req.headers)
-    return res.status(200).send(req.headers)
-})
-// Login
-router.route('/login').post( async (req, res,next) => {
-    // Our register logic ends here
-    try {
-        // Get user input
-        const { first_name,password ,t} = req.body;
-        // console.log(req.body)
-        //check token
-        if(t) {
-            if(jwt.decode(t).exp<Date.now() / 1000) {
-
-                return res.status(204).json({massage:"Invalid Token"});
-            }
-            else
-            {
-
-                let data =jwt.decode(t)
-                const token = jwt.sign(
-                    {user_id: req.body._id, type: data.type},
-                    "" + process.env.TOKEN_KEY,
-                    {
-                        expiresIn: "2m",
-                    }
-                );
-                // console.log(token)
-                // save user token
-                req.body.t = token;
-
-                return res.status(200).json({item:req.body,massage:"welcome "+data.type});
-
-            }
-
-        }
-        // Validate user input
-
-
-         else if(first_name && password) {
-            const user = await db.collection("users").findOne({first_name: first_name})
-            let pass = await bcrypt.compare(password, user.password)
-
-            if (user && pass) {
-                // Create token
-                const token = jwt.sign(
-                    {user_id: user._id, type: user.type},
-                    "" + process.env.TOKEN_KEY,
-                    {
-                        expiresIn: "2m",
-                    }
-                );
-                // save user token
-                req.body =user
-                req.body.t = token;
-                delete req.body.password
-                delete req.body.permissions
-
-                // user
-                return res.status(200).json({item:req.body,massage:"login"});
-            }
-
-            else {
-                return res.status(400).send("Invalid Credentials");
-            }
-        }
-
-        else {
-            return res.status(200).json({massage:"need Login"})
-        }
+        return CreateToken(user, res)
 
     }
 
-    catch (err) {
-        console.log(err)
-        return res.status(400).send("Error "+err);
+    else {
+        return res.status(401).send("Invalid params");
     }
 });
+router.route('/admin').get(async  function (req, res) {
+
+    const token = req.body.token || req.query.token || req.headers["x-access-token"];
+
+    if (token) {
+        VerifyToken(req,res,token)
+    }
+});
+router.route('/guide').get(async  function (req, res) {
+
+    const token = req.body.token || req.query.token || req.headers["x-access-token"];
+
+    if (token) {
+        VerifyToken(req,res,token)
+    }
+});
+
+
 
 
 
@@ -145,8 +72,7 @@ async function addUser(req,to){
 
 }
 
-async function updateUser(req)
-{
+async function updateUser(req) {
     // const userData = {$set: {
     //         userName: req.body.userName,
     //         password: "1234qqq",
@@ -166,8 +92,11 @@ async function updateUser(req)
     // console.log("update")
 }
 
-async function DeleteUser(req)
-{
+async function DeleteUser(req) {
 
 }
+
+
+
+
 module.exports = router
