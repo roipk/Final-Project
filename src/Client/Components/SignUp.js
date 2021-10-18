@@ -3,9 +3,13 @@ import axios from "axios";
 import {loadPage} from "./ManagerComponents";
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
+import CreateAdmin from "./Registers/admin";
+import CreateResearcher from "./Registers/resarcher";
+import CreateUser from "./Registers/user";
 const animatedComponents = makeAnimated();
 
 const roles = [
+    // { value: '', label: 'Admin' },
     { value: 'admin', label: 'Admin' },
     { value: 'researcher', label: 'Researcher' },
     { value: 'guide', label: 'Guide' },
@@ -20,7 +24,7 @@ export default class SignUp extends Component{
             firstName:'',
             lastName:'',
             password:'',
-            type:'user',
+            type:'',
             permissions:[],
         };
 
@@ -29,7 +33,54 @@ export default class SignUp extends Component{
 
     render() {
         return(
-            <div className="container-contact100">
+            <div className="container-contact100" style={{zIndex:-1}}>
+                <div className="wrap-contact1100" style={{zIndex:0}}>
+                    <form className="contact100-form validate-form" style={{zIndex:-1}}>
+				<span className="contact100-form-title">
+					User Register
+				</span>
+                        <h6> role &nbsp;</h6>
+                        <Select
+                            onChange={e=>{
+                                var newRole=[]
+                                roles.forEach(role=>{
+                                    // console.log(role)
+                                    if(role.value!==e.value)
+                                        newRole.push(role)
+                                })
+                                this.setState({type:e.value,permissions:newRole})
+                                // console.log(e.value)
+                                // console.log(newRole)
+
+                            }}
+                            style={{zIndex:100}}
+                            closeMenuOnSelect={true}
+                            // defaultValue={roles[3]}
+                            components={animatedComponents}
+                            options={roles}
+                        />
+                        <br/>
+
+                        {
+                            this.state.type==="admin"? <CreateAdmin/>:
+                            this.state.type==="researcher"?<CreateResearcher/>:
+                            this.state.type==="guide"?<CreateResearcher/>:
+                            this.state.type==="user"?<CreateUser/>:<div><br/><br/><br/><br/><br/><br/></div>
+                        }
+                    </form>
+                </div>
+            </div>
+
+
+        );
+    }
+}
+
+
+
+/*
+
+  <div className="container-contact100">
                 <div className="wrap-contact1100">
                     <form className="contact100-form validate-form">
 				<span className="contact100-form-title">
@@ -145,6 +196,6 @@ export default class SignUp extends Component{
                 </div>
 
             </div>
-        );
-    }
-}
+
+
+             */

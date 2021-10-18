@@ -23,13 +23,15 @@ export default class AllPages extends Component{
         return(
             <Router>
                 <Switch>
-                    <Route exact path="/" component={HomePage} />
-                    <Route exact path="/login" component={LoginPage}/>
+                    <Route exact path="/" component={LoginPage} />
+                    <Route exact path="/youtube" component={HomePage} />
+                    {/*<Route exact path="/login" component={LoginPage}/>*/}
                     <Route exact path="/adminLogin" component={LoginAdminPage}/>
                     <Route exact path="/register" component={SignUpPage}/>
                     <Route exact path="/guide" component={GuidePage}/>
                     {/*<Route exact path="/guide/" component={NotFoundPage}/>*/}
                     <Route exact path="/admin" component={AdminPage}/>
+                    <Route exact path="/admin/register" component={SignUpPage}/>
                     <Route exact path="/admin/:id" component={AdminPage}/>
                     {/*<Route exact path="/admin" component={NotFoundPage}/>*/}
                     {/*<Route exact path="/404" component={NotFoundPage}/>*/}

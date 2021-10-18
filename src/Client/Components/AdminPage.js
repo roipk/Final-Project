@@ -188,6 +188,28 @@ export default class AdminPage extends Component {
                                             </div>
                                         </div>
 
+
+                                        <div className="container-section-space">
+                                            <div className="container-section">
+                                                <div className="container-contact100-form-btn">
+                                                    <div className="wrap-contact100-form-btn">
+                                                        <div className="admin contact100-form-bgbtn"></div>
+                                                        <button type="button" id='addMedia'
+                                                                className="contact100-form-btn"
+                                                                onClick={() => {
+                                                                    loadPage(this.props, "youtube", this.state)
+                                                                }}>
+                                    <span>
+                                        <i className="fa fa-music fa-lg fa-fw" aria-hidden="true"
+                                           style={{padding_right: '10px'}}></i>
+                                        Youtube
+                                    </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div className="container-contact100-back-btn">
                                             <div className="wrap-contact100-back-btn">
                                                 <div className="contact100-back-bgbtn"></div>
