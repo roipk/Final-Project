@@ -16,13 +16,15 @@ router.route('/login').get(async  function (req, res) {
 
     const token = req.body.token || req.query.token || req.headers["x-access-token"];
     const {first_name,password} =  req.headers;
+    console.log(password)
 
     if(token) {
         VerifyToken(req,res,token)
     }
 
     else if(first_name && password) {
-        const user = await db.collection("users").findOne({first_name: first_name})
+        const user = await db.collection("Authentication").findOne({first_name: first_name})
+        // console.log(user)
         if(!user)
             return res.status(400).send("USER_NOT_FOUND");
         let pass = await bcrypt.compare(password, user.password)
@@ -57,8 +59,12 @@ router.route('/guide').get(async  function (req, res) {
     }
 });
 
-
-
+// router.route('admin/createUser').post(async  function (req, res) {
+//     let user =  await addUser(req,'users')
+//     console.log("create user")
+//     console.log("user")
+//     res.status(200).json('create user:'+user)
+// });
 
 
 async function getUser(userId){
@@ -67,9 +73,10 @@ async function getUser(userId){
 
 }
 
-async function addUser(req,to){
-    await db.collection("users").insertOne(req.body)
-
+async function addUser(req,nameCollection){
+    await db.collection(nameCollection).insertOne(req.body)
+    var newUser =await db.collection(nameCollection).insertOne(req.body)
+    return newUser;
 }
 
 async function updateUser(req) {

@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const secret = process.env.TOKEN_KEY;
+const secret = process.env.TOKEN_KEY+"tamaringa";
 const expiresIn="2m"
 
 
@@ -30,6 +30,8 @@ const CreateToken = (data,res)=>{
             expiresIn: expiresIn,
         }
     );
+    const decoded = jwt.verify(token, "" + secret);
+    data.timeOut=decoded.exp
     // save user token
     return res.status(200).json({token:token,user:data});
 }

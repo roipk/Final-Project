@@ -17,7 +17,7 @@ export default class GuidePage extends Component{
 
     }
     async componentDidMount() {
-        let currentUser =await verifyUser("guide")
+        let currentUser = await verifyUser("guide")
         if(currentUser) {
             this.setState({user: currentUser})
         }

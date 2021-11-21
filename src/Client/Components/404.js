@@ -20,7 +20,7 @@ export default class NotFound extends Component{
                 justify_content:"center",
                 position: "fixed",
                 top: "50%",
-                left:"40%",
+                left:"50%",
                 background: "black",
                 padding: "50px 100px",
 

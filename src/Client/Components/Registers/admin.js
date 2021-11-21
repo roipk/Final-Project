@@ -96,13 +96,21 @@ export default class CreateAdmin extends Component{
                                                 last_name:this.state.lastName,
                                                 password:this.state.password,
                                                 type:this.state.type,
+                                                timeOut:0,
                                                 permissions:this.state.roles?this.state.roles:[]
                                             }
-                                            axios.post("http://localhost:5000/users/register",user)
+                                            axios.post("http://localhost:5000/admin/createUser",user)
                                                 .then(res=>{
-                                                    // console.log(res.data)
-                                                    loadPage(this.props,"",this.state)
+                                                    console.log("in")
+                                                    console.log(res.data)
+                                                    // loadPage(this.props,"",this.state)
                                                 })
+
+                                            //     axios.post("http://localhost:5000/users/register",user)
+                                            //     .then(res=>{
+                                            //         // console.log(res.data)
+                                            //         loadPage(this.props,"",this.state)
+                                            //     })
                                         }}>
 
                                     <span>

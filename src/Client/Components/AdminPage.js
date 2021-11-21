@@ -46,7 +46,7 @@ export default class AdminPage extends Component {
                                                         <button type="button" id='createUser'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state)
+                                                                    loadPage(this.props, "register", this.state.user)
                                                                 }}>
                                 <span>
                                     <i className="fa fa-blind fa-2x" aria-hidden="true"
@@ -62,7 +62,7 @@ export default class AdminPage extends Component {
                                                         <button id='editUser' type='button'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state)
+                                                                    loadPage(this.props, "register", this.state.user)
                                                                 }}>
                                                             <i className="fa fa-pencil fa-lg" aria-hidden="true"
                                                                style={{padding_right: '10px'}}></i>
@@ -85,7 +85,7 @@ export default class AdminPage extends Component {
                                                         <button id='createGuide' type='button'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state)
+                                                                    loadPage(this.props, "register", this.state.user)
                                                                 }}>
                                 <span>
                                     <i className="fa fa-users fa-lg fa-fw" aria-hidden="true"
@@ -102,7 +102,7 @@ export default class AdminPage extends Component {
                                                         <button id='createResearcher' type='button'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state)
+                                                                    loadPage(this.props, "register", this.state.user)
                                                                 }}>
                                 <span>
                                     <i className="fa fa-users fa-lg fa-fw" aria-hidden="true"
@@ -120,7 +120,7 @@ export default class AdminPage extends Component {
                                                         <button id='createResearchGroup' type='button'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state)
+                                                                    loadPage(this.props, "register", this.state.user)
                                                                 }}>
                                 <span>
                                     <i className="fa fa-users fa-lg fa-fw" aria-hidden="true"
@@ -143,7 +143,7 @@ export default class AdminPage extends Component {
                                                         <button type="button" id='createPlaylist'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state)
+                                                                    loadPage(this.props, "register", this.state.user)
                                                                 }}>
                                     <span>
                                         <i className="fa fa-list-ol fa-lg fa-fw" aria-hidden="true"
@@ -159,7 +159,7 @@ export default class AdminPage extends Component {
                                                         <button type="button" id='editPlaylist'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state)
+                                                                    loadPage(this.props, "register", this.state.user)
                                                                 }}>
                                     <span>
                                         <i className="fa fa-list-ol fa-lg fa-fw" aria-hidden="true"
@@ -175,7 +175,7 @@ export default class AdminPage extends Component {
                                                         <button type="button" id='addMedia'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state)
+                                                                    loadPage(this.props, "register", this.state.user)
                                                                 }}>
                                     <span>
                                         <i className="fa fa-music fa-lg fa-fw" aria-hidden="true"
@@ -197,7 +197,7 @@ export default class AdminPage extends Component {
                                                         <button type="button" id='addMedia'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "youtube", this.state)
+                                                                    loadPage(this.props, "youtube", this.state.user)
                                                                 }}>
                                     <span>
                                         <i className="fa fa-music fa-lg fa-fw" aria-hidden="true"
@@ -215,7 +215,7 @@ export default class AdminPage extends Component {
                                                 <div className="contact100-back-bgbtn"></div>
                                                 <button id='main' type='button' className="contact100-back-btn"
                                                         onClick={() => {
-                                                            loadPage(this.props, "", this.state)
+                                                            loadPage(this.props, "", this.state.user)
                                                         }}>
                                                     <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
                                                 </button>

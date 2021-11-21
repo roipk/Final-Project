@@ -39,6 +39,8 @@ export default class Login extends Component{
 
 
     render() {
+
+
         return(
             <div className="container-contact100">
                 <div className="wrap-contact1100">
@@ -124,17 +126,17 @@ export default class Login extends Component{
                             </div>
                         </div>
 
-                        <div className="container-contact100-back-btn">
-                            <div className="wrap-contact100-back-btn">
-                                <div className="contact100-back-bgbtn"></div>
-                                <button id='main' type='button' className="contact100-back-btn"
-                                        onClick={()=>{
-                                        loadPage(this.props,"",this.state)
-                                        }}>
-                                    <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
+                        {/*<div className="container-contact100-back-btn">*/}
+                        {/*    <div className="wrap-contact100-back-btn">*/}
+                        {/*        <div className="contact100-back-bgbtn"></div>*/}
+                        {/*        <button id='main' type='button' className="contact100-back-btn"*/}
+                        {/*                onClick={()=>{*/}
+                        {/*                loadPage(this.props,"",this.state)*/}
+                        {/*                }}>*/}
+                        {/*            <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
+                        {/*        </button>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
                     </form>
                 </div>
 

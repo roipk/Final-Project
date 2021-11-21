@@ -3,6 +3,8 @@ import {url} from "./AllPages";
 
 export const loadPage = (props,page,data)=>
 {
+    // localStorage.setItem("token",data.token)
+    verifyUser(data.type)
     props.history.push({
         pathname: `/${page}`,
         data: data // your data array of objects
