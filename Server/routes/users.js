@@ -16,7 +16,7 @@ router.route('/login').get(async  function (req, res) {
 
     const token = req.body.token || req.query.token || req.headers["x-access-token"];
     const {first_name,password} =  req.headers;
-    console.log(password)
+
 
     if(token) {
         VerifyToken(req,res,token)

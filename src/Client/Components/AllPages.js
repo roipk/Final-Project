@@ -10,6 +10,8 @@ import AdminPage from "./AdminPage";
 import GuidePage from "./GuidePage";
 import axios from "axios";
 import userRegister from "./userRegister";
+import EditUsers from "./EditUsers";
+import DeleteUsers from "./DeleteUsers";
 
 //69666
 
@@ -29,13 +31,15 @@ export default class AllPages extends Component{
                     {/*<Route exact path="/login" component={LoginPage}/>*/}
                     <Route exact path="/adminLogin" component={LoginAdminPage}/>
                     <Route exact path="/register" component={SignUpPage}/>
+                    <Route exact path="/edit" component={EditUsers}/>
+                    <Route exact path="/remove" component={DeleteUsers}/>
                     {/*<Route exact path="/user" component={UserPage}/>*/}
                     <Route exact path="/guide" component={GuidePage}/>
                     {/*<Route exact path="/guide/" component={NotFoundPage}/>*/}
                     <Route exact path="/admin" component={AdminPage}/>
                     <Route exact path="/admin/register" component={SignUpPage}/>
                     <Route exact path="/admin/userRegister" component={userRegister}/>
-                    <Route exact path="/admin/:id" component={AdminPage}/>
+                    {/*<Route exact path="/admin/:id" component={AdminPage}/>*/}
                     {/*<Route exact path="/admin" component={NotFoundPage}/>*/}
                     {/*<Route exact path="/404" component={NotFoundPage}/>*/}
 

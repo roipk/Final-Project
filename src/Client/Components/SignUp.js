@@ -8,6 +8,7 @@ import CreateResearcher from "./Registers/resarcher";
 import CreateUser from "./Registers/oldMan";
 import Allcountries, {languagesAll} from "countries-list"
 import Carousel from "react-elastic-carousel";
+import * as mongoose from "mongoose";
 // import {iso6393} from 'iso-639-3'
 
 const animatedComponents = makeAnimated();
@@ -61,7 +62,6 @@ export default class SignUp extends Component{
             user:props.location.data,
             language:null,
             page:0,
-            genere:null,
 
             //user
             first_name:'',
@@ -74,9 +74,9 @@ export default class SignUp extends Component{
 
 
             //elder
-            Genre1Select: "",
-            Genre2Select: "",
-            birthYear: "",
+            Geners:[],
+            LanguageAtTwenty:[],
+            birthYear: "1925",
             countryAtTwenty: "",
             countryOrigin: "",
             department:"",
@@ -94,8 +94,10 @@ export default class SignUp extends Component{
             yearAtTwenty : "1959",
             yearOfImmigration:"",
 
-
         };
+
+
+
     }
 
 
@@ -113,12 +115,13 @@ export default class SignUp extends Component{
         return user
     }
 
-    newElderData()
+    newElderData(id)
     {
 
-        let elderData= {
-            Genre1Select:this.state.Genre1Select,
-            Genre2Select:this.state.Genre2Select,
+        let elderData = {
+            Oid:id,
+            Geners:this.state.Geners,
+            LanguageAtTwenty:this.state.LanguageAtTwenty,
             birthYear: this.state.birthYear,
             countryAtTwenty: this.state.countryAtTwenty,
             countryOrigin: this.state.countryOrigin,
@@ -126,19 +129,144 @@ export default class SignUp extends Component{
             entrance: 0,
             firstLangAtTwenty:this.state.firstLangAtTwenty,
             first_name: this.state.first_name,
-            group: "ARspa1959",
-            languageOrigin: "spa",
-            last_name: "SpaEngYidCla30",
-            medicalProfile: "",
-            nursingHome: "",
-            password: "SpaEngYidCla30",
-            secondLangAtTwenty: "eng",
-            userName: "SpaEngYidCla30",
-            yearAtTwenty: "1959",
-            yearOfImmigration: "",
+            group: `${this.state.countryAtTwenty}${this.state.languageOrigin}${(this.state.birthYear+20)}` ,
+            languageOrigin: this.state.languageOrigin,
+            last_name:this.state.last_name,
+            medicalProfile: this.state.medicalProfile,
+            nursingHome: this.state.nursingHome,
+            secondLangAtTwenty: this.state.secondLangAtTwenty,
+            userName: this.state.user_name,
+            yearAtTwenty: this.state.birthYear+20,
+            yearOfImmigration: this.state.yearOfImmigration?this.state.yearOfImmigration:this.state.birthYear,
         }
         return elderData
     }
+
+
+    createPlaylistNames(firstPlaylistNames, secondPlaylistNames, postingData){
+        let onePlaylistLang1 = false;
+        let onePlaylistLang2 = false;
+        let lang1=''
+        let lang2=''
+
+        if (postingData.firstLangAtTwenty === "arame"){
+            lang1 = "ARAME99DC";
+            if(firstPlaylistNames.indexOf(lang1) === -1){
+                firstPlaylistNames.push(lang1);
+                onePlaylistLang1 = true;
+            }
+        }
+
+        else if (postingData.secondLangAtTwenty === "arame"){
+            lang2 = "ARAME99DC";
+            if(secondPlaylistNames.indexOf(lang2) === -1) {
+                secondPlaylistNames.push(lang2);
+                onePlaylistLang2 = false;
+            }
+        }
+
+        else if (postingData.firstLangAtTwenty === "arana") {
+            lang1 = "ARANA99DC"
+            if(firstPlaylistNames.indexOf(lang1) === -1){
+                firstPlaylistNames.push(lang1);
+                onePlaylistLang1 = true;
+            }
+        }
+
+        else if (postingData.secondLangAtTwenty === "arana") {
+            lang2 = "ARANA99DC"
+            if(secondPlaylistNames.indexOf(lang2) === -1) {
+                secondPlaylistNames.push(lang2);
+                onePlaylistLang2 = true;
+            }
+        }
+
+        else if (postingData.firstLangAtTwenty === "spa") {
+            lang1 = "SPA99DC"
+            if(firstPlaylistNames.indexOf(lang1) === -1){
+                firstPlaylistNames.push(lang1);
+                onePlaylistLang1 = true;
+            }
+        }
+
+        else if (postingData.secondLangAtTwenty === "spa") {
+            lang2 = "SPA99DC"
+            if(secondPlaylistNames.indexOf(lang2) === -1) {
+                secondPlaylistNames.push(lang2);
+                onePlaylistLang2 = true;
+            }
+        }
+        let numOfPlaylist = postingData.decade.length;
+
+        for (let i = 0 ; i < numOfPlaylist ; i++){
+            let lang1 = postingData.firstLangAtTwenty.toUpperCase();
+            let lang2 = postingData.secondLangAtTwenty.toUpperCase();
+
+            if (postingData.firstLangAtTwenty === "rus" || postingData.firstLangAtTwenty === "lit" || postingData.firstLangAtTwenty === "lav"){
+                lang1 = "RUS";
+                firstPlaylistNames.push(lang1 + postingData.decade[i] + "DC");
+            }
+            else if (postingData.secondLangAtTwenty === "rus" || postingData.secondLangAtTwenty === "lit" || postingData.secondLangAtTwenty === "lav"){
+                lang2 = "RUS";
+                secondPlaylistNames.push(lang2 + postingData.decade[i] + "DC");
+            }
+
+
+            if((firstPlaylistNames.indexOf(lang1 + postingData.decade[i] + "DC") === -1) && !onePlaylistLang1) {
+                firstPlaylistNames.push(lang1 + postingData.decade[i] + "DC");
+            }
+
+            if((secondPlaylistNames.indexOf(lang2 + postingData.decade[i] + "DC") === -1) && !onePlaylistLang2 && lang2 !== "EMPTY") {
+                secondPlaylistNames.push(lang2 + postingData.decade[i] + "DC");
+            }
+        }
+    }
+
+    getDec(birthYear,LanguageAtTwenty,coutry) {
+        let decade = [];
+        let lastTime=new Date()
+        lastTime=lastTime.getFullYear()-20-lastTime.getFullYear()%10
+        let birthYearDecade = birthYear-birthYear%10
+        for(let i=birthYearDecade ;i<=lastTime;i+=10)
+        {
+            decade.push(LanguageAtTwenty+coutry+i+"DC")
+        }
+        return decade
+    }
+
+    newElderPlaylist(id)
+    {
+
+        let playlists = {}
+
+        for(let i=0;i<this.state.LanguageAtTwenty.length;i++)
+        {
+            let dec = this.getDec(this.state.birthYear,this.state.LanguageAtTwenty[i],this.state.countryAtTwenty)
+            playlists[`Language${i+1}`]={
+                language: this.state.LanguageAtTwenty[i],
+                playlists: {
+                    History:dec,
+                }
+            }
+        }
+
+        // createPlaylistNames(firstPlaylistNames, secondPlaylistNames, postingData);
+        playlists['genrePlaylists']=this.state.Geners
+
+        console.log( playlists)
+        const userData = {
+            Oid:id,
+            firstName: this.state.first_name,
+            lastName: this.state.last_name,
+            userName: this.state.user_name,
+            playlists: playlists,
+            //playlists: req.body['playlists[]'], //need to added
+            researchList: []
+        };
+        return userData
+    }
+
+
 
     async componentDidMount() {
 
@@ -147,6 +275,104 @@ export default class SignUp extends Component{
             this.setState({user: currentUser})
 
     }
+
+    // algorithm
+
+    // let users = $.post('/users', {patientsIds}, async function (usersData){
+    //     console.log(usersData);
+    //     usersData = usersData.items;
+    //     for(let i = 0; i < usersData.length; i++) {
+    //         tamaringaId = usersData[i].tamaringaId;
+    //         yearAtTwenty = usersData[i].yearAtTwenty;
+    //         countryAtTwenty = usersData[i].countryAtTwenty;
+    //         countryOrigin = usersData[i].countryOrigin;
+    //         languageOrigin = usersData[i].languageOrigin;
+    //         firstLangAtTwenty = usersData[i].firstLangAtTwenty;
+    //         secondLangAtTwenty = usersData[i].secondLangAtTwenty;
+    //         yearOfImmigration = usersData[i].yearOfImmigration;
+    //         group = usersData[i].group;
+    //         birthYear = usersData[i].birthYear;
+    //
+    //         //create decade for user
+    //         let decade = getDec(birthYear);
+    //
+    //         let postingData = {
+    //             firstLangAtTwenty: firstLangAtTwenty,
+    //             secondLangAtTwenty: secondLangAtTwenty,
+    //             decade: decade,
+    //             countryAtTwenty: countryAtTwenty,
+    //             yearAtTwenty: yearAtTwenty,
+    //             researchId: researchId,
+    //             meetingPerWeek: meetingPerWeek,
+    //             numberOfWeeks: numberOfWeeks
+    //         }
+    //
+    //
+    //         let firstPlaylistNames = [];
+    //         let secondPlaylistNames = [];
+    //
+    //         //create playlist names
+    //         createPlaylistNames(firstPlaylistNames, secondPlaylistNames, postingData);
+    //
+    //         let playlistData1 = {
+    //             name: firstPlaylistNames
+    //         };
+    //
+    //         let playlistData2 = {
+    //             name: secondPlaylistNames
+    //         };
+    //
+    //         console.log("Getting decade playlists...");
+    //
+    //         //check if the decade playlists exist
+    //         await ajaxAwait('/getDecadePlaylist', "post", playlistData1);
+    //         await ajaxAwait('/getDecadePlaylist', "post", playlistData2);
+    //
+    //         //update userData
+    //         let userData = {
+    //             tamaringaId: tamaringaId,
+    //             firstPlaylists: firstPlaylistNames,
+    //             secondPlaylists: secondPlaylistNames,
+    //             researchId: postingData.researchId.val(),
+    //             firstLangAtTwenty: postingData.firstLangAtTwenty,
+    //             secondLangAtTwenty: postingData.secondLangAtTwenty,
+    //             maxSessionNum: postingData.numberOfWeeks.val() * postingData.meetingPerWeek.val(),
+    //             sessionList: null
+    //         };
+    //         const getPlaylistLink = '/updateUserDataCollection';
+    //         await ajaxAwait(getPlaylistLink, "post", userData);
+    //     }
+    //
+    //
+    //
+    //
+    //
+    //     //create a new research
+    //     let researchData = {
+    //         researchName: researchName.val(),
+    //         researchId: researchId.val(),
+    //         researchersIds: researchersIds.val(),
+    //         researchGroupId : researchGroupId.val(),
+    //         description : description.val(),
+    //         patientsIds: patientsIds,
+    //         nursingHome: nursingHome.val(),
+    //         department: department.val(),
+    //         numberOfWeeks: numberOfWeeks.val(),
+    //         meetingPerWeek: meetingPerWeek.val(),
+    //         lengthOfSession: lengthOfSession.val(),
+    //         algorithm:algorithm.val()
+    //     };
+    //
+    //     const insertResearchUrl = '/insertResearch';
+    //     await ajaxAwait(insertResearchUrl, "post", researchData);
+    //     alert("Research Created '\n' The research Id is: " + researchId.val() +"\n Please wait a few seconds till the page will go back");
+    //     const pathname = "/researchGroupMainPage"
+    //     window.location.replace(pathname);
+    // });
+
+
+
+
 
     // async componentDidUpdate(prevProps, prevState, snapshot) {
     //     let currentUser = await verifyUser("admin")
@@ -235,8 +461,12 @@ export default class SignUp extends Component{
                                 let user = this.newUser()
                             axios.post("http://localhost:5000/admin/createUser",user)
                                 .then(res=>{
-                                    console.log("add")
+                                    console.log(res)
                                     console.log(res.data)
+                                    alert("successful\n the user "+this.state.first_name+"\n" +
+                                        "add to system with id -  "+res.data.insertedId+"\n" +
+                                        "type "+this.state.type)
+                                    loadPage(this.props, "admin", this.state.user)
                                     // loadPage(this.props,"",this.state)
                                 })
                             }}>submit
@@ -324,13 +554,14 @@ export default class SignUp extends Component{
                             <div>
                                 <Select label="select year"
                                         onChange={e=>{
+                                            // this.getDec(e.value)
                                             console.log(e.value)
-                                            this.setState({year:e.value})
+                                            this.setState({birthYear:e.value})
                                         }}
                                         style={{zIndex:100}}
                                         closeMenuOnSelect={true}
-                                        // defaultValue={{value:1949,label:1949}}
-                                        value={{value:this.state.year,label:this.state.year}}
+                                        defaultValue={{value:"1925", label:"1925"}}
+                                        value={{value:this.state.birthYear,label:this.state.birthYear}}
                                         options={getOpt(1925)}//start, end-> today year
                                         menuPlacement="auto"
                                         menuPosition="fixed"
@@ -341,7 +572,9 @@ export default class SignUp extends Component{
                         <span className="label-input100">Country where you were born</span>
                         <div>
                             <Select label="select year"
-                                    onChange={e=>{}}
+                                    onChange={e=>{
+                                        this.setState({countryAtTwenty:e.value})
+                                    }}
                                     style={{zIndex:100}}
                                     closeMenuOnSelect={true}
                                     options={getCountriesList()}//start, end-> today year
@@ -357,7 +590,9 @@ export default class SignUp extends Component{
                         <div>
 
                             <Select label="select year"
-                                    onChange={e=>{}}
+                                    onChange={e=>{
+                                        this.setState({countryOrigin:e.value})
+                                    }}
                                     style={{zIndex:100}}
                                     closeMenuOnSelect={true}
                                     options={getCountriesList()}//start, end-> today year
@@ -371,7 +606,9 @@ export default class SignUp extends Component{
                         <span className="label-input100">Language spoken since birth</span>
                         <div>
                             <Select label="select year"
-                                    onChange={e=>{}}
+                                    onChange={e=>{
+                                        this.setState({languageOrigin:e.label})
+                                    }}
                                     style={{zIndex:100}}
                                     closeMenuOnSelect={true}
                                     options={getLanguageList()}//start, end-> today year
@@ -390,12 +627,20 @@ export default class SignUp extends Component{
                                     isMulti
                                     className="basic-multi-select"
                                     closeMenuOnSelect={true}
-                                    options={(this.state.language &&this.state.language.length >= maxSelectLanguage) ?
-                                        this.state.language : getLanguageList()}//start, end-> today year
+                                    options={(this.state.LanguageAtTwenty &&this.state.LanguageAtTwenty.length >= maxSelectLanguage) ?
+                                        this.state.LanguageAtTwenty : getLanguageList()}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                                     onChange={(e)=>{
-                                        this.setState({language:e})
+                                        let languageAtTwenty=[]
+                                        for(let i=0;i<e.length;i++)
+                                            languageAtTwenty.push(e[i].label)
+                                        this.setState({firstLangAtTwenty:null,secondLangAtTwenty:null,LanguageAtTwenty:languageAtTwenty})
+
+                                        if(e.length>0)
+                                            this.setState({firstLangAtTwenty:e[0].value})
+                                        if(e.length>1)
+                                            this.setState({secondLangAtTwenty:e[1].value})
                                     }}
                             />
                         </div>
@@ -405,7 +650,10 @@ export default class SignUp extends Component{
                         <span className="label-input100">Year of immigration to Israel</span>
                         <div>
                             <Select label="select year"
-                                    onChange={e=>{}}
+                                    onChange={e=>{
+                                        this.setState({yearOfImmigration: e.value})
+                                    }}
+                                    // defaultValue={{value:,label:new Date.now().getFullYear()}}
                                     style={{zIndex:100}}
                                     closeMenuOnSelect={true}
                                     options={getOpt(1930)}//start, end-> today year
@@ -425,13 +673,16 @@ export default class SignUp extends Component{
                                     isMulti
                                     className="basic-multi-select"
                                     closeMenuOnSelect={true}
-                                    options={(this.state.genere && this.state.genere.length >= maxSelectGenere) ?
-                                        this.state.genere : getGenre()}//start, end-> today year
+                                    options={(this.state.Geners && this.state.Geners.length >= maxSelectGenere) ?
+                                        this.state.Geners : getGenre()}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                                     onChange={(e)=>{
-                                        // console.log(e)
-                                        this.setState({genere:e})
+                                        let gener=[]
+                                        for(let i=0;i<e.length;i++) {
+                                            gener.push(e[i].value)
+                                        }
+                                        this.setState({Geners: gener})
                                     }}
                             />
                         </div>
@@ -441,14 +692,32 @@ export default class SignUp extends Component{
                     <div className="wrap-contact100-back-btn">
                         <div className="contact100-back-bgbtn"></div>
                         <button hidden={this.state.type!=='user'} id='submit' type='button' className="contact100-back-btn"
-                                onClick={()=>{
+                                onClick={async ()=>{
+                                    let userPlaylist = this.newElderPlaylist("61a8b86ca4e25312dbdce029")
+                                }
+                                }>
+                            click me
+                        </button>
+                        <button hidden={this.state.type!=='user'} id='submit' type='button' className="contact100-back-btn"
+                                onClick={async ()=>{
                                     let user = this.newUser()
-                                    axios.post("http://localhost:5000/admin/createUser",user)
-                                        .then(res=>{
-                                            console.log("add")
-                                            console.log(res.data)
-                                            // loadPage(this.props,"",this.state)
-                                        })
+
+                                    let userId = await axios.post("http://localhost:5000/admin/createUser",user)
+
+
+                                    let userData = this.newElderData(userId.data.insertedId)
+
+                                    let userInfoId = await axios.post("http://localhost:5000/admin/createUserInfo",userData)
+
+
+                                    let userPlaylist = this.newElderPlaylist(userId.data.insertedId)
+
+                                    let userPlaylistId = await axios.post("http://localhost:5000/admin/createUserPlaylist",userPlaylist)
+
+
+                                    alert("the user "+this.state.first_name+" add to system")
+                                    loadPage(this.props, "admin", this.state.user)
+
                                 }}>submit
                             <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
                             {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
@@ -576,11 +845,13 @@ function getCountriesList() {
     const regionNames = DisplayNames(navigator.language.split('-')[0],'region');
     countries.map((country,index)=>{
         selectCountries.push( { value: country[1].name, label:regionNames.of(country[0])},)
+
     })
     return selectCountries
 }
 function DisplayNames(language,type) {
-    return new Intl.DisplayNames([language], { type: type });
+    // return new Intl.DisplayNames([language], { type: type });
+    return new Intl.DisplayNames(['en'], { type: type });
 }
 
 

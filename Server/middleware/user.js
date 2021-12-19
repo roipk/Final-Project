@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const secret = process.env.TOKEN_KEY+"tamaringa";
-const expiresIn="2m"
+const expiresIn="30m"
 
 
 const VerifyToken = (req,res,token) => {

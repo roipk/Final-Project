@@ -51,23 +51,41 @@ export default class AdminPage extends Component {
                                 <span>
                                     <i className="fa fa-blind fa-2x" aria-hidden="true"
                                        style={{padding_right: '10px'}}></i>
-                                    Create User
+                                    &nbsp;&nbsp;&nbsp;&nbsp;Create User
                                 </span>
                                                         </button>
                                                     </div>
                                                 </div>
+
                                                 <div className="container-contact100-form-btn">
                                                     <div className="wrap-contact100-form-btn">
                                                         <div className="user contact100-form-bgbtn"></div>
                                                         <button id='editUser' type='button'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state.user)
+                                                                    loadPage(this.props, "edit", this.state.user)
                                                                 }}>
                                                             <i className="fa fa-pencil fa-lg" aria-hidden="true"
                                                                style={{padding_right: '10px'}}></i>
                                                             <span>
-                                        Edit User
+                                        &nbsp;&nbsp;&nbsp;&nbsp;Edit User
+                                    </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div className="container-contact100-form-btn">
+                                                    <div className="wrap-contact100-form-btn">
+                                                        <div className="user contact100-form-bgbtn"></div>
+                                                        <button id='editUser' type='button'
+                                                                className="contact100-form-btn"
+                                                                onClick={() => {
+                                                                    loadPage(this.props, "remove", this.state.user)
+                                                                }}>
+                                                            <i className="fa fa-times fa-lg" aria-hidden="true"
+                                                               style={{padding_right: '10px'}}></i>
+                                                            <span>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;Delete User
                                     </span>
                                                         </button>
                                                     </div>
