@@ -90,7 +90,7 @@ export default class EditUsers extends Component {
             medicalProfile: "",
             nursingHome: "",
             // password:"SpaEngYidCla30",
-            secondLangAtTwenty: "eng",
+            secondLangAtTwenty: "en",
             userName: "SpaEngYidCla30",
             yearAtTwenty: "1959",
             yearOfImmigration: "",
@@ -215,7 +215,9 @@ export default class EditUsers extends Component {
         lastTime = lastTime.getFullYear() - 20 - lastTime.getFullYear() % 10
         let birthYearDecade = birthYear - birthYear % 10
         for (let i = birthYearDecade; i <= lastTime; i += 10) {
-            decade.push(LanguageAtTwenty + coutry + i + "DC")
+            let hundred = Math.floor(i/100) +1
+            let dc =  i%100==0?"00": i%100
+            decade.push(LanguageAtTwenty+"-" + coutry+"-"+hundred+"-" + dc + "DC")
         }
         return decade
     }
@@ -224,8 +226,9 @@ export default class EditUsers extends Component {
 
         let playlists = {}
 
+        let lanTwenty = getLanguageList()
         for (let i = 0; i < this.state.LanguageAtTwenty.length; i++) {
-            let dec = this.getDec(this.state.birthYear, this.state.LanguageAtTwenty[i], this.state.countryAtTwenty)
+            let dec = this.getDec(this.state.birthYear,  this.state.LanguageAtTwenty[i], this.state.countryAtTwenty)
             playlists[`Language${i + 1}`] = {
                 language: this.state.LanguageAtTwenty[i],
                 playlists: {
@@ -237,7 +240,7 @@ export default class EditUsers extends Component {
         // createPlaylistNames(firstPlaylistNames, secondPlaylistNames, postingData);
         playlists['genrePlaylists'] = this.state.Geners
 
-        console.log(playlists)
+        // console.log(playlists)
         const userData = {
             Oid: id,
             firstName: this.state.first_name,
@@ -552,9 +555,16 @@ export default class EditUsers extends Component {
                         <div>
                             <Select label="select year"
                                     onChange={e => {
+                                        console.log(e.value)
                                         this.setState({countryAtTwenty: e.value})
                                     }}
-                                    defaultValue={{value: this.state.countryAtTwenty, label: this.state.countryAtTwenty}}
+                                    defaultValue={()=>{
+                                        // value: this.state.countryAtTwenty, label: this.state.countryAtTwenty
+
+                                        let country = getCountriesList()
+                                        let index = country.findIndex(x => x.value === this.state.countryAtTwenty)
+                                        return country[index]
+                                    }}
                                     style={{zIndex: 100}}
                                     closeMenuOnSelect={true}
 
@@ -576,7 +586,12 @@ export default class EditUsers extends Component {
                                     }}
                                     style={{zIndex: 100}}
                                     closeMenuOnSelect={true}
-                                    defaultValue={{value: this.state.countryOrigin, label: this.state.countryOrigin}}
+                                    defaultValue={()=>{
+                                        let country = getCountriesList()
+                                        let index = country.findIndex(x => x.value === this.state.countryOrigin)
+                                        return country[index]
+                                    }}
+
                                     options={getCountriesList()}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
@@ -589,10 +604,16 @@ export default class EditUsers extends Component {
                         <div>
                             <Select label="select year"
                                     onChange={e => {
-                                        this.setState({languageOrigin: e.label})
+                                        this.setState({languageOrigin: e.value})
+                                        console.log(e)
                                     }}
                                     style={{zIndex: 100}}
-                                    defaultValue={{value: this.state.languageOrigin, label: this.state.languageOrigin}}
+                                    defaultValue={()=>{
+                                        let lan = getLanguageList()
+                                        let index = lan.findIndex(x => x.value ===this.state.languageOrigin )
+                                        return lan[index]
+
+                                    }}
                                     closeMenuOnSelect={true}
                                     options={getLanguageList()}//start, end-> today year
                                     menuPlacement="auto"
@@ -614,10 +635,9 @@ export default class EditUsers extends Component {
                                         ()=>{
                                            let data=[]
                                             let lan = getLanguageList()
-                                            this.state.LanguageAtTwenty.forEach(i=> {
-                                                let index = lan.findIndex(x => x.label === i)
+                                            this.state.LanguageAtTwenty.forEach(value=> {
+                                                let index = lan.findIndex(x => x.value === value)
                                                 data.push(lan[index])
-
                                             })
                                             return data
                                     }
@@ -632,7 +652,7 @@ export default class EditUsers extends Component {
 
                                         let languageAtTwenty = []
                                         for (let i = 0; i < e.length; i++)
-                                            languageAtTwenty.push(e[i].label)
+                                            languageAtTwenty.push(e[i].value)
                                         this.setState({
                                             firstLangAtTwenty: null,
                                             secondLangAtTwenty: null,
@@ -702,35 +722,28 @@ export default class EditUsers extends Component {
 
                     <div className="wrap-contact100-back-btn">
                         <div className="contact100-back-bgbtn"></div>
+                        {/*<button hidden={this.state.type !== 'user'} id='submit' type='button'*/}
+                        {/*        className="contact100-back-btn"*/}
+                        {/*        onClick={async () => {*/}
+                        {/*            let userPlaylist = this.newElderPlaylist("61a8b86ca4e25312dbdce029")*/}
+                        {/*        }*/}
+                        {/*        }>*/}
+                        {/*    click me*/}
+                        {/*</button>*/}
                         <button hidden={this.state.type !== 'user'} id='submit' type='button'
                                 className="contact100-back-btn"
                                 onClick={async () => {
-                                    let userPlaylist = this.newElderPlaylist("61a8b86ca4e25312dbdce029")
-                                }
-                                }>
-                            click me
-                        </button>
-                        <button hidden={this.state.type !== 'user'} id='submit' type='button'
-                                className="contact100-back-btn"
-                                onClick={async () => {
-                                    // let user = this.newUser()
-                                    //
-                                    // let userId = await axios.post("http://localhost:5000/admin/createUser", user)
-                                    //
-                                    console.log(this.state.OidInfo)
                                     console.log(this.state.Oid)
                                     let userData = this.newElderData(this.state.Oid)
                                     console.log(userData)
-                                    let userInfoId = await axios.post("http://localhost:5000/admin/updateUserInfo/"+this.state.OidInfo, userData)
-
-                                    //
-                                    // let userPlaylist = this.newElderPlaylist(this.state.Oid)
-                                    //
-                                    // let userPlaylistId = await axios.post("http://localhost:5000/admin/createUserPlaylist", userPlaylist)
-                                    //
-                                    //
-                                    // alert("the user " + this.state.first_name + " add to system")
-                                    // loadPage(this.props, "admin", this.state.user)
+                                    let userPlaylist = this.newElderPlaylist(this.state.Oid)
+                                    console.log(userPlaylist)
+                                    let userInfoId = await axios.post("http://localhost:5000/admin/updateUserInfo/"+this.state.Oid, userData)
+                                    console.log(userInfoId)
+                                    let userPlaylistId = await axios.post("http://localhost:5000/admin/updateUserPlaylist/"+this.state.Oid, userPlaylist)
+                                    console.log(userPlaylistId)
+                                    loadPage(this.props, "admin", this.state.user)
+                                    alert("the user " + this.state.first_name + " update")
 
                                 }}>submit
                             <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
@@ -834,6 +847,44 @@ export default class EditUsers extends Component {
                                             <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
                                         </button>
                                     </div>
+                                    <div hidden={this.state.page > 0} className="wrap-contact100-back-btn">
+                                        <div className="contact100-back-bgbtn"></div>
+                                        <button id='back' type='button' className="contact100-back-btn"
+                                                onClick={() => {
+                                                    // console.log(this.state.roles?this.state.roles:[])
+                                                  let user = {
+                                                        "_id": "61bfa29b9a31bb0f05142047",
+                                                        "Oid": "61bfa29b9a31bb0f05142046",
+                                                        "Geners": [
+                                                        "cla",
+                                                        "mid"
+                                                    ],
+                                                        "LanguageAtTwenty": [
+                                                        "he",
+                                                        "en"
+                                                    ],
+                                                        "birthYear": 1991,
+                                                        "countryAtTwenty": "IL",
+                                                        "countryOrigin": "IL",
+                                                        "department": "11",
+                                                        "entrance": 0,
+                                                        "firstLangAtTwenty": "he",
+                                                        "first_name": "11",
+                                                        "group": "ILhe2011",
+                                                        "languageOrigin": "he",
+                                                        "last_name": "11",
+                                                        "medicalProfile": "11",
+                                                        "nursingHome": "11",
+                                                        "secondLangAtTwenty": "en",
+                                                        "userName": "11",
+                                                        "yearAtTwenty": 2011,
+                                                        "yearOfImmigration": 1991
+                                                    }
+                                                    this.setUserInfo(user)
+                                                    }}>load data
+
+                                        </button>
+                                    </div>
 
                                 </div>
 
@@ -922,9 +973,9 @@ function getOpt(start,end=(new Date().getFullYear())) {
 }
 
 
-function getLanguageList() {
+function getLanguageListBylanguage(language) {
     let selectLanguage=[]
-    var languageNames  = DisplayNames(navigator.language.split('-')[0],'language');
+    var languageNames  = DisplayNames(navigator.language.split('-')[0],'language',language);
     languages.map((language,index)=>{
         // console.log(country)
         if(languageNames.of(language[0])!==language[0])
@@ -935,18 +986,34 @@ function getLanguageList() {
     return selectLanguage
 }
 
+function getLanguageList() {
+    let selectLanguage=[]
+    languages.map((language,index)=>{
+        selectLanguage.push( { value: language[0], label:language[1].name})
+    })
+    return selectLanguage
+}
+
 function getCountriesList() {
     let selectCountries=[]
-    const regionNames = DisplayNames(navigator.language.split('-')[0],'region');
     countries.map((country,index)=>{
-        selectCountries.push( { value: country[1].name, label:regionNames.of(country[0])},)
-
+        selectCountries.push( { value: country[0], label:country[1].name},)
     })
     return selectCountries
 }
-function DisplayNames(language,type) {
+
+function getCountriesListByLanCode(language) {
+    let selectCountries=[]
+    const regionNames = DisplayNames(navigator.language.split('-')[0],'region',language);
+    countries.map((country,index)=>{
+        selectCountries.push( { value: country[0], label:regionNames.of(country[0])},)
+    })
+    return selectCountries
+}
+
+function DisplayNames(language,type,code) {
     // return new Intl.DisplayNames([language], { type: type });
-    return new Intl.DisplayNames(['en'], { type: type });
+    return new Intl.DisplayNames([code], { type: type });
 }
 
 

@@ -32,6 +32,14 @@ router.route('/createUserPlaylist').post(async  function (req, res) {
     res.status(200).json(user)
 });
 
+router.route('/updateUserPlaylist/:Oid').post(async  function (req, res) {
+
+    // console.log(req)
+    let doc = req.params.Oid
+    let data = req.body
+    let userPlaylist = await updateData("UserPlaylist",doc,data)
+    res.status(200).json(userPlaylist)
+});
 
 
 router.route('/getAllUserByType/:type').get(async  function (req, res) {
@@ -83,7 +91,8 @@ async function getData(nameCollection,Oid){
 }
 
 async function updateData(nameCollection,doc,data){
-    var newData = await db.collection(nameCollection).replaceOne({_id: ObjectId(doc)}, data);
+    console.log(doc)
+    var newData = await db.collection(nameCollection).replaceOne({Oid: doc}, data);
     return newData;
 }
 
@@ -147,4 +156,33 @@ async function getAllAuthType(nameCollection,type){
 //     userName: '11',
 //     yearAtTwenty: 2041,
 //     yearOfImmigration: 1991
+// }
+
+// {
+//     "_id": "61bfa29b9a31bb0f05142047",
+//     "Oid": "61bfa29b9a31bb0f05142046",
+//     "Geners": [
+//     "cla",
+//     "mid"
+// ],
+//     "LanguageAtTwenty": [
+//     "he",
+//     "en"
+// ],
+//     "birthYear": 1991,
+//     "countryAtTwenty": "IL",
+//     "countryOrigin": "IL",
+//     "department": "11",
+//     "entrance": 0,
+//     "firstLangAtTwenty": "he",
+//     "first_name": "11",
+//     "group": "ILhe2011",
+//     "languageOrigin": "he",
+//     "last_name": "11",
+//     "medicalProfile": "11",
+//     "nursingHome": "11",
+//     "secondLangAtTwenty": "en",
+//     "userName": "11",
+//     "yearAtTwenty": 2011,
+//     "yearOfImmigration": 1991
 // }

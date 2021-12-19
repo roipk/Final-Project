@@ -196,11 +196,11 @@ export default class SignUp extends Component{
                 onePlaylistLang2 = true;
             }
         }
-        let numOfPlaylist = postingData.decade.length;
+        let numOfPlaylist = postingData.decade.length
 
         for (let i = 0 ; i < numOfPlaylist ; i++){
-            let lang1 = postingData.firstLangAtTwenty.toUpperCase();
-            let lang2 = postingData.secondLangAtTwenty.toUpperCase();
+            let lang1 = postingData.firstLangAtTwenty
+            let lang2 = postingData.secondLangAtTwenty
 
             if (postingData.firstLangAtTwenty === "rus" || postingData.firstLangAtTwenty === "lit" || postingData.firstLangAtTwenty === "lav"){
                 lang1 = "RUS";
@@ -222,17 +222,19 @@ export default class SignUp extends Component{
         }
     }
 
-    getDec(birthYear,LanguageAtTwenty,coutry) {
+    getDec(birthYear, LanguageAtTwenty, coutry) {
         let decade = [];
-        let lastTime=new Date()
-        lastTime=lastTime.getFullYear()-20-lastTime.getFullYear()%10
-        let birthYearDecade = birthYear-birthYear%10
-        for(let i=birthYearDecade ;i<=lastTime;i+=10)
-        {
-            decade.push(LanguageAtTwenty+coutry+i+"DC")
+        let lastTime = new Date()
+        lastTime = lastTime.getFullYear() - 20 - lastTime.getFullYear() % 10
+        let birthYearDecade = birthYear - birthYear % 10
+        for (let i = birthYearDecade; i <= lastTime; i += 10) {
+            let hundred = Math.floor(i/100) +1
+            let dc =  i%100==0?"00": i%100
+            decade.push(LanguageAtTwenty+"-" + coutry+"-"+hundred+"-" + dc + "DC")
         }
         return decade
     }
+
 
     newElderPlaylist(id)
     {
@@ -607,7 +609,7 @@ export default class SignUp extends Component{
                         <div>
                             <Select label="select year"
                                     onChange={e=>{
-                                        this.setState({languageOrigin:e.label})
+                                        this.setState({languageOrigin:e.value})
                                     }}
                                     style={{zIndex:100}}
                                     closeMenuOnSelect={true}
@@ -628,13 +630,13 @@ export default class SignUp extends Component{
                                     className="basic-multi-select"
                                     closeMenuOnSelect={true}
                                     options={(this.state.LanguageAtTwenty &&this.state.LanguageAtTwenty.length >= maxSelectLanguage) ?
-                                        this.state.LanguageAtTwenty : getLanguageList()}//start, end-> today year
+                                       []: getLanguageList()}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                                     onChange={(e)=>{
                                         let languageAtTwenty=[]
                                         for(let i=0;i<e.length;i++)
-                                            languageAtTwenty.push(e[i].label)
+                                            languageAtTwenty.push(e[i].value)
                                         this.setState({firstLangAtTwenty:null,secondLangAtTwenty:null,LanguageAtTwenty:languageAtTwenty})
 
                                         if(e.length>0)
@@ -674,7 +676,7 @@ export default class SignUp extends Component{
                                     className="basic-multi-select"
                                     closeMenuOnSelect={true}
                                     options={(this.state.Geners && this.state.Geners.length >= maxSelectGenere) ?
-                                        this.state.Geners : getGenre()}//start, end-> today year
+                                        [] : getGenre()}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                                     onChange={(e)=>{
@@ -844,11 +846,14 @@ function getCountriesList() {
     let selectCountries=[]
     const regionNames = DisplayNames(navigator.language.split('-')[0],'region');
     countries.map((country,index)=>{
-        selectCountries.push( { value: country[1].name, label:regionNames.of(country[0])},)
+        // console.log(country)
+        // selectCountries.push( { value: country[1].name, label:regionNames.of(country[0])},)
+        selectCountries.push( { value: country[0], label:country[1].name},)
 
     })
     return selectCountries
 }
+
 function DisplayNames(language,type) {
     // return new Intl.DisplayNames([language], { type: type });
     return new Intl.DisplayNames(['en'], { type: type });
