@@ -16,7 +16,23 @@ const animatedComponents = makeAnimated();
 const countries = Object.entries(Allcountries.countries);
 const languages = Object.entries(languagesAll);
 
+var selectLanguage=[]
+var selectCountries=[]
 
+// var CryptoJS = require("crypto-js");
+// var bytes2 = CryptoJS.AES.decrypt('U2FsdGVkX1/BwIZMRt1gsR6PwQb2exz6oLuuL9zix68=', 'Password');
+// var decrypted2 = bytes2.toString(CryptoJS.enc.Utf8);
+// console.log(decrypted2)
+//
+
+init()
+
+function init()
+{
+    getLanguageList()
+    getCountriesList()
+
+}
 
 const roles = [
     // { value: '', label: 'Admin' },
@@ -115,8 +131,7 @@ export default class SignUp extends Component{
         return user
     }
 
-    newElderData(id)
-    {
+    newElderData(id){
 
         let elderData = {
             Oid:id,
@@ -236,33 +251,28 @@ export default class SignUp extends Component{
     }
 
 
-    newElderPlaylist(id)
-    {
+    newElderPlaylist(id){
 
-        let playlists = {}
+        let playlistUser = {
+            playlists:[],
+            genre:[],
+        }
 
         for(let i=0;i<this.state.LanguageAtTwenty.length;i++)
         {
             let dec = this.getDec(this.state.birthYear,this.state.LanguageAtTwenty[i],this.state.countryAtTwenty)
-            playlists[`Language${i+1}`]={
-                language: this.state.LanguageAtTwenty[i],
-                playlists: {
-                    History:dec,
-                }
-            }
+            playlistUser.playlists.push(dec)
         }
 
         // createPlaylistNames(firstPlaylistNames, secondPlaylistNames, postingData);
-        playlists['genrePlaylists']=this.state.Geners
-
-        console.log( playlists)
+        playlistUser.genre=this.state.Geners
         const userData = {
             Oid:id,
             firstName: this.state.first_name,
             lastName: this.state.last_name,
             userName: this.state.user_name,
-            playlists: playlists,
-            //playlists: req.body['playlists[]'], //need to added
+            playlistUser: playlistUser,
+            session:[],
             researchList: []
         };
         return userData
@@ -579,7 +589,7 @@ export default class SignUp extends Component{
                                     }}
                                     style={{zIndex:100}}
                                     closeMenuOnSelect={true}
-                                    options={getCountriesList()}//start, end-> today year
+                                    options={selectCountries}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                             />
@@ -597,7 +607,7 @@ export default class SignUp extends Component{
                                     }}
                                     style={{zIndex:100}}
                                     closeMenuOnSelect={true}
-                                    options={getCountriesList()}//start, end-> today year
+                                    options={selectCountries}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                             />
@@ -613,7 +623,7 @@ export default class SignUp extends Component{
                                     }}
                                     style={{zIndex:100}}
                                     closeMenuOnSelect={true}
-                                    options={getLanguageList()}//start, end-> today year
+                                    options={selectLanguage}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                             />
@@ -630,7 +640,7 @@ export default class SignUp extends Component{
                                     className="basic-multi-select"
                                     closeMenuOnSelect={true}
                                     options={(this.state.LanguageAtTwenty &&this.state.LanguageAtTwenty.length >= maxSelectLanguage) ?
-                                       []: getLanguageList()}//start, end-> today year
+                                       []: selectLanguage}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                                     onChange={(e)=>{
@@ -830,7 +840,6 @@ function getOpt(start,end=(new Date().getFullYear())) {
 
 
 function getLanguageList() {
-    let selectLanguage=[]
     var languageNames  = DisplayNames(navigator.language.split('-')[0],'language');
     languages.map((language,index)=>{
         // console.log(country)
@@ -843,8 +852,7 @@ function getLanguageList() {
 }
 
 function getCountriesList() {
-    let selectCountries=[]
-    const regionNames = DisplayNames(navigator.language.split('-')[0],'region');
+    // const regionNames = DisplayNames(navigator.language.split('-')[0],'region');
     countries.map((country,index)=>{
         // console.log(country)
         // selectCountries.push( { value: country[1].name, label:regionNames.of(country[0])},)

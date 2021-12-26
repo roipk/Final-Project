@@ -26,11 +26,13 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'build')));
 
 
-const userRouter = require('./routes/users')
 const adminRouter = require('./routes/Admin')
+const userRouter = require('./routes/users')
+const elderRouter = require('./routes/elder')
 
 app.use('/',userRouter)
 app.use('/admin',adminRouter)
+app.use('/user',elderRouter)
 
 
 app.listen(port,async ()=>{

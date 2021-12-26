@@ -58,6 +58,14 @@ router.route('/guide').get(async  function (req, res) {
         VerifyToken(req,res,token)
     }
 });
+router.route('/user').get(async  function (req, res) {
+
+    const token = req.body.token || req.query.token || req.headers["x-access-token"];
+
+    if (token) {
+        VerifyToken(req,res,token)
+    }
+});
 
 // router.route('admin/createUser').post(async  function (req, res) {
 //     let user =  await addUser(req,'users')

@@ -54,7 +54,6 @@ router.route('/getUserById/:Oid').get(async  function (req, res) {
 });
 
 
-
 router.route('/updateUserInfo/:Oid').post(async  function (req, res) {
     console.log("update user")
     let doc = req.params.Oid

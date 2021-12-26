@@ -7,7 +7,7 @@ import AllPages from "./Client/Components/AllPages";
 
 function App() {
   return (
-      <div>
+      <div style={{ backgroundImage: "url(./Client/images/background/musicBackground.jpg)"} }>
           <AllPages/>
       </div>
     // <div className="App">

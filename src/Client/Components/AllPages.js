@@ -12,6 +12,8 @@ import axios from "axios";
 import userRegister from "./userRegister";
 import EditUsers from "./EditUsers";
 import DeleteUsers from "./DeleteUsers";
+import ElderPage from "./Elder";
+import CameraTest from "./CameraTest";
 
 //69666
 
@@ -27,13 +29,14 @@ export default class AllPages extends Component{
             <Router>
                 <Switch>
                     <Route exact path="/" component={LoginPage} />
+                    <Route exact path="/camera" component={CameraTest} />
                     <Route exact path="/youtube" component={HomePage} />
                     {/*<Route exact path="/login" component={LoginPage}/>*/}
                     <Route exact path="/adminLogin" component={LoginAdminPage}/>
                     <Route exact path="/register" component={SignUpPage}/>
                     <Route exact path="/edit" component={EditUsers}/>
                     <Route exact path="/remove" component={DeleteUsers}/>
-                    {/*<Route exact path="/user" component={UserPage}/>*/}
+                    <Route exact path="/user" component={ElderPage}/>
                     <Route exact path="/guide" component={GuidePage}/>
                     {/*<Route exact path="/guide/" component={NotFoundPage}/>*/}
                     <Route exact path="/admin" component={AdminPage}/>

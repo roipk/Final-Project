@@ -6,17 +6,33 @@ import makeAnimated from 'react-select/animated';
 import CreateAdmin from "./Registers/admin";
 import CreateResearcher from "./Registers/resarcher";
 import CreateUser from "./Registers/oldMan";
-import Allcountries, {languagesAll} from "countries-list"
+import {iso6392} from 'iso-639-2'
+import Allcountries, {languagesAll}from "countries-list"
 import Carousel from "react-elastic-carousel";
 import * as mongoose from "mongoose";
+// console.log(languagesalpha-3 )
 // import {iso6393} from 'iso-639-3'
 
+// console.log(Object.entries(languagesAll))
+console.log("in")
+console.log( )
 const animatedComponents = makeAnimated();
 
 const countries = Object.entries(Allcountries.countries);
-const languages = Object.entries(languagesAll);
+// const languages = Object.entries(languagesAll);
+const languages = Object.entries(iso6392);
 
 
+var selectLanguage=[]
+var selectCountries=[]
+init()
+
+function init()
+{
+    getLanguageList()
+    getCountriesList()
+
+}
 
 const roles = [
     // { value: '', label: 'Admin' },
@@ -217,42 +233,37 @@ export default class EditUsers extends Component {
         for (let i = birthYearDecade; i <= lastTime; i += 10) {
             let hundred = Math.floor(i/100) +1
             let dc =  i%100==0?"00": i%100
-            decade.push(LanguageAtTwenty+"-" + coutry+"-"+hundred+"-" + dc + "DC")
+            decade.push(LanguageAtTwenty+"-"+hundred+"-" + dc + "DC")
         }
         return decade
     }
 
-    newElderPlaylist(id) {
+    newElderPlaylist(id){
 
-        let playlists = {}
+        let playlistUser = {
+            playlists:[],
+            genre:[],
+        }
 
-        let lanTwenty = getLanguageList()
-        for (let i = 0; i < this.state.LanguageAtTwenty.length; i++) {
-            let dec = this.getDec(this.state.birthYear,  this.state.LanguageAtTwenty[i], this.state.countryAtTwenty)
-            playlists[`Language${i + 1}`] = {
-                language: this.state.LanguageAtTwenty[i],
-                playlists: {
-                    History: dec,
-                }
-            }
+        for(let i=0;i<this.state.LanguageAtTwenty.length;i++)
+        {
+            let dec = this.getDec(this.state.birthYear,this.state.LanguageAtTwenty[i],this.state.countryAtTwenty)
+            playlistUser.playlists.push(dec)
         }
 
         // createPlaylistNames(firstPlaylistNames, secondPlaylistNames, postingData);
-        playlists['genrePlaylists'] = this.state.Geners
-
-        // console.log(playlists)
+        playlistUser.genre=this.state.Geners
         const userData = {
-            Oid: id,
+            Oid:id,
             firstName: this.state.first_name,
             lastName: this.state.last_name,
             userName: this.state.user_name,
-            playlists: playlists,
-            //playlists: req.body['playlists[]'], //need to added
+            playlistUser: playlistUser,
+            session:[],
             researchList: []
         };
         return userData
     }
-
 
     async componentDidMount() {
 
@@ -561,14 +572,13 @@ export default class EditUsers extends Component {
                                     defaultValue={()=>{
                                         // value: this.state.countryAtTwenty, label: this.state.countryAtTwenty
 
-                                        let country = getCountriesList()
-                                        let index = country.findIndex(x => x.value === this.state.countryAtTwenty)
-                                        return country[index]
+                                        let index = selectCountries.findIndex(x => x.value === this.state.countryAtTwenty)
+                                        return selectCountries[index]
                                     }}
                                     style={{zIndex: 100}}
                                     closeMenuOnSelect={true}
 
-                                    options={getCountriesList()}//start, end-> today year
+                                    options={selectCountries}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                             />
@@ -587,12 +597,12 @@ export default class EditUsers extends Component {
                                     style={{zIndex: 100}}
                                     closeMenuOnSelect={true}
                                     defaultValue={()=>{
-                                        let country = getCountriesList()
-                                        let index = country.findIndex(x => x.value === this.state.countryOrigin)
-                                        return country[index]
+
+                                        let index = selectCountries.findIndex(x => x.value === this.state.countryOrigin)
+                                        return selectCountries[index]
                                     }}
 
-                                    options={getCountriesList()}//start, end-> today year
+                                    options={selectCountries}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                             />
@@ -609,13 +619,12 @@ export default class EditUsers extends Component {
                                     }}
                                     style={{zIndex: 100}}
                                     defaultValue={()=>{
-                                        let lan = getLanguageList()
-                                        let index = lan.findIndex(x => x.value ===this.state.languageOrigin )
-                                        return lan[index]
+                                        let index = selectLanguage.findIndex(x => x.value ===this.state.languageOrigin )
+                                        return selectLanguage[index]
 
                                     }}
                                     closeMenuOnSelect={true}
-                                    options={getLanguageList()}//start, end-> today year
+                                    options={selectLanguage}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                             />
@@ -634,17 +643,16 @@ export default class EditUsers extends Component {
                                     defaultValue={
                                         ()=>{
                                            let data=[]
-                                            let lan = getLanguageList()
                                             this.state.LanguageAtTwenty.forEach(value=> {
-                                                let index = lan.findIndex(x => x.value === value)
-                                                data.push(lan[index])
+                                                let index = selectLanguage.findIndex(x => x.value === value)
+                                                data.push(selectLanguage[index])
                                             })
                                             return data
                                     }
                                     }
 
                                     options={(this.state.LanguageAtTwenty && this.state.LanguageAtTwenty.length >= maxSelectLanguage) ?
-                                        [] : getLanguageList()}//start, end-> today year
+                                        [] : selectLanguage}//start, end-> today year
 
                                     menuPlacement="auto"
                                     menuPosition="fixed"
@@ -974,7 +982,6 @@ function getOpt(start,end=(new Date().getFullYear())) {
 
 
 function getLanguageListBylanguage(language) {
-    let selectLanguage=[]
     var languageNames  = DisplayNames(navigator.language.split('-')[0],'language',language);
     languages.map((language,index)=>{
         // console.log(country)
@@ -987,15 +994,13 @@ function getLanguageListBylanguage(language) {
 }
 
 function getLanguageList() {
-    let selectLanguage=[]
     languages.map((language,index)=>{
-        selectLanguage.push( { value: language[0], label:language[1].name})
+        selectLanguage.push( { value: language[1].iso6392B, label:language[1].name})
     })
     return selectLanguage
 }
 
 function getCountriesList() {
-    let selectCountries=[]
     countries.map((country,index)=>{
         selectCountries.push( { value: country[0], label:country[1].name},)
     })
