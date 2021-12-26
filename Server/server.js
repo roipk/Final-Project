@@ -35,6 +35,7 @@ app.use('/admin',adminRouter)
 app.use('/user',elderRouter)
 
 
+
 app.listen(port,async ()=>{
     console.log(`server is running on port: ${port}`)
 })
