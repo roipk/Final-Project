@@ -6,7 +6,8 @@ import makeAnimated from 'react-select/animated';
 import CreateAdmin from "./Registers/admin";
 import CreateResearcher from "./Registers/resarcher";
 import CreateUser from "./Registers/oldMan";
-import Allcountries, {languagesAll} from "countries-list"
+import {iso6392} from 'iso-639-2'
+import Allcountries, {languagesAll}from "countries-list"
 import Carousel from "react-elastic-carousel";
 import * as mongoose from "mongoose";
 // import {iso6393} from 'iso-639-3'
@@ -14,7 +15,8 @@ import * as mongoose from "mongoose";
 const animatedComponents = makeAnimated();
 
 const countries = Object.entries(Allcountries.countries);
-const languages = Object.entries(languagesAll);
+// const languages = Object.entries(languagesAll);
+const languages = Object.entries(iso6392);
 
 var selectLanguage=[]
 var selectCountries=[]
@@ -33,7 +35,11 @@ function init()
     getCountriesList()
 
 }
-
+const algo = [
+    // { value: '', label: 'Admin' },
+    { value: 'History', label: 'History' },
+    { value: 'Family', label: 'Family' },
+]
 const roles = [
     // { value: '', label: 'Admin' },
     { value: 'admin', label: 'Create Admin' },
@@ -70,6 +76,13 @@ let maxSelectGenere = 2;
 
 
 var timeoutHandle = setTimeout( ()=> {} , 0);
+
+async function  CreateSession(id) {
+
+        let songs=await axios.get("http://localhost:5000/user/session/"+id)
+        return songs.data
+}
+
 export default class SignUp extends Component{
 
     constructor(props) {
@@ -97,15 +110,12 @@ export default class SignUp extends Component{
             countryOrigin: "",
             department:"",
             entrance: 0,
-            firstLangAtTwenty: "",
             firstName:"",
-            group:"ARspa1959",
             languageOrigin: "spa",
             lastName: "SpaEngYidCla30",
             medicalProfile:"",
             nursingHome: "",
             // password:"SpaEngYidCla30",
-            secondLangAtTwenty: "eng",
             userName:"SpaEngYidCla30",
             yearAtTwenty : "1959",
             yearOfImmigration:"",
@@ -117,8 +127,7 @@ export default class SignUp extends Component{
     }
 
 
-    newUser()
-    {
+    newUserAuthentication(){
         let user={
             first_name:this.state.first_name,
             last_name:this.state.last_name,
@@ -135,107 +144,38 @@ export default class SignUp extends Component{
 
         let elderData = {
             Oid:id,
-            Geners:this.state.Geners,
-            LanguageAtTwenty:this.state.LanguageAtTwenty,
-            birthYear: this.state.birthYear,
-            countryAtTwenty: this.state.countryAtTwenty,
-            countryOrigin: this.state.countryOrigin,
-            department: this.state.department,
-            entrance: 0,
-            firstLangAtTwenty:this.state.firstLangAtTwenty,
             first_name: this.state.first_name,
-            group: `${this.state.countryAtTwenty}${this.state.languageOrigin}${(this.state.birthYear+20)}` ,
-            languageOrigin: this.state.languageOrigin,
             last_name:this.state.last_name,
+            userName: this.state.user_name,
+            languageOrigin: this.state.languageOrigin,
+
+            department: this.state.department,
             medicalProfile: this.state.medicalProfile,
             nursingHome: this.state.nursingHome,
-            secondLangAtTwenty: this.state.secondLangAtTwenty,
-            userName: this.state.user_name,
-            yearAtTwenty: this.state.birthYear+20,
+
+            birthYear: this.state.birthYear,
             yearOfImmigration: this.state.yearOfImmigration?this.state.yearOfImmigration:this.state.birthYear,
+            yearAtTwenty: this.state.birthYear+20,
+
+            countryOrigin: this.state.countryOrigin,
+            countryAtTwenty: this.state.countryAtTwenty,
+
+            Geners:this.state.Geners,
+            LanguageAtTwenty:this.state.LanguageAtTwenty,
+
+
+            entrance: 0,
+            maxSession: 7,
+            Cognitive:15, // 5, 8, 11, 12, 15
+            maxSongs:7*15//max session*Cognitive
+
+
+
+
         }
         return elderData
     }
 
-
-    createPlaylistNames(firstPlaylistNames, secondPlaylistNames, postingData){
-        let onePlaylistLang1 = false;
-        let onePlaylistLang2 = false;
-        let lang1=''
-        let lang2=''
-
-        if (postingData.firstLangAtTwenty === "arame"){
-            lang1 = "ARAME99DC";
-            if(firstPlaylistNames.indexOf(lang1) === -1){
-                firstPlaylistNames.push(lang1);
-                onePlaylistLang1 = true;
-            }
-        }
-
-        else if (postingData.secondLangAtTwenty === "arame"){
-            lang2 = "ARAME99DC";
-            if(secondPlaylistNames.indexOf(lang2) === -1) {
-                secondPlaylistNames.push(lang2);
-                onePlaylistLang2 = false;
-            }
-        }
-
-        else if (postingData.firstLangAtTwenty === "arana") {
-            lang1 = "ARANA99DC"
-            if(firstPlaylistNames.indexOf(lang1) === -1){
-                firstPlaylistNames.push(lang1);
-                onePlaylistLang1 = true;
-            }
-        }
-
-        else if (postingData.secondLangAtTwenty === "arana") {
-            lang2 = "ARANA99DC"
-            if(secondPlaylistNames.indexOf(lang2) === -1) {
-                secondPlaylistNames.push(lang2);
-                onePlaylistLang2 = true;
-            }
-        }
-
-        else if (postingData.firstLangAtTwenty === "spa") {
-            lang1 = "SPA99DC"
-            if(firstPlaylistNames.indexOf(lang1) === -1){
-                firstPlaylistNames.push(lang1);
-                onePlaylistLang1 = true;
-            }
-        }
-
-        else if (postingData.secondLangAtTwenty === "spa") {
-            lang2 = "SPA99DC"
-            if(secondPlaylistNames.indexOf(lang2) === -1) {
-                secondPlaylistNames.push(lang2);
-                onePlaylistLang2 = true;
-            }
-        }
-        let numOfPlaylist = postingData.decade.length
-
-        for (let i = 0 ; i < numOfPlaylist ; i++){
-            let lang1 = postingData.firstLangAtTwenty
-            let lang2 = postingData.secondLangAtTwenty
-
-            if (postingData.firstLangAtTwenty === "rus" || postingData.firstLangAtTwenty === "lit" || postingData.firstLangAtTwenty === "lav"){
-                lang1 = "RUS";
-                firstPlaylistNames.push(lang1 + postingData.decade[i] + "DC");
-            }
-            else if (postingData.secondLangAtTwenty === "rus" || postingData.secondLangAtTwenty === "lit" || postingData.secondLangAtTwenty === "lav"){
-                lang2 = "RUS";
-                secondPlaylistNames.push(lang2 + postingData.decade[i] + "DC");
-            }
-
-
-            if((firstPlaylistNames.indexOf(lang1 + postingData.decade[i] + "DC") === -1) && !onePlaylistLang1) {
-                firstPlaylistNames.push(lang1 + postingData.decade[i] + "DC");
-            }
-
-            if((secondPlaylistNames.indexOf(lang2 + postingData.decade[i] + "DC") === -1) && !onePlaylistLang2 && lang2 !== "EMPTY") {
-                secondPlaylistNames.push(lang2 + postingData.decade[i] + "DC");
-            }
-        }
-    }
 
     getDec(birthYear, LanguageAtTwenty, coutry) {
         let decade = [];
@@ -244,40 +184,39 @@ export default class SignUp extends Component{
         let birthYearDecade = birthYear - birthYear % 10
         for (let i = birthYearDecade; i <= lastTime; i += 10) {
             let hundred = Math.floor(i/100) +1
-            let dc =  i%100==0?"00": i%100
+            let dc =  i%1000===0?"00": i%100
             decade.push(LanguageAtTwenty+"-" + coutry+"-"+hundred+"-" + dc + "DC")
         }
         return decade
     }
 
 
-    newElderPlaylist(id){
-
-        let playlistUser = {
-            playlists:[],
-            genre:[],
-        }
-
-        for(let i=0;i<this.state.LanguageAtTwenty.length;i++)
-        {
-            let dec = this.getDec(this.state.birthYear,this.state.LanguageAtTwenty[i],this.state.countryAtTwenty)
-            playlistUser.playlists.push(dec)
-        }
-
-        // createPlaylistNames(firstPlaylistNames, secondPlaylistNames, postingData);
-        playlistUser.genre=this.state.Geners
-        const userData = {
+    newElderSessions(id){
+        const userSessionData = {
             Oid:id,
             firstName: this.state.first_name,
             lastName: this.state.last_name,
             userName: this.state.user_name,
-            playlistUser: playlistUser,
-            session:[],
-            researchList: []
-        };
-        return userData
-    }
+            languages:this.state.languages,
+            genre:this.state.genre,
+            yearAtTwenty:this.state.birthYear+20,
+            sessions:[],
+            Geners:this.state.Geners,
+            LanguageAtTwenty:this.state.LanguageAtTwenty,
 
+
+            entrance: 0,
+            maxSession: 7,
+            Cognitive:15, // 5, 8, 11, 12, 15
+            maxSongs:7*15//max session*Cognitive
+
+
+        };
+        return userSessionData
+    }
+    getPlaylist(){
+
+    }
 
 
     async componentDidMount() {
@@ -299,18 +238,13 @@ export default class SignUp extends Component{
     //         countryAtTwenty = usersData[i].countryAtTwenty;
     //         countryOrigin = usersData[i].countryOrigin;
     //         languageOrigin = usersData[i].languageOrigin;
-    //         firstLangAtTwenty = usersData[i].firstLangAtTwenty;
-    //         secondLangAtTwenty = usersData[i].secondLangAtTwenty;
     //         yearOfImmigration = usersData[i].yearOfImmigration;
-    //         group = usersData[i].group;
     //         birthYear = usersData[i].birthYear;
     //
     //         //create decade for user
     //         let decade = getDec(birthYear);
     //
     //         let postingData = {
-    //             firstLangAtTwenty: firstLangAtTwenty,
-    //             secondLangAtTwenty: secondLangAtTwenty,
     //             decade: decade,
     //             countryAtTwenty: countryAtTwenty,
     //             yearAtTwenty: yearAtTwenty,
@@ -346,8 +280,6 @@ export default class SignUp extends Component{
     //             firstPlaylists: firstPlaylistNames,
     //             secondPlaylists: secondPlaylistNames,
     //             researchId: postingData.researchId.val(),
-    //             firstLangAtTwenty: postingData.firstLangAtTwenty,
-    //             secondLangAtTwenty: postingData.secondLangAtTwenty,
     //             maxSessionNum: postingData.numberOfWeeks.val() * postingData.meetingPerWeek.val(),
     //             sessionList: null
     //         };
@@ -403,7 +335,7 @@ export default class SignUp extends Component{
     registerUser(page)
     {
 
-        if(page==0)
+        if(page===0)
         return(
             <div>
                 <h1>פרטי הזדהות עבור המערכת</h1>
@@ -437,7 +369,7 @@ export default class SignUp extends Component{
 
                     <span className="focus-input100"></span>
                 </div>
-                <div hidden={this.state.type!='admin' && this.state.type!='researcher'} className="wrap-input100 validate-input" data-validate="Email is required">
+                <div hidden={this.state.type!=='admin' && this.state.type!=='researcher'} className="wrap-input100 validate-input" data-validate="Email is required">
                     <span className="label-input100">Email*</span>
                     <input value={this.state.email} id='email' className="input100" type="text" name="email"
                            onChange={ (e)=>{
@@ -470,8 +402,8 @@ export default class SignUp extends Component{
                     <div className="contact100-back-bgbtn"></div>
                     <button hidden={this.state.type==='user'} id='submit' type='button' className="contact100-back-btn"
                             onClick={()=>{
-                                let user = this.newUser()
-                            axios.post("http://localhost:5000/admin/createUser",user)
+                                let user = this.newUserAuthentication()
+                            axios.post("http://localhost:5000/admin/create/User",user)
                                 .then(res=>{
                                     console.log(res)
                                     console.log(res.data)
@@ -498,7 +430,7 @@ export default class SignUp extends Component{
             </div>
 
         )
-        else if(page==1)
+        else if(page===1)
             return(
                 <div>
                     <h1>מידע על בית האבות</h1>
@@ -647,12 +579,7 @@ export default class SignUp extends Component{
                                         let languageAtTwenty=[]
                                         for(let i=0;i<e.length;i++)
                                             languageAtTwenty.push(e[i].value)
-                                        this.setState({firstLangAtTwenty:null,secondLangAtTwenty:null,LanguageAtTwenty:languageAtTwenty})
-
-                                        if(e.length>0)
-                                            this.setState({firstLangAtTwenty:e[0].value})
-                                        if(e.length>1)
-                                            this.setState({secondLangAtTwenty:e[1].value})
+                                        this.setState({LanguageAtTwenty:languageAtTwenty})
                                     }}
                             />
                         </div>
@@ -700,31 +627,55 @@ export default class SignUp extends Component{
                         </div>
                         <span className="focus-input100"></span>
                     </div>
+                    <div className="wrap-input100 input100-select">
+                        <span className="label-input100">Algorythem*</span>
+                        <div>
+
+                            <Select label="select year"
+                                // onChange={e=>{}}
+
+                                    style={{zIndex:100}}
+                                    className="basic-multi-select"
+                                    closeMenuOnSelect={true}
+                                    options={algo}//start, end-> today year
+                                    menuPlacement="auto"
+                                    menuPosition="fixed"
+                                    onChange={(e)=>{
+                                        this.setState({algo: e.value})
+                                    }}
+                            />
+                        </div>
+                        <span className="focus-input100"></span>
+                    </div>
+
 
                     <div className="wrap-contact100-back-btn">
                         <div className="contact100-back-bgbtn"></div>
                         <button hidden={this.state.type!=='user'} id='submit' type='button' className="contact100-back-btn"
                                 onClick={async ()=>{
-                                    let userPlaylist = this.newElderPlaylist("61a8b86ca4e25312dbdce029")
+                                    let userPlaylist = this.newElderSessions("61a8b86ca4e25312dbdce029")
                                 }
                                 }>
                             click me
                         </button>
                         <button hidden={this.state.type!=='user'} id='submit' type='button' className="contact100-back-btn"
                                 onClick={async ()=>{
-                                    let user = this.newUser()
+                                    let user = this.newUserAuthentication()
 
-                                    let userId = await axios.post("http://localhost:5000/admin/createUser",user)
+                                    let userId = await axios.post("http://localhost:5000/admin/create/Authentication",user)
 
 
                                     let userData = this.newElderData(userId.data.insertedId)
 
-                                    let userInfoId = await axios.post("http://localhost:5000/admin/createUserInfo",userData)
+                                    let userInfoId = await axios.post("http://localhost:5000/admin/create/UserInfo",userData)
 
 
-                                    let userPlaylist = this.newElderPlaylist(userId.data.insertedId)
+                                    let userPlaylist = this.newElderSessions(userId.data.insertedId)
 
-                                    let userPlaylistId = await axios.post("http://localhost:5000/admin/createUserPlaylist",userPlaylist)
+                                    let userPlaylistId = await axios.post("http://localhost:5000/admin/create/UserSessions",userPlaylist)
+
+                                    CreateSession(userId.data.insertedId)
+                                    // userPlaylist.session.push()
 
 
                                     alert("the user "+this.state.first_name+" add to system")
@@ -830,6 +781,8 @@ export default class SignUp extends Component{
     }
 }
 
+
+
 function getOpt(start,end=(new Date().getFullYear())) {
     var options =[]
     for(var year = end ; year >=start; year--){
@@ -839,25 +792,18 @@ function getOpt(start,end=(new Date().getFullYear())) {
 }
 
 
+
 function getLanguageList() {
-    var languageNames  = DisplayNames(navigator.language.split('-')[0],'language');
     languages.map((language,index)=>{
-        // console.log(country)
-        if(languageNames.of(language[0])!==language[0])
-        {
-            selectLanguage.push( { value: language[0], label:languageNames.of(language[0])})
-        }
+        selectLanguage.push( { value: language[1].iso6392B, label:language[1].name})
     })
     return selectLanguage
 }
 
-function getCountriesList() {
-    // const regionNames = DisplayNames(navigator.language.split('-')[0],'region');
-    countries.map((country,index)=>{
-        // console.log(country)
-        // selectCountries.push( { value: country[1].name, label:regionNames.of(country[0])},)
-        selectCountries.push( { value: country[0], label:country[1].name},)
 
+function getCountriesList() {
+    countries.map((country,index)=>{
+        selectCountries.push( { value: country[0], label:country[1].name},)
     })
     return selectCountries
 }

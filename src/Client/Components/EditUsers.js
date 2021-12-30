@@ -15,7 +15,6 @@ import * as mongoose from "mongoose";
 
 // console.log(Object.entries(languagesAll))
 console.log("in")
-console.log( )
 const animatedComponents = makeAnimated();
 
 const countries = Object.entries(Allcountries.countries);
@@ -35,7 +34,6 @@ function init()
 }
 
 const roles = [
-    // { value: '', label: 'Admin' },
     { value: 'admin', label: 'Admin' },
     { value: 'researcher', label: 'Researcher' },
     { value: 'musicGuide', label: 'Music Guide' },
@@ -98,15 +96,12 @@ export default class EditUsers extends Component {
             countryOrigin: "",
             department: "",
             entrance: 0,
-            firstLangAtTwenty: "",
             firstName: "",
-            group: "ARspa1959",
             languageOrigin: "spa",
             lastName: "SpaEngYidCla30",
             medicalProfile: "",
             nursingHome: "",
             // password:"SpaEngYidCla30",
-            secondLangAtTwenty: "en",
             userName: "SpaEngYidCla30",
             yearAtTwenty: "1959",
             yearOfImmigration: "",
@@ -116,114 +111,55 @@ export default class EditUsers extends Component {
 
     }
 
-
-    newUser() {
-        let user = {
-            first_name: this.state.first_name,
-            last_name: this.state.last_name,
-            id: this.state.id,
-            email: this.state.email,
-            user_name: this.state.user_name,
-            password: this.state.password,
-            type: this.state.type,
+    newUserAuthentication(){
+        let user={
+            first_name:this.state.first_name,
+            last_name:this.state.last_name,
+            id:this.state.id,
+            email:this.state.email,
+            user_name:this.state.user_name,
+            password:this.state.password,
+            type:this.state.type,
         }
         return user
     }
 
-    newElderData(id) {
+    newElderData(id){
 
         let elderData = {
-            Oid: id,
-            Geners: this.state.Geners,
-            LanguageAtTwenty: this.state.LanguageAtTwenty,
-            birthYear: this.state.birthYear,
-            countryAtTwenty: this.state.countryAtTwenty,
-            countryOrigin: this.state.countryOrigin,
-            department: this.state.department,
-            entrance: 0,
-            firstLangAtTwenty: this.state.firstLangAtTwenty,
+            Oid:id,
             first_name: this.state.first_name,
-            group: `${this.state.countryAtTwenty}${this.state.languageOrigin}${(this.state.birthYear + 20)}`,
+            last_name:this.state.last_name,
+            userName: this.state.user_name,
             languageOrigin: this.state.languageOrigin,
-            last_name: this.state.last_name,
+
+            department: this.state.department,
             medicalProfile: this.state.medicalProfile,
             nursingHome: this.state.nursingHome,
-            secondLangAtTwenty: this.state.secondLangAtTwenty,
-            userName: this.state.user_name,
-            yearAtTwenty: this.state.birthYear + 20,
-            yearOfImmigration: this.state.yearOfImmigration ? this.state.yearOfImmigration : this.state.birthYear,
+
+            birthYear: this.state.birthYear,
+            yearOfImmigration: this.state.yearOfImmigration?this.state.yearOfImmigration:this.state.birthYear,
+            yearAtTwenty: this.state.birthYear+20,
+
+            countryOrigin: this.state.countryOrigin,
+            countryAtTwenty: this.state.countryAtTwenty,
+
+            Geners:this.state.Geners,
+            LanguageAtTwenty:this.state.LanguageAtTwenty,
+
+
+            entrance: 0,
+            maxSession: 7,
+            Cognitive:15, // 5, 8, 11, 12, 15
+            maxSongs:7*15//max session*Cognitive
+
+
+
+
         }
         return elderData
     }
 
-
-    createPlaylistNames(firstPlaylistNames, secondPlaylistNames, postingData) {
-        let onePlaylistLang1 = false;
-        let onePlaylistLang2 = false;
-        let lang1 = ''
-        let lang2 = ''
-
-        if (postingData.firstLangAtTwenty === "arame") {
-            lang1 = "ARAME99DC";
-            if (firstPlaylistNames.indexOf(lang1) === -1) {
-                firstPlaylistNames.push(lang1);
-                onePlaylistLang1 = true;
-            }
-        } else if (postingData.secondLangAtTwenty === "arame") {
-            lang2 = "ARAME99DC";
-            if (secondPlaylistNames.indexOf(lang2) === -1) {
-                secondPlaylistNames.push(lang2);
-                onePlaylistLang2 = false;
-            }
-        } else if (postingData.firstLangAtTwenty === "arana") {
-            lang1 = "ARANA99DC"
-            if (firstPlaylistNames.indexOf(lang1) === -1) {
-                firstPlaylistNames.push(lang1);
-                onePlaylistLang1 = true;
-            }
-        } else if (postingData.secondLangAtTwenty === "arana") {
-            lang2 = "ARANA99DC"
-            if (secondPlaylistNames.indexOf(lang2) === -1) {
-                secondPlaylistNames.push(lang2);
-                onePlaylistLang2 = true;
-            }
-        } else if (postingData.firstLangAtTwenty === "spa") {
-            lang1 = "SPA99DC"
-            if (firstPlaylistNames.indexOf(lang1) === -1) {
-                firstPlaylistNames.push(lang1);
-                onePlaylistLang1 = true;
-            }
-        } else if (postingData.secondLangAtTwenty === "spa") {
-            lang2 = "SPA99DC"
-            if (secondPlaylistNames.indexOf(lang2) === -1) {
-                secondPlaylistNames.push(lang2);
-                onePlaylistLang2 = true;
-            }
-        }
-        let numOfPlaylist = postingData.decade.length;
-
-        for (let i = 0; i < numOfPlaylist; i++) {
-            let lang1 = postingData.firstLangAtTwenty.toUpperCase();
-            let lang2 = postingData.secondLangAtTwenty.toUpperCase();
-
-            if (postingData.firstLangAtTwenty === "rus" || postingData.firstLangAtTwenty === "lit" || postingData.firstLangAtTwenty === "lav") {
-                lang1 = "RUS";
-                firstPlaylistNames.push(lang1 + postingData.decade[i] + "DC");
-            } else if (postingData.secondLangAtTwenty === "rus" || postingData.secondLangAtTwenty === "lit" || postingData.secondLangAtTwenty === "lav") {
-                lang2 = "RUS";
-                secondPlaylistNames.push(lang2 + postingData.decade[i] + "DC");
-            }
-
-
-            if ((firstPlaylistNames.indexOf(lang1 + postingData.decade[i] + "DC") === -1) && !onePlaylistLang1) {
-                firstPlaylistNames.push(lang1 + postingData.decade[i] + "DC");
-            }
-
-            if ((secondPlaylistNames.indexOf(lang2 + postingData.decade[i] + "DC") === -1) && !onePlaylistLang2 && lang2 !== "EMPTY") {
-                secondPlaylistNames.push(lang2 + postingData.decade[i] + "DC");
-            }
-        }
-    }
 
     getDec(birthYear, LanguageAtTwenty, coutry) {
         let decade = [];
@@ -232,38 +168,25 @@ export default class EditUsers extends Component {
         let birthYearDecade = birthYear - birthYear % 10
         for (let i = birthYearDecade; i <= lastTime; i += 10) {
             let hundred = Math.floor(i/100) +1
-            let dc =  i%100==0?"00": i%100
-            decade.push(LanguageAtTwenty+"-"+hundred+"-" + dc + "DC")
+            let dc =  i%1000===0?"00": i%100
+            decade.push(LanguageAtTwenty+"-" + coutry+"-"+hundred+"-" + dc + "DC")
         }
         return decade
     }
 
-    newElderPlaylist(id){
 
-        let playlistUser = {
-            playlists:[],
-            genre:[],
-        }
-
-        for(let i=0;i<this.state.LanguageAtTwenty.length;i++)
-        {
-            let dec = this.getDec(this.state.birthYear,this.state.LanguageAtTwenty[i],this.state.countryAtTwenty)
-            playlistUser.playlists.push(dec)
-        }
-
-        // createPlaylistNames(firstPlaylistNames, secondPlaylistNames, postingData);
-        playlistUser.genre=this.state.Geners
-        const userData = {
+    newElderSessions(id){
+        const userSessionData = {
             Oid:id,
             firstName: this.state.first_name,
             lastName: this.state.last_name,
             userName: this.state.user_name,
-            playlistUser: playlistUser,
-            session:[],
-            researchList: []
+            sessions:[],
+
         };
-        return userData
+        return userSessionData
     }
+
 
     async componentDidMount() {
 
@@ -284,8 +207,6 @@ export default class EditUsers extends Component {
     //         countryAtTwenty = usersData[i].countryAtTwenty;
     //         countryOrigin = usersData[i].countryOrigin;
     //         languageOrigin = usersData[i].languageOrigin;
-    //         firstLangAtTwenty = usersData[i].firstLangAtTwenty;
-    //         secondLangAtTwenty = usersData[i].secondLangAtTwenty;
     //         yearOfImmigration = usersData[i].yearOfImmigration;
     //         group = usersData[i].group;
     //         birthYear = usersData[i].birthYear;
@@ -294,8 +215,6 @@ export default class EditUsers extends Component {
     //         let decade = getDec(birthYear);
     //
     //         let postingData = {
-    //             firstLangAtTwenty: firstLangAtTwenty,
-    //             secondLangAtTwenty: secondLangAtTwenty,
     //             decade: decade,
     //             countryAtTwenty: countryAtTwenty,
     //             yearAtTwenty: yearAtTwenty,
@@ -331,8 +250,6 @@ export default class EditUsers extends Component {
     //             firstPlaylists: firstPlaylistNames,
     //             secondPlaylists: secondPlaylistNames,
     //             researchId: postingData.researchId.val(),
-    //             firstLangAtTwenty: postingData.firstLangAtTwenty,
-    //             secondLangAtTwenty: postingData.secondLangAtTwenty,
     //             maxSessionNum: postingData.numberOfWeeks.val() * postingData.meetingPerWeek.val(),
     //             sessionList: null
     //         };
@@ -447,7 +364,7 @@ export default class EditUsers extends Component {
                         <button hidden={this.state.type === 'user'} id='submit' type='button'
                                 className="contact100-back-btn"
                                 onClick={() => {
-                                    let user = this.newUser()
+                                    let user = this.newUserAuthentication()
                                     axios.post("http://localhost:5000/admin/createUser", user)
                                         .then(res => {
                                             console.log(res)
@@ -620,6 +537,10 @@ export default class EditUsers extends Component {
                                     style={{zIndex: 100}}
                                     defaultValue={()=>{
                                         let index = selectLanguage.findIndex(x => x.value ===this.state.languageOrigin )
+                                        console.log(index)
+
+                                        console.log(this.state.languageOrigin)
+                                        console.log(selectLanguage)
                                         return selectLanguage[index]
 
                                     }}
@@ -662,15 +583,8 @@ export default class EditUsers extends Component {
                                         for (let i = 0; i < e.length; i++)
                                             languageAtTwenty.push(e[i].value)
                                         this.setState({
-                                            firstLangAtTwenty: null,
-                                            secondLangAtTwenty: null,
                                             LanguageAtTwenty: languageAtTwenty
                                         })
-
-                                        if (e.length > 0)
-                                            this.setState({firstLangAtTwenty: e[0].value})
-                                        if (e.length > 1)
-                                            this.setState({secondLangAtTwenty: e[1].value})
                                     }}
                             />
                         </div>
@@ -733,7 +647,7 @@ export default class EditUsers extends Component {
                         {/*<button hidden={this.state.type !== 'user'} id='submit' type='button'*/}
                         {/*        className="contact100-back-btn"*/}
                         {/*        onClick={async () => {*/}
-                        {/*            let userPlaylist = this.newElderPlaylist("61a8b86ca4e25312dbdce029")*/}
+                        {/*            let UserSessions = this.newElderSessions("61a8b86ca4e25312dbdce029")*/}
                         {/*        }*/}
                         {/*        }>*/}
                         {/*    click me*/}
@@ -744,11 +658,11 @@ export default class EditUsers extends Component {
                                     console.log(this.state.Oid)
                                     let userData = this.newElderData(this.state.Oid)
                                     console.log(userData)
-                                    let userPlaylist = this.newElderPlaylist(this.state.Oid)
+                                    let userPlaylist = this.newElderSessions(this.state.Oid)
                                     console.log(userPlaylist)
-                                    let userInfoId = await axios.post("http://localhost:5000/admin/updateUserInfo/"+this.state.Oid, userData)
+                                    let userInfoId = await axios.post("http://localhost:5000/admin/update/UserInfo/"+this.state.Oid, userData)
                                     console.log(userInfoId)
-                                    let userPlaylistId = await axios.post("http://localhost:5000/admin/updateUserPlaylist/"+this.state.Oid, userPlaylist)
+                                    let userPlaylistId = await axios.post("http://localhost:5000/admin/update/UserSessions/"+this.state.Oid, userPlaylist)
                                     console.log(userPlaylistId)
                                     loadPage(this.props, "admin", this.state.user)
                                     alert("the user " + this.state.first_name + " update")
@@ -876,14 +790,11 @@ export default class EditUsers extends Component {
                                                         "countryOrigin": "IL",
                                                         "department": "11",
                                                         "entrance": 0,
-                                                        "firstLangAtTwenty": "he",
                                                         "first_name": "11",
-                                                        "group": "ILhe2011",
                                                         "languageOrigin": "he",
                                                         "last_name": "11",
                                                         "medicalProfile": "11",
                                                         "nursingHome": "11",
-                                                        "secondLangAtTwenty": "en",
                                                         "userName": "11",
                                                         "yearAtTwenty": 2011,
                                                         "yearOfImmigration": 1991
@@ -955,15 +866,12 @@ export default class EditUsers extends Component {
             countryOrigin: user.countryOrigin,
             department: user.department,
             entrance: user.entrance,
-            firstLangAtTwenty: user.firstLangAtTwenty,
             firstName: user.firstName,
-            group: user.group,
             languageOrigin: user.languageOrigin,
             lastName: user.lastName,
             medicalProfile: user.medicalProfile,
             nursingHome: user.nursingHome,
             // password:"SpaEngYidCla30",
-            secondLangAtTwenty: user.secondLangAtTwenty,
             userName: user.userName,
             yearAtTwenty: user.yearAtTwenty,
             yearOfImmigration: user.yearOfImmigration,

@@ -1,6 +1,6 @@
 import React, {Component, useState} from 'react';
 import axios from "axios";
-import {loadPage, verifyUser} from "./ManagerComponents";
+import {loadloadPage, loadPage, verifyUser} from "./ManagerComponents";
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import CreateAdmin from "./Registers/admin";
@@ -20,7 +20,6 @@ const languages = Object.entries(languagesAll);
 
 const roles = [
     // { value: '', label: 'Admin' },
-    { value: 'admin', label: 'Admin' },
     { value: 'researcher', label: 'Researcher' },
     { value: 'musicGuide', label: 'Music Guide' },
     { value: 'guide', label: 'Guide' },
@@ -82,15 +81,12 @@ export default class DeleteUsers extends Component {
             countryOrigin: "",
             department: "",
             entrance: 0,
-            firstLangAtTwenty: "",
             firstName: "",
-            group: "ARspa1959",
             languageOrigin: "spa",
             lastName: "SpaEngYidCla30",
             medicalProfile: "",
             nursingHome: "",
             // password:"SpaEngYidCla30",
-            secondLangAtTwenty: "eng",
             userName: "SpaEngYidCla30",
             yearAtTwenty: "1959",
             yearOfImmigration: "",
@@ -125,14 +121,11 @@ export default class DeleteUsers extends Component {
             countryOrigin: this.state.countryOrigin,
             department: this.state.department,
             entrance: 0,
-            firstLangAtTwenty: this.state.firstLangAtTwenty,
             first_name: this.state.first_name,
-            group: `${this.state.countryAtTwenty}${this.state.languageOrigin}${(this.state.birthYear + 20)}`,
             languageOrigin: this.state.languageOrigin,
             last_name: this.state.last_name,
             medicalProfile: this.state.medicalProfile,
             nursingHome: this.state.nursingHome,
-            secondLangAtTwenty: this.state.secondLangAtTwenty,
             userName: this.state.user_name,
             yearAtTwenty: this.state.birthYear + 20,
             yearOfImmigration: this.state.yearOfImmigration ? this.state.yearOfImmigration : this.state.birthYear,
@@ -141,73 +134,6 @@ export default class DeleteUsers extends Component {
     }
 
 
-    createPlaylistNames(firstPlaylistNames, secondPlaylistNames, postingData) {
-        let onePlaylistLang1 = false;
-        let onePlaylistLang2 = false;
-        let lang1 = ''
-        let lang2 = ''
-
-        if (postingData.firstLangAtTwenty === "arame") {
-            lang1 = "ARAME99DC";
-            if (firstPlaylistNames.indexOf(lang1) === -1) {
-                firstPlaylistNames.push(lang1);
-                onePlaylistLang1 = true;
-            }
-        } else if (postingData.secondLangAtTwenty === "arame") {
-            lang2 = "ARAME99DC";
-            if (secondPlaylistNames.indexOf(lang2) === -1) {
-                secondPlaylistNames.push(lang2);
-                onePlaylistLang2 = false;
-            }
-        } else if (postingData.firstLangAtTwenty === "arana") {
-            lang1 = "ARANA99DC"
-            if (firstPlaylistNames.indexOf(lang1) === -1) {
-                firstPlaylistNames.push(lang1);
-                onePlaylistLang1 = true;
-            }
-        } else if (postingData.secondLangAtTwenty === "arana") {
-            lang2 = "ARANA99DC"
-            if (secondPlaylistNames.indexOf(lang2) === -1) {
-                secondPlaylistNames.push(lang2);
-                onePlaylistLang2 = true;
-            }
-        } else if (postingData.firstLangAtTwenty === "spa") {
-            lang1 = "SPA99DC"
-            if (firstPlaylistNames.indexOf(lang1) === -1) {
-                firstPlaylistNames.push(lang1);
-                onePlaylistLang1 = true;
-            }
-        } else if (postingData.secondLangAtTwenty === "spa") {
-            lang2 = "SPA99DC"
-            if (secondPlaylistNames.indexOf(lang2) === -1) {
-                secondPlaylistNames.push(lang2);
-                onePlaylistLang2 = true;
-            }
-        }
-        let numOfPlaylist = postingData.decade.length;
-
-        for (let i = 0; i < numOfPlaylist; i++) {
-            let lang1 = postingData.firstLangAtTwenty.toUpperCase();
-            let lang2 = postingData.secondLangAtTwenty.toUpperCase();
-
-            if (postingData.firstLangAtTwenty === "rus" || postingData.firstLangAtTwenty === "lit" || postingData.firstLangAtTwenty === "lav") {
-                lang1 = "RUS";
-                firstPlaylistNames.push(lang1 + postingData.decade[i] + "DC");
-            } else if (postingData.secondLangAtTwenty === "rus" || postingData.secondLangAtTwenty === "lit" || postingData.secondLangAtTwenty === "lav") {
-                lang2 = "RUS";
-                secondPlaylistNames.push(lang2 + postingData.decade[i] + "DC");
-            }
-
-
-            if ((firstPlaylistNames.indexOf(lang1 + postingData.decade[i] + "DC") === -1) && !onePlaylistLang1) {
-                firstPlaylistNames.push(lang1 + postingData.decade[i] + "DC");
-            }
-
-            if ((secondPlaylistNames.indexOf(lang2 + postingData.decade[i] + "DC") === -1) && !onePlaylistLang2 && lang2 !== "EMPTY") {
-                secondPlaylistNames.push(lang2 + postingData.decade[i] + "DC");
-            }
-        }
-    }
 
     getDec(birthYear, LanguageAtTwenty, coutry) {
         let decade = [];
@@ -270,8 +196,6 @@ export default class DeleteUsers extends Component {
     //         countryAtTwenty = usersData[i].countryAtTwenty;
     //         countryOrigin = usersData[i].countryOrigin;
     //         languageOrigin = usersData[i].languageOrigin;
-    //         firstLangAtTwenty = usersData[i].firstLangAtTwenty;
-    //         secondLangAtTwenty = usersData[i].secondLangAtTwenty;
     //         yearOfImmigration = usersData[i].yearOfImmigration;
     //         group = usersData[i].group;
     //         birthYear = usersData[i].birthYear;
@@ -280,8 +204,6 @@ export default class DeleteUsers extends Component {
     //         let decade = getDec(birthYear);
     //
     //         let postingData = {
-    //             firstLangAtTwenty: firstLangAtTwenty,
-    //             secondLangAtTwenty: secondLangAtTwenty,
     //             decade: decade,
     //             countryAtTwenty: countryAtTwenty,
     //             yearAtTwenty: yearAtTwenty,
@@ -317,8 +239,6 @@ export default class DeleteUsers extends Component {
     //             firstPlaylists: firstPlaylistNames,
     //             secondPlaylists: secondPlaylistNames,
     //             researchId: postingData.researchId.val(),
-    //             firstLangAtTwenty: postingData.firstLangAtTwenty,
-    //             secondLangAtTwenty: postingData.secondLangAtTwenty,
     //             maxSessionNum: postingData.numberOfWeeks.val() * postingData.meetingPerWeek.val(),
     //             sessionList: null
     //         };
@@ -436,7 +356,8 @@ export default class DeleteUsers extends Component {
                             alert("do you want remove this user?")
                             axios.get("http://localhost:5000/admin/DeleteUser/"+this.state.Oid)
                                         .then(res => {
-                                            console.log("the user remove")
+                                            console.log("the user removed")
+                                            loadPage(this.props, "admin", this.state.user)
 
 
                                             // alert("successful\n the user " + this.state.first_name + "\n" +
@@ -638,15 +559,8 @@ export default class DeleteUsers extends Component {
                                         for (let i = 0; i < e.length; i++)
                                             languageAtTwenty.push(e[i].label)
                                         this.setState({
-                                            firstLangAtTwenty: null,
-                                            secondLangAtTwenty: null,
                                             LanguageAtTwenty: languageAtTwenty
                                         })
-
-                                        if (e.length > 0)
-                                            this.setState({firstLangAtTwenty: e[0].value})
-                                        if (e.length > 1)
-                                            this.setState({secondLangAtTwenty: e[1].value})
                                     }}
                             />
                         </div>
@@ -709,7 +623,7 @@ export default class DeleteUsers extends Component {
                         <button hidden={this.state.type !== 'user'} id='submit' type='button'
                                 className="contact100-back-btn"
                                 onClick={async () => {
-                                    let userPlaylist = this.newElderPlaylist("61a8b86ca4e25312dbdce029")
+                                    let UserSessions = this.newElderPlaylist("61a8b86ca4e25312dbdce029")
                                 }
                                 }>
                             click me
@@ -728,9 +642,9 @@ export default class DeleteUsers extends Component {
                                     let userInfoId = await axios.post("http://localhost:5000/admin/updateUserInfo", [userData,this.state.OidInfo])
 
                                     //
-                                    // let userPlaylist = this.newElderPlaylist(this.state.Oid)
+                                    // let UserSessions = this.newElderPlaylist(this.state.Oid)
                                     //
-                                    // let userPlaylistId = await axios.post("http://localhost:5000/admin/createUserPlaylist", userPlaylist)
+                                    // let userPlaylistId = await axios.post("http://localhost:5000/admin/createUserPlaylist", UserSessions)
                                     //
                                     //
                                     // alert("the user " + this.state.first_name + " add to system")
@@ -900,15 +814,12 @@ export default class DeleteUsers extends Component {
             countryOrigin: user.countryOrigin,
             department: user.department,
             entrance: user.entrance,
-            firstLangAtTwenty: user.firstLangAtTwenty,
             firstName: user.firstName,
-            group: user.group,
             languageOrigin: user.languageOrigin,
             lastName: user.lastName,
             medicalProfile: user.medicalProfile,
             nursingHome: user.nursingHome,
             // password:"SpaEngYidCla30",
-            secondLangAtTwenty: user.secondLangAtTwenty,
             userName: user.userName,
             yearAtTwenty: user.yearAtTwenty,
             yearOfImmigration: user.yearOfImmigration,

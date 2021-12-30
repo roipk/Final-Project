@@ -36,7 +36,7 @@ export default class ElderPage extends Component {
         let currentUser = await verifyUser("user")
         if (currentUser) {
             let videos = await this.getSession(currentUser._id)
-            // console.log(videos)
+            console.log(videos)
             this.setState({user: currentUser,videos:videos})
 
         } else {
@@ -50,7 +50,8 @@ export default class ElderPage extends Component {
     async getSession(id) {
         // let youtube=[]
         let songs=await axios.get("http://localhost:5000/user/session/"+id)
-        // console.log(songs.data)
+        console.log(songs.data.length)
+        console.log(songs.data)
         // songs.data.forEach(song=>{
         //     console.log(song)
         //     song.forEach(id=>{
@@ -59,6 +60,7 @@ export default class ElderPage extends Component {
         //     })
         // console.log(youtube)
         return songs.data
+        // return []
     }
 
 
@@ -90,17 +92,19 @@ export default class ElderPage extends Component {
                                             <div className="container-section">
                                                 <div className="container-contact100-form-btn">
                                                     {this.state.videos ?
-                                                        this.state.videos.map((item,index) => {
+                                                        this.state.videos.map((item) => {
                                                             // console.log(index)
 
                                                             return (
-                                                                <div key ={index} className="container-contact100-form-btn" style={{display: 'block',
+                                                                <div key={item._id}
+                                                                     className="container-contact100-form-btn" style={{
+                                                                    display: 'block',
                                                                     padding: '10px',
                                                                     textAlign: 'center',
                                                                     // border: '10px solid black'
                                                                 }}>
 
-                                                                    <h4>{item.originTitle+" - "+item.originArtistName}</h4>
+                                                                    <h4>{item.originTitle + " - " + item.originArtistName}</h4>
                                                                     <YouTube videoId={item.youtube.videoId} opts={opts}
                                                                              onReady={(e) => {
                                                                                  this.onReady(e.target)
@@ -117,14 +121,58 @@ export default class ElderPage extends Component {
 
                                                                     />
                                                                     <div>
-                                                                        <button style={{fontSize: '400%', textAlign: 'center'}}  className="buttonDes" type="button" onClick={(e)=>{}} name="verySad" id ="verySad">😟</button>
-                                                                        <button style={{fontSize: '400%', textAlign: 'center'}}  className="buttonDes" type="button" onClick={(e)=>{}} name="Indifferent" id ="Indifferent">😐</button>
-                                                                        <button style={{fontSize: '400%', textAlign: 'center'}}  className="buttonDes" type="button" onClick={(e)=>{}} name="Sad" id ="Sad">🙁</button>
-                                                                        <button style={{fontSize: '400%', textAlign: 'center'}}  className="buttonDes" type="button" onClick={(e)=>{}} name="happy" id ="happy">😀</button>
-                                                                        <button style={{fontSize: '400%', textAlign: 'center'}} className="buttonDes" type="button" onClick={(e)=>{}} name="Joyful" id ="Joyful">😆</button>
-                                                                </div>
+                                                                        <button style={{
+                                                                            fontSize: '400%',
+                                                                            textAlign: 'center'
+                                                                        }} className="buttonDes" type="button"
+                                                                                onClick={(e) => {
+                                                                                    this.rated(e, item._id)
+                                                                                }} name="verySad"
+                                                                                id={"verySad" + item._id}
+                                                                        >😟
+                                                                        </button>
+                                                                        <button style={{
+                                                                            fontSize: '400%',
+                                                                            textAlign: 'center'
+                                                                        }} className="buttonDes" type="button"
+                                                                                onClick={(e) => {
+                                                                                    this.rated(e, item._id)
+                                                                                }} name="Sad" id={"Sad" + item._id}
+                                                                        >🙁
+                                                                        </button>
+                                                                        <button style={{
+                                                                            fontSize: '400%',
+                                                                            textAlign: 'center'
+                                                                        }} className="buttonDes" type="button"
+                                                                                onClick={(e) => {
+                                                                                    this.rated(e, item._id)
+                                                                                }} name="Indifferent"
+                                                                                id={"Indifferent" + item._id}
+                                                                        >😐
+                                                                        </button>
+                                                                        <button style={{
+                                                                            fontSize: '400%',
+                                                                            textAlign: 'center'
+                                                                        }} className="buttonDes" type="button"
+                                                                                onClick={(e) => {
+                                                                                    this.rated(e, item._id)
+                                                                                }} name="happy" id={"happy" + item._id}
+                                                                        >😀
+                                                                        </button>
+                                                                        <button style={{
+                                                                            fontSize: '400%',
+                                                                            textAlign: 'center'
+                                                                        }} className="buttonDes" type="button"
+                                                                                onClick={(e) => {
+                                                                                    this.rated(e, item._id)
+                                                                                }} name="Joyful"
+                                                                                id={"Joyful" + item._id}
+                                                                        >😆
+                                                                        </button>
+
+                                                                    </div>
                                                                     <hr/>
-                                                        </div>
+                                                                </div>
                                                             )
                                                         }) : "no found video for this session"
                                                     }
@@ -209,6 +257,17 @@ export default class ElderPage extends Component {
 
     }
 
+    rated(e,index) {
+        var state =   e.target.style.borderStyle
+        // console.log( document.getElementById('verySad'+index))
+        document.getElementById('verySad'+index).style.borderStyle =""
+        document.getElementById('Sad'+index).style.borderStyle =""
+        document.getElementById('Indifferent'+index).style.borderStyle =""
+        document.getElementById('happy'+index).style.borderStyle =""
+        document.getElementById('Joyful'+index).style.borderStyle =""
+
+        e.target.style.borderStyle = state==="solid"? "":"solid"
+    }
 }
 
 

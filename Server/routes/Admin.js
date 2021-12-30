@@ -12,35 +12,19 @@ const VerifyToken = require("../middleware/user").VerifyToken
 const CreateToken = require("../middleware/user").CreateToken
 
 
-router.route('/createUser').post(async  function (req, res) {
+router.route('/create/:nameCollection').post(async  function (req, res) {
 
-   let user =await CreatData('Authentication',req.body,)
-    console.log("create new Data")
-    res.status(200).json(user)
+    let data =await CreatData(req.params.nameCollection,req.body,)
+    console.log("create new Data in "+req.params.nameCollection)
+    return res.status(200).json(data)
 });
 
-router.route('/createUserInfo').post(async  function (req, res) {
-    let user =await CreatData('UserInfo',req.body)
-    console.log("create userInfo")
-    res.status(200).json(user)
-});
-
-router.route('/createUserPlaylist').post(async  function (req, res) {
-
-    let user =await CreatData('UserPlaylist',req.body)
-    // console.log("create user")
-    res.status(200).json(user)
-});
-
-router.route('/updateUserPlaylist/:Oid').post(async  function (req, res) {
-
-    // console.log(req)
+router.route('/update/:nameCollection/:Oid').post(async  function (req, res) {
     let doc = req.params.Oid
     let data = req.body
-    let userPlaylist = await updateData("UserPlaylist",doc,data)
-    res.status(200).json(userPlaylist)
+    let UserSessions = await updateData( req.params.nameCollection,doc,data)
+    res.status(200).json(UserSessions)
 });
-
 
 router.route('/getAllUserByType/:type').get(async  function (req, res) {
 
@@ -54,27 +38,15 @@ router.route('/getUserById/:Oid').get(async  function (req, res) {
 });
 
 
-router.route('/updateUserInfo/:Oid').post(async  function (req, res) {
-    console.log("update user")
-    let doc = req.params.Oid
-    let data = req.body
-    let userInfo = await updateData("UserInfo",doc,data)
-    res.status(200).json(userInfo)
-
-});
-
-
-
 router.route('/DeleteUser/:id').get(async  function (req, res) {
     console.log("delete user")
     await deleteData("Authentication",req.params.id)
     await deleteData("UserInfo",req.params.id)
-    await deleteData("UserPlaylist",req.params.id)
+    await deleteData("UserSessions",req.params.id)
     res.status(200).json()
 });
 
 module.exports = router
-
 
 
 
@@ -124,14 +96,12 @@ async function getAllAuthType(nameCollection,type){
 //                 countryOrigin: 'Israel',
 //                 department: '11',
 //                 entrance: 0,
-//                 firstLangAtTwenty: 'he',
 //                 first_name: '11',
 //                 group: 'IsraelHE2011',
 //                 languageOrigin: 'Hebrew',
 //                 last_name: '11',
 //                 medicalProfile: '11',
 //                 nursingHome: '11',
-//                 secondLangAtTwenty: 'en',
 //                 userName: '11',
 //                 yearAtTwenty: 2011,
 //                 yearOfImmigration: 1991
@@ -144,14 +114,12 @@ async function getAllAuthType(nameCollection,type){
 //     countryOrigin: 'Israel',
 //     department: '11',
 //     entrance: 0,
-//     firstLangAtTwenty: 'he',
 //     first_name: '11',
 //     group: 'IsraelHebrew2041',
 //     languageOrigin: 'Hebrew',
 //     last_name: '11',
 //     medicalProfile: '11',
 //     nursingHome: '11',
-//     secondLangAtTwenty: 'en',
 //     userName: '11',
 //     yearAtTwenty: 2041,
 //     yearOfImmigration: 1991
@@ -173,14 +141,12 @@ async function getAllAuthType(nameCollection,type){
 //     "countryOrigin": "IL",
 //     "department": "11",
 //     "entrance": 0,
-//     "firstLangAtTwenty": "he",
 //     "first_name": "11",
 //     "group": "ILhe2011",
 //     "languageOrigin": "he",
 //     "last_name": "11",
 //     "medicalProfile": "11",
 //     "nursingHome": "11",
-//     "secondLangAtTwenty": "en",
 //     "userName": "11",
 //     "yearAtTwenty": 2011,
 //     "yearOfImmigration": 1991

@@ -326,6 +326,45 @@ export default function CreateOldMan(){
                     </div>
 
 
+                    <div  style={{width:'90%'}} className="container-section-space">
+                        <h1>סוגי מוזיקה</h1>
+                        <div className="container-section">
+                            <div className="wrap-input100 input100-select">
+                                <span className="label-input100">Genre 1</span>
+                                <div>
+
+                                    <Select label="select year"
+                                        // onChange={e=>{}}
+                                            style={{zIndex:100}}
+                                            isMulti
+                                            className="basic-multi-select"
+                                            closeMenuOnSelect={true}
+                                            options={(genere &&genere.length >= maxSelectGenere) ?
+                                                genere : getGenre()}//start, end-> today year
+                                            menuPlacement="auto"
+                                            menuPosition="fixed"
+                                            onChange={(e)=>{
+                                                // console.log(e)
+                                                setGenere(e)
+                                            }}
+                                    />
+                                </div>
+                                <span className="focus-input100"></span>
+                            </div>
+                        </div>
+                        <div className="wrap-contact100-back-btn">
+
+                            <div className="contact100-back-bgbtn"></div>
+                            <button id='main' type='button' className="contact100-back-btn"
+                                    onClick={()=>{
+                                        loadPage(this.props,"",this.state)
+                                    }}>send
+                                {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
+                            </button>
+                        </div>
+                    </div>
+
+
                 </Carousel>
             </div>
         );
