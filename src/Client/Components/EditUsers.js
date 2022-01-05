@@ -32,6 +32,11 @@ function init()
     getCountriesList()
 
 }
+const algo = [
+    // { value: '', label: 'Admin' },
+    { value: 'History', label: 'History' },
+    // { value: 'Family', label: 'Family' },
+]
 
 const roles = [
     { value: 'admin', label: 'Admin' },
@@ -40,6 +45,29 @@ const roles = [
     { value: 'guide', label: 'Guide' },
     { value: 'user', label: 'Elder' }
 ]
+const Cognitive = [
+    // { value: '', label: 'Admin' },
+    { value: 5, label: 'Very Low Cognitive' },
+    { value: 8, label: 'Low Cognitive' },
+    { value: 11, label: 'Normal Cognitive' },
+    { value: 12, label: 'Good Cognitive' },
+    { value: 15, label: 'Excellent Cognitive' }
+]
+
+//sum of playlist
+
+
+// 2-cla - 40 -  2 - 6
+// 2- mid - 70 - 2 6
+//6 - heb30 - 5
+//6 - heb50 - 10
+
+
+
+
+
+
+
 
 
 function timefomat(timestamp)
@@ -69,6 +97,20 @@ let maxSelectGenere = 2;
 
 
 var timeoutHandle = setTimeout( ()=> {} , 0);
+
+function findArrayData(array,selectOptions) {
+
+    let data=[]
+    let options = selectOptions
+    if(!Array.isArray(array))
+        return options[options.findIndex(x => x.value === array)]
+    array.forEach(i=> {
+        let index = options.findIndex(x => x.value === i)
+        data.push(options[index])
+    })
+    return data
+}
+
 export default class EditUsers extends Component {
 
     constructor(props) {
@@ -91,7 +133,7 @@ export default class EditUsers extends Component {
             //elder
             Geners: [],
             LanguageAtTwenty: [],
-            birthYear: "1925",
+            birthYear: 1925,
             countryAtTwenty: "",
             countryOrigin: "",
             department: "",
@@ -105,6 +147,9 @@ export default class EditUsers extends Component {
             userName: "SpaEngYidCla30",
             yearAtTwenty: "1959",
             yearOfImmigration: "",
+            maxSession:null,
+            Cognitive:null,
+            currentAlgorithm:'History'
 
         };
 
@@ -147,11 +192,11 @@ export default class EditUsers extends Component {
             Geners:this.state.Geners,
             LanguageAtTwenty:this.state.LanguageAtTwenty,
 
-
             entrance: 0,
-            maxSession: 7,
-            Cognitive:15, // 5, 8, 11, 12, 15
-            maxSongs:7*15//max session*Cognitive
+            maxSession: this.state.maxSession,
+            Cognitive:this.state.Cognitive, // 5, 8, 11, 12, 15
+            maxSongs:this.state.Cognitive * this.state.maxSession,//max session*Cognitive
+            currentAlgorithm:this.state.currentAlgorithm
 
 
 
@@ -181,7 +226,20 @@ export default class EditUsers extends Component {
             firstName: this.state.first_name,
             lastName: this.state.last_name,
             userName: this.state.user_name,
+            languages:this.state.languages,
+            genre:this.state.genre,
+            yearAtTwenty:this.state.birthYear+20,
             sessions:[],
+            Geners:this.state.Geners,
+            LanguageAtTwenty:this.state.LanguageAtTwenty,
+
+
+            entrance: 0,
+            maxSession: this.state.maxSession,
+            Cognitive:this.state.Cognitive, // 5, 8, 11, 12, 15
+            maxSongs:this.state.Cognitive * this.state.maxSession,//max session*Cognitive
+            currentAlgorithm:this.state.currentAlgorithm
+
 
         };
         return userSessionData
@@ -361,6 +419,7 @@ export default class EditUsers extends Component {
 
                     <div className="wrap-contact100-back-btn">
                         <div className="contact100-back-bgbtn"></div>
+
                         <button hidden={this.state.type === 'user'} id='submit' type='button'
                                 className="contact100-back-btn"
                                 onClick={() => {
@@ -441,7 +500,7 @@ export default class EditUsers extends Component {
 
                         </button>
                         <div className="contact100-back-bgbtn"></div>
-                        <button id='back' type='button' className="contact100-back-btn"
+                        <button id='back1' type='button' className="contact100-back-btn"
                                 onClick={() => {
                                     // console.log(this.state.roles?this.state.roles:[])
                                     this.setState({page: page - 1})
@@ -452,7 +511,7 @@ export default class EditUsers extends Component {
                 </div>
             )
 
-        else
+        else if (page == 2)
             return (
                 <div>
 
@@ -470,9 +529,8 @@ export default class EditUsers extends Component {
                                     }}
                                     style={{zIndex: 100}}
                                     closeMenuOnSelect={true}
-                                    defaultValue={{value: "1925", label: "1925"}}
-                                    value={{value: this.state.birthYear, label: this.state.birthYear}}
                                     options={getOpt(1925)}//start, end-> today year
+                                    value={findArrayData(this.state.birthYear, getOpt(1925))}
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                             />
@@ -481,17 +539,13 @@ export default class EditUsers extends Component {
                     <div className="wrap-input100 input100-select">
                         <span className="label-input100">Country where you were born</span>
                         <div>
-                            <Select label="select year"
+                            <Select label="select country born"
                                     onChange={e => {
                                         console.log(e.value)
-                                        this.setState({countryAtTwenty: e.value})
+                                        this.setState({countryOrigin: e.value})
                                     }}
-                                    defaultValue={()=>{
-                                        // value: this.state.countryAtTwenty, label: this.state.countryAtTwenty
 
-                                        let index = selectCountries.findIndex(x => x.value === this.state.countryAtTwenty)
-                                        return selectCountries[index]
-                                    }}
+                                    value={findArrayData(this.state.countryOrigin,selectCountries)}
                                     style={{zIndex: 100}}
                                     closeMenuOnSelect={true}
 
@@ -507,18 +561,14 @@ export default class EditUsers extends Component {
                         <span className="label-input100">Country where you lived at ages 10-25</span>
                         <div>
 
-                            <Select label="select year"
+                            <Select label="select Country"
                                     onChange={e => {
-                                        this.setState({countryOrigin: e.value})
+                                        this.setState({countryAtTwenty: e.value})
+                                        console.log(e)
                                     }}
                                     style={{zIndex: 100}}
                                     closeMenuOnSelect={true}
-                                    defaultValue={()=>{
-
-                                        let index = selectCountries.findIndex(x => x.value === this.state.countryOrigin)
-                                        return selectCountries[index]
-                                    }}
-
+                                    value={findArrayData(this.state.countryAtTwenty, selectCountries)}
                                     options={selectCountries}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
@@ -535,15 +585,7 @@ export default class EditUsers extends Component {
                                         console.log(e)
                                     }}
                                     style={{zIndex: 100}}
-                                    defaultValue={()=>{
-                                        let index = selectLanguage.findIndex(x => x.value ===this.state.languageOrigin )
-                                        console.log(index)
-
-                                        console.log(this.state.languageOrigin)
-                                        console.log(selectLanguage)
-                                        return selectLanguage[index]
-
-                                    }}
+                                    value={findArrayData(this.state.languageOrigin, selectLanguage)}
                                     closeMenuOnSelect={true}
                                     options={selectLanguage}//start, end-> today year
                                     menuPlacement="auto"
@@ -561,17 +603,8 @@ export default class EditUsers extends Component {
                                     isMulti
                                     className="basic-multi-select"
                                     closeMenuOnSelect={true}
-                                    defaultValue={
-                                        ()=>{
-                                           let data=[]
-                                            this.state.LanguageAtTwenty.forEach(value=> {
-                                                let index = selectLanguage.findIndex(x => x.value === value)
-                                                data.push(selectLanguage[index])
-                                            })
-                                            return data
-                                    }
-                                    }
-
+                                    // defaultValue={findArrayData(this.state.LanguageAtTwenty, selectLanguage)}
+                                    value={findArrayData(this.state.LanguageAtTwenty, selectLanguage)}
                                     options={(this.state.LanguageAtTwenty && this.state.LanguageAtTwenty.length >= maxSelectLanguage) ?
                                         [] : selectLanguage}//start, end-> today year
 
@@ -597,83 +630,30 @@ export default class EditUsers extends Component {
                                     onChange={e => {
                                         this.setState({yearOfImmigration: e.label})
                                     }}
-                                    defaultValue={{value: this.state.yearOfImmigration, label: this.state.yearOfImmigration}}
+                                    value={findArrayData(this.state.yearOfImmigration, getOpt(1925))}
                                     style={{zIndex: 100}}
                                     closeMenuOnSelect={true}
-                                    options={getOpt(1930)}//start, end-> today year
+                                    options={getOpt(1925)}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                             />
                         </div>
                         <span className="focus-input100"></span>
                     </div>
-                    <div className="wrap-input100 input100-select">
-                        <span className="label-input100">Genre 1</span>
-                        <div>
 
-                            <Select label="select year"
-                                // onChange={e=>{}}
-                                    style={{zIndex: 100}}
-                                    isMulti
-                                    className="basic-multi-select"
-                                    closeMenuOnSelect={true}
-                                    options={(this.state.Geners && this.state.Geners.length >= maxSelectGenere) ?
-                                       [] : getGenre()}//start, end-> today year
-                                    menuPlacement="auto"
-                                    menuPosition="fixed"
-                                    defaultValue={()=>{
-                                        let data=[]
-                                        let genere = getGenre()
-                                        this.state.Geners.forEach(i=> {
-                                            let index = genere.findIndex(x => x.value === i)
-                                            data.push(genere[index])
-                                        })
-                                        return data
-                                    }}
-                                    onChange={(e) => {
-                                        let gener = []
-                                        for (let i = 0; i < e.length; i++) {
-                                            gener.push(e[i].value)
-                                        }
-                                        this.setState({Geners: gener})
-                                    }}
-                            />
-                        </div>
-                        <span className="focus-input100"></span>
-                    </div>
 
                     <div className="wrap-contact100-back-btn">
                         <div className="contact100-back-bgbtn"></div>
-                        {/*<button hidden={this.state.type !== 'user'} id='submit' type='button'*/}
-                        {/*        className="contact100-back-btn"*/}
-                        {/*        onClick={async () => {*/}
-                        {/*            let UserSessions = this.newElderSessions("61a8b86ca4e25312dbdce029")*/}
-                        {/*        }*/}
-                        {/*        }>*/}
-                        {/*    click me*/}
-                        {/*</button>*/}
-                        <button hidden={this.state.type !== 'user'} id='submit' type='button'
-                                className="contact100-back-btn"
-                                onClick={async () => {
-                                    console.log(this.state.Oid)
-                                    let userData = this.newElderData(this.state.Oid)
-                                    console.log(userData)
-                                    let userPlaylist = this.newElderSessions(this.state.Oid)
-                                    console.log(userPlaylist)
-                                    let userInfoId = await axios.post("http://localhost:5000/admin/update/UserInfo/"+this.state.Oid, userData)
-                                    console.log(userInfoId)
-                                    let userPlaylistId = await axios.post("http://localhost:5000/admin/update/UserSessions/"+this.state.Oid, userPlaylist)
-                                    console.log(userPlaylistId)
-                                    loadPage(this.props, "admin", this.state.user)
-                                    alert("the user " + this.state.first_name + " update")
-
-                                }}>submit
+                        <button id='next3' type='button' className="contact100-back-btn"
+                                onClick={() => {
+                                    this.setState({page: page + 1})
+                                }}>next
                             <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
                             {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
 
                         </button>
                         <div className="contact100-back-bgbtn"></div>
-                        <button id='back' type='button' className="contact100-back-btn"
+                        <button id='back2' type='button' className="contact100-back-btn"
                                 onClick={() => {
                                     // console.log(this.state.roles?this.state.roles:[])
                                     this.setState({page: page - 1})
@@ -683,6 +663,145 @@ export default class EditUsers extends Component {
                     </div>
                 </div>
             )
+
+    else
+        return(
+            <div>
+
+                <h1>רמת פעילות</h1>
+                <br/>
+
+
+
+                <div className="wrap-input100 input100-select">
+                    <span className="label-input100">Genre 1</span>
+                    <div>
+
+                        <Select label="select year"
+                            // onChange={e=>{}}
+                                style={{zIndex: 100}}
+                                isMulti
+                                className="basic-multi-select"
+                                closeMenuOnSelect={true}
+                                options={(this.state.Geners && this.state.Geners.length >= maxSelectGenere) ?
+                                    [] : getGenre()}//start, end-> today year
+                                menuPlacement="auto"
+                                menuPosition="fixed"
+
+                                value={findArrayData(this.state.Geners, getGenre())}
+                                onChange={(e) => {
+                                    let gener = []
+                                    for (let i = 0; i < e.length; i++) {
+                                        gener.push(e[i].value)
+                                    }
+                                    this.setState({Geners: gener})
+                                }}
+                        />
+                    </div>
+                    <span className="focus-input100"></span>
+                </div>
+                <div className="wrap-input100 input100-select">
+                    <span className="label-input100">sessions number per week*</span>
+                    <div>
+
+                        <Select label="select_sessions_number"
+                            // onChange={e=>{}}
+                                style={{zIndex:100}}
+                                className="basic-multi-select"
+                                closeMenuOnSelect={true}
+
+                                value={findArrayData(this.state.maxSession, getOpt(1,7))}
+                                options={getOpt(1,7)}//start, end-> today year
+                                menuPlacement="auto"
+                                menuPosition="fixed"
+                                onChange={(e)=>{
+                                    console.log("in1")
+                                    this.setState({maxSession: e.value})
+                                }}
+                        />
+                    </div>
+                    <span className="focus-input100"></span>
+                </div>
+                <div className="wrap-input100 input100-select">
+                    <span className="label-input100">Cognitive level*</span>
+                    <div>
+
+                        <Select label="select sessions number"
+                            // onChange={e=>{}}
+                                style={{zIndex:100}}
+                                className="basic-multi-select"
+                                closeMenuOnSelect={true}
+
+                                value={findArrayData(this.state.Cognitive, Cognitive)}
+                                options={Cognitive}//start, end-> today year
+                                menuPlacement="auto"
+                                menuPosition="fixed"
+                                onChange={(e)=>{
+                                    this.setState({Cognitive: e.value})
+                                }}
+                        />
+                    </div>
+                    <span className="focus-input100"></span>
+                </div>
+                <div className="wrap-input100 input100-select">
+                    <span className="label-input100">Algorythem*</span>
+                    <div>
+
+                        <Select label="select year"
+                            // onChange={e=>{}}
+
+                                style={{zIndex:100}}
+                                className="basic-multi-select"
+                                closeMenuOnSelect={true}
+
+                                value={findArrayData(this.state.currentAlgorithm, algo)}
+                                options={algo}//start, end-> today year
+                                menuPlacement="auto"
+                                menuPosition="fixed"
+                                onChange={(e)=>{
+                                    this.setState({currentAlgorithm: e.value})
+                                }}
+
+                        />
+                    </div>
+                    <span className="focus-input100"></span>
+                </div>
+
+
+                <div className="wrap-contact100-back-btn">
+                    <div className="contact100-back-bgbtn"></div>
+
+                    <button hidden={this.state.type !== 'user'} id='submit' type='button'
+                            className="contact100-back-btn"
+                            onClick={async () => {
+                                console.log(this.state.Oid)
+                                let userData = this.newElderData(this.state.Oid)
+                                console.log(userData)
+                                let userPlaylist = this.newElderSessions(this.state.Oid)
+                                console.log(userPlaylist)
+                                let userInfoId = await axios.post("http://localhost:5000/admin/update/UserInfo/"+this.state.Oid, userData)
+                                console.log(userInfoId)
+                                let userPlaylistId = await axios.post("http://localhost:5000/admin/update/UserSessions/"+this.state.Oid, userPlaylist)
+                                console.log(userPlaylistId)
+                                loadPage(this.props, "admin", this.state.user)
+                                alert("the user " + this.state.first_name + " update")
+
+                            }}>submit
+                        <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
+                        {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
+
+                    </button>
+                    <div className="contact100-back-bgbtn"></div>
+                    <button id='back3' type='button' className="contact100-back-btn"
+                            onClick={() => {
+                                // console.log(this.state.roles?this.state.roles:[])
+                                this.setState({page: page - 1})
+                            }}>back
+                        <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        )
 
     }
 
@@ -716,8 +835,6 @@ export default class EditUsers extends Component {
                                         <Select label="select year"
                                                 style={{zIndex: 100}}
                                                 closeMenuOnSelect={true}
-                                                defaultValue={''}
-                                            // defaultValue={roles[3]}
                                                 options={roles}//start, end-> today year
                                                 onChange={async e => {
                                                     console.log(e.value)
@@ -736,8 +853,6 @@ export default class EditUsers extends Component {
                                         <Select label="select year"
                                                 style={{zIndex: 100}}
                                                 closeMenuOnSelect={true}
-                                                defaultValue={''}
-                                            // defaultValue={roles[3]}
                                                 options={this.state.users}//start, end-> today year
                                                 onChange={async e => {
                                                     console.log(e.value)
@@ -745,7 +860,8 @@ export default class EditUsers extends Component {
                                                    this.setUserAuth(e.value)
                                                     let info = await this.getUserById(e.value._id)
                                                     console.log(info.data)
-                                                    this.setUserInfo(info.data)
+                                                   await this.setUserInfo(info.data)
+                                                    console.log(this.state)
 
 
 
@@ -875,7 +991,11 @@ export default class EditUsers extends Component {
             userName: user.userName,
             yearAtTwenty: user.yearAtTwenty,
             yearOfImmigration: user.yearOfImmigration,
-            OidInfo:user._id
+            OidInfo:user._id,
+            maxSession:user.maxSession,
+            Cognitive:user.Cognitive,
+            currentAlgorithm:user.currentAlgorithm
+
         })
     }
 }

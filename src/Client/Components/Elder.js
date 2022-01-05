@@ -3,24 +3,56 @@ import {loadPage,verifyUser,url} from "./ManagerComponents";
 import axios from "axios";
 import NotFound from "./404";
 import YouTube from "react-youtube";
+import * as ReactDOM from "react-dom";
 
 
 const opts = {
-    height: '390',
-    width: '640',
     playerVars: {
         // https://developers.google.com/youtube/player_parameters
+        // start:214, //This parameter causes the player to begin playing the video at the given number of seconds from the start of the video
         // autoplay: 0,// 0 - not autoplay / 1 - autoplay
         controls:1,// 0 - without controller / 1 - with controller
-        // start:214, //This parameter causes the player to begin playing the video at the given number of seconds from the start of the video
-        rel:1,
+        disablekb:1,//0 - controller by keyboard / 0 disable keyboard
+        rel:0,
         cc_load_policy:1,
         modestbranding:1,
+        iv_load_policy:3,
+        showinfo:0,
+        ecver:2,
+            frameborder:0,
+        listType:'user_uploads',
+
+        // cc_load_policy?: 1
+        // autoplay?: 0 | 1
+        // color?: 'red' | 'white';
+        // controls?: 0 | 1 | 2;
+        // disablekb?: 0 | 1;
+        // enablejsapi?: 0 | 1;
+        // end?: number;
+        // fs?: 0 | 1;
+        // hl?: string;
+        // iv_load_policy?: 1 | 3;
+        // list?: string;
+        // listType?: 'playlist' | 'search' | 'user_uploads';
+        // loop?: 0 | 1;
+        // modestbranding?: 1;
+        // origin?: string;
+        // playlist?: string;
+        // playsinline?: 0 | 1;
+        // rel?: 0 | 1;
+        // showinfo?: 0 | 1;
+        // start?: number;
+        // mute?: 0 | 1;
+
+
+
 
     },
+    height: '390',
+    width: '640',
 }
 
-
+var videoData=[]
 export default class ElderPage extends Component {
 
     constructor(props) {
@@ -36,7 +68,6 @@ export default class ElderPage extends Component {
         let currentUser = await verifyUser("user")
         if (currentUser) {
             let videos = await this.getSession(currentUser._id)
-            console.log(videos)
             this.setState({user: currentUser,videos:videos})
 
         } else {
@@ -48,7 +79,7 @@ export default class ElderPage extends Component {
 
 
     async getSession(id) {
-        // let youtube=[]
+        var youtube=[]
         let songs=await axios.get("http://localhost:5000/user/session/"+id)
         console.log(songs.data.length)
         console.log(songs.data)
@@ -59,7 +90,11 @@ export default class ElderPage extends Component {
         //     })
         //     })
         // console.log(youtube)
-        return songs.data
+
+
+
+        this.setState({sessionNumber: songs.data.sessionNumber})
+        return songs.data.list
         // return []
     }
 
@@ -81,7 +116,8 @@ export default class ElderPage extends Component {
                                         <div className="container-section-space">
                                             <div className="container-section">
                                                 <div className="container-contact100-form-btn">
-                                                    <h1>write something for this start session</h1>
+                                                    <h1>Session number {this.state.sessionNumber}</h1>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -92,11 +128,12 @@ export default class ElderPage extends Component {
                                             <div className="container-section">
                                                 <div className="container-contact100-form-btn">
                                                     {this.state.videos ?
-                                                        this.state.videos.map((item) => {
-                                                            // console.log(index)
+                                                        this.state.videos.map((item,index) => {
+                                                            // console.log('item')
+                                                            console.log(item.score)
 
                                                             return (
-                                                                <div key={item._id}
+                                                                <div  key={item._id}
                                                                      className="container-contact100-form-btn" style={{
                                                                     display: 'block',
                                                                     padding: '10px',
@@ -105,7 +142,9 @@ export default class ElderPage extends Component {
                                                                 }}>
 
                                                                     <h4>{item.originTitle + " - " + item.originArtistName}</h4>
-                                                                    <YouTube videoId={item.youtube.videoId} opts={opts}
+                                                                    <YouTube id={item.youtube.videoId} videoId={item.youtube.videoId}
+                                                                             opts={opts}
+
                                                                              onReady={(e) => {
                                                                                  this.onReady(e.target)
                                                                              }}
@@ -119,52 +158,58 @@ export default class ElderPage extends Component {
                                                                                  this.onEnd(e.target)
                                                                              }}
 
+
                                                                     />
                                                                     <div>
                                                                         <button style={{
                                                                             fontSize: '400%',
-                                                                            textAlign: 'center'
-                                                                        }} className="buttonDes" type="button"
+                                                                            textAlign: 'center',
+                                                                            borderStyle:item.score===1?"solid":""
+                                                                        }} className="buttonDes" type="button" value={1}
                                                                                 onClick={(e) => {
-                                                                                    this.rated(e, item._id)
+                                                                                    this.rated(e, item._id,index)
                                                                                 }} name="verySad"
                                                                                 id={"verySad" + item._id}
                                                                         >😟
                                                                         </button>
                                                                         <button style={{
                                                                             fontSize: '400%',
-                                                                            textAlign: 'center'
-                                                                        }} className="buttonDes" type="button"
+                                                                            textAlign: 'center',
+                                                                            borderStyle:item.score===2?"solid":""
+                                                                        }} className="buttonDes" type="button" value={2}
                                                                                 onClick={(e) => {
-                                                                                    this.rated(e, item._id)
+                                                                                    this.rated(e, item._id,index)
                                                                                 }} name="Sad" id={"Sad" + item._id}
                                                                         >🙁
                                                                         </button>
                                                                         <button style={{
                                                                             fontSize: '400%',
-                                                                            textAlign: 'center'
-                                                                        }} className="buttonDes" type="button"
+                                                                            textAlign: 'center',
+                                                                            borderStyle:item.score===3?"solid":""
+                                                                        }} className="buttonDes" type="button" value={3}
                                                                                 onClick={(e) => {
-                                                                                    this.rated(e, item._id)
+                                                                                    this.rated(e, item._id,index)
                                                                                 }} name="Indifferent"
                                                                                 id={"Indifferent" + item._id}
                                                                         >😐
                                                                         </button>
                                                                         <button style={{
                                                                             fontSize: '400%',
-                                                                            textAlign: 'center'
-                                                                        }} className="buttonDes" type="button"
+                                                                            textAlign: 'center',
+                                                                            borderStyle:item.score===4?"solid":""
+                                                                        }} className="buttonDes" type="button" value={4}
                                                                                 onClick={(e) => {
-                                                                                    this.rated(e, item._id)
+                                                                                    this.rated(e, item._id,index)
                                                                                 }} name="happy" id={"happy" + item._id}
                                                                         >😀
                                                                         </button>
                                                                         <button style={{
                                                                             fontSize: '400%',
-                                                                            textAlign: 'center'
-                                                                        }} className="buttonDes" type="button"
+                                                                            textAlign: 'center',
+                                                                            borderStyle:item.score===5?"solid":""
+                                                                        }} className="buttonDes" type="button" value={5}
                                                                                 onClick={(e) => {
-                                                                                    this.rated(e, item._id)
+                                                                                    this.rated(e, item._id,index)
                                                                                 }} name="Joyful"
                                                                                 id={"Joyful" + item._id}
                                                                         >😆
@@ -187,6 +232,14 @@ export default class ElderPage extends Component {
                                             <div className="container-section">
                                                 <div className="container-contact100-form-btn">
                                                     <h1>write something for this end session</h1>
+                                                    <p/>
+                                                    <button onClick={async ()=>{
+                                                        alert("you have new session")
+                                                        await axios.get("http://localhost:5000/user/Create/session/"+this.state.user._id)
+                                                        this.componentDidMount()
+                                                    }}>click me</button>
+
+
                                                 </div>
                                             </div>
                                         </div>
@@ -213,9 +266,10 @@ export default class ElderPage extends Component {
         );
     }
 
+         //class="ytp-chrome-top ytp-show-cards-title"
+         //ytp-impression-link
+         onReady(player) {
 
-    onReady(player) {
-        // console.log(player)
         // player.seekTo(80,true)
 
         // player.pauseVideo()
@@ -224,6 +278,14 @@ export default class ElderPage extends Component {
     }
 
     onPlay(player) {
+
+        // console.log(e)
+
+        console.log(player)
+        videoData.forEach(video=>{
+            if(video!==player)
+                video.pauseVideo();
+        })
         console.log("onPlay")
     }
 
@@ -232,13 +294,20 @@ export default class ElderPage extends Component {
         //     startSeconds:30,//start clip in sec
         //     // endSeconds:35//end clip
         // })
+        console.log(player)
+        console.log(player.getDuration())
         var time  = this.convert(player.getCurrentTime())
         // console.log("you paused "+ time +"\n "+this.convertHMS(time) +"sec")
         console.log(`you paused  ${time} \n ${this.convertHMS(time)} sec`)
     }
 
     onEnd(player) {
+
         console.log("onEnd")
+        // console.log(player.getDuration())
+        player.seekTo( player.getDuration()-1,true)
+        // player.pauseVideo()
+        player.stopVideo()
     }
 
     convert(SECONDS) {
@@ -257,16 +326,24 @@ export default class ElderPage extends Component {
 
     }
 
-    rated(e,index) {
+   async rated(e,id,index){
         var state =   e.target.style.borderStyle
         // console.log( document.getElementById('verySad'+index))
-        document.getElementById('verySad'+index).style.borderStyle =""
-        document.getElementById('Sad'+index).style.borderStyle =""
-        document.getElementById('Indifferent'+index).style.borderStyle =""
-        document.getElementById('happy'+index).style.borderStyle =""
-        document.getElementById('Joyful'+index).style.borderStyle =""
-
+        document.getElementById('verySad'+id).style.borderStyle =""
+        document.getElementById('Sad'+id).style.borderStyle =""
+        document.getElementById('Indifferent'+id).style.borderStyle =""
+        document.getElementById('happy'+id).style.borderStyle =""
+        document.getElementById('Joyful'+id).style.borderStyle =""
         e.target.style.borderStyle = state==="solid"? "":"solid"
+       var rate = {
+           sesionNumber:this.state.sessionNumber,
+           songNumber:index,
+           score :  e.target.style.borderStyle==="solid"?parseInt(e.target.value):0
+       }
+       console.log(this.state.user._id)
+      var t= await axios.post("http://localhost:5000/user/RateSession/"+this.state.user._id,rate)
+       alert("thanks for rate")
+
     }
 }
 

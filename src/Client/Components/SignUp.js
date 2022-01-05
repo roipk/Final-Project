@@ -38,7 +38,7 @@ function init()
 const algo = [
     // { value: '', label: 'Admin' },
     { value: 'History', label: 'History' },
-    { value: 'Family', label: 'Family' },
+    // { value: 'Family', label: 'Family' },
 ]
 const roles = [
     // { value: '', label: 'Admin' },
@@ -47,6 +47,14 @@ const roles = [
     { value: 'musicGuide', label: 'Create Music Guide' },
     { value: 'guide', label: 'Create Guide' },
     { value: 'user', label: 'Create User' }
+]
+const Cognitive = [
+    // { value: '', label: 'Admin' },
+    { value: 5, label: 'Very Low Cognitive' },
+    { value: 8, label: 'Low Cognitive' },
+    { value: 11, label: 'Normal Cognitive' },
+    { value: 12, label: 'Good Cognitive' },
+    { value: 15, label: 'Excellent Cognitive' }
 ]
 
 function timefomat(timestamp)
@@ -69,6 +77,19 @@ function timefomat(timestamp)
     return formattedTime
 }
 
+function findArrayData(array,selectOptions) {
+
+    let data=[]
+    let options = selectOptions
+    if(!Array.isArray(array))
+        return options[options.findIndex(x => x.value === array)]
+    array.forEach(i=> {
+        let index = options.findIndex(x => x.value === i)
+        data.push(options[index])
+    })
+    return data
+}
+
 let maxSelectLanguage = 2;
 let maxSelectGenere = 2;
 
@@ -79,7 +100,7 @@ var timeoutHandle = setTimeout( ()=> {} , 0);
 
 async function  CreateSession(id) {
 
-        let songs=await axios.get("http://localhost:5000/user/session/"+id)
+        let songs=await axios.get("http://localhost:5000/user/Create/session/"+id)
         return songs.data
 }
 
@@ -105,20 +126,23 @@ export default class SignUp extends Component{
             //elder
             Geners:[],
             LanguageAtTwenty:[],
-            birthYear: "1925",
+            birthYear: 1925,
             countryAtTwenty: "",
             countryOrigin: "",
             department:"",
             entrance: 0,
             firstName:"",
-            languageOrigin: "spa",
-            lastName: "SpaEngYidCla30",
+            languageOrigin: "",
+            lastName: "",
             medicalProfile:"",
             nursingHome: "",
             // password:"SpaEngYidCla30",
-            userName:"SpaEngYidCla30",
-            yearAtTwenty : "1959",
+            userName:"",
+            yearAtTwenty : "",
             yearOfImmigration:"",
+            maxSession:"",
+            Cognitive:"",
+            currentAlgorithm:""
 
         };
 
@@ -165,11 +189,10 @@ export default class SignUp extends Component{
 
 
             entrance: 0,
-            maxSession: 7,
-            Cognitive:15, // 5, 8, 11, 12, 15
-            maxSongs:7*15//max session*Cognitive
-
-
+            maxSession: this.state.maxSession,
+            Cognitive:this.state.Cognitive, // 5, 8, 11, 12, 15
+            maxSongs:this.state.Cognitive * this.state.maxSession,//max session*Cognitive
+            currentAlgorithm:this.state.currentAlgorithm
 
 
         }
@@ -206,10 +229,10 @@ export default class SignUp extends Component{
 
 
             entrance: 0,
-            maxSession: 7,
-            Cognitive:15, // 5, 8, 11, 12, 15
-            maxSongs:7*15//max session*Cognitive
-
+            maxSession: this.state.maxSession,
+            Cognitive:this.state.Cognitive, // 5, 8, 11, 12, 15
+            maxSongs:this.state.Cognitive * this.state.maxSession,//max session*Cognitive
+            currentAlgorithm:this.state.currentAlgorithm
 
         };
         return userSessionData
@@ -332,153 +355,169 @@ export default class SignUp extends Component{
     //     }
     // }
 
-    registerUser(page)
-    {
 
-        if(page===0)
-        return(
-            <div>
-                <h1>פרטי הזדהות עבור המערכת</h1>
-                <br/>
-                <div className="wrap-input100 validate-input" data-validate="Name is required">
-                    <span className="label-input100">First name*</span>
-                    <input value={this.state.first_name} id='firstName' className="input100" type="text" name='firstName'
-                           onChange={ (e)=>{
-                               this.setState({first_name:e.target.value})
 
-                           }}
-                           placeholder="Enter First Name" required/>
-                    <span className="focus-input100"></span>
+    registerUser(page) {
+
+        if (page == 0)
+            return (
+                <div>
+                    <h1>פרטי הזדהות עבור המערכת</h1>
+                    <br/>
+                    <div className="wrap-input100 validate-input" data-validate="Name is required">
+                        <span className="label-input100">First name*</span>
+                        <input value={this.state.first_name} disabled={false} id='firstName' className="input100" type="text"
+                               name='firstName'
+                               onChange={(e) => {
+                                   this.setState({first_name: e.target.value})
+
+                               }}
+                               placeholder="Enter First Name" required/>
+                        <span className="focus-input100"></span>
+                    </div>
+                    <div className="wrap-input100 validate-input" data-validate="Name is required">
+                        <span className="label-input100">Last name*</span>
+                        <input value={this.state.last_name} disabled={false} id='lastName' className="input100" type="text"
+                               name='lastName'
+                               onChange={(e) => {
+                                   this.setState({last_name: e.target.value})
+                               }}
+                               placeholder="Enter Last Name" required/>
+                        <span className="focus-input100"></span>
+                    </div>
+                    <div className="wrap-input100 validate-input" data-validate="ID is required">
+                        <span className="label-input100">ID*</span>
+                        <input value={this.state.id} id='id'  disabled={false} className="input100" type="text" name="id"
+                               onChange={(e) => {
+                                   this.setState({id: e.target.value})
+                               }}
+                               placeholder="Enter ID" required/>
+
+                        <span className="focus-input100"></span>
+                    </div>
+                    <div hidden={this.state.type != 'admin' && this.state.type != 'researcher'}
+                         className="wrap-input100 validate-input" data-validate="Email is required">
+                        <span className="label-input100">Email*</span>
+                        <input value={this.state.email} id='email' disabled={false} className="input100" type="text" name="email"
+                               onChange={(e) => {
+                                   this.setState({email: e.target.value})
+                               }} placeholder="Enter Email" required/>
+                        <span className="focus-input100"></span>
+                    </div>
+                    <div className="wrap-input100 validate-input" data-validate="Name is required">
+
+                        <span className="label-input100">User name*</span>
+
+                        <input value={this.state.user_name} disabled={false} id='userName' className="input100" type="text"
+                               name='userName'
+                               onChange={(e) => {
+                                   this.setState({user_name: e.target.value})
+                               }}
+                               placeholder="Enter User Name" required/>
+                        <span className="focus-input100"></span>
+                    </div>
+
+                    <div className="wrap-input100 validate-input" data-validate="Name is required">
+
+                        <span className="label-input100">Password*</span>
+
+                        <input value={this.state.password} disabled={false} id='password' className="input100" type="password"
+                               name='password'
+                               onChange={(e) => {
+                                   this.setState({password: e.target.value})
+                               }}
+                               placeholder="Enter Password" required/>
+                        <span className="focus-input100"></span>
+                    </div>
+
+
+                    <div className="wrap-contact100-back-btn">
+                        <div className="contact100-back-bgbtn"></div>
+
+                        <button hidden={this.state.type === 'user'} id='submit' type='button'
+                                className="contact100-back-btn"
+                                onClick={() => {
+                                    let user = this.newUserAuthentication()
+                                    axios.post("http://localhost:5000/admin/createUser", user)
+                                        .then(res => {
+                                            console.log(res)
+                                            console.log(res.data)
+                                            alert("successful\n the user " + this.state.first_name + "\n" +
+                                                "add to system with id -  " + res.data.insertedId + "\n" +
+                                                "type " + this.state.type)
+                                            loadPage(this.props, "admin", this.state.user)
+                                            // loadPage(this.props,"",this.state)
+                                        })
+                                }}>submit
+                            <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
+                            {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
+
+                        </button>
+                        <button hidden={this.state.type !== 'user'} id='next' type='button'
+                                className="contact100-back-btn"
+                                onClick={() => {
+                                    this.setState({page: page + 1})
+                                }}>next
+                            <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
+                            {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
+
+                        </button>
+                    </div>
                 </div>
-                <div className="wrap-input100 validate-input" data-validate="Name is required">
-                    <span className="label-input100">Last name*</span>
-                    <input value={this.state.last_name} id='lastName' className="input100" type="text" name='lastName'
-                           onChange={ (e)=>{
-                               this.setState({last_name:e.target.value})
-                           }}
-                           placeholder="Enter Last Name" required/>
-                    <span className="focus-input100"></span>
-                </div>
-                <div className="wrap-input100 validate-input" data-validate="ID is required">
-                    <span className="label-input100">ID*</span>
-                    <input value={this.state.id} id='id' className="input100" type="text" name="id"
-                           onChange={ (e)=>{
-                               this.setState({id: e.target.value})
-                           }}
-                           placeholder="Enter ID" required/>
 
-                    <span className="focus-input100"></span>
-                </div>
-                <div hidden={this.state.type!=='admin' && this.state.type!=='researcher'} className="wrap-input100 validate-input" data-validate="Email is required">
-                    <span className="label-input100">Email*</span>
-                    <input value={this.state.email} id='email' className="input100" type="text" name="email"
-                           onChange={ (e)=>{
-                               this.setState({email : e.target.value})
-                    }} placeholder="Enter Email" required/>
-                    <span className="focus-input100"></span>
-                </div>
-                <div className="wrap-input100 validate-input" data-validate="Name is required">
-
-                    <span className="label-input100">User name*</span>
-
-                    <input value={this.state.user_name} id='userName' className="input100" type="text" name='userName'
-                           onChange={ (e)=>{
-                               this.setState({user_name : e.target.value})
-                           }}
-                           placeholder="Enter User Name" required/>
-                    <span className="focus-input100"></span>
-                </div>
-                <div className="wrap-input100 validate-input" data-validate="ID is required">
-                    <span className="label-input100">Password*</span>
-                    <input value={this.state.password} id='password' className="input100" type="password" name="password"
-                           onChange={ (e)=>{
-                               this.setState({password : e.target.value})
-                           }}
-                           placeholder="Enter Password" required/>
-                    <span className="focus-input100"></span>
-                </div>
-
-                <div className="wrap-contact100-back-btn">
-                    <div className="contact100-back-bgbtn"></div>
-                    <button hidden={this.state.type==='user'} id='submit' type='button' className="contact100-back-btn"
-                            onClick={()=>{
-                                let user = this.newUserAuthentication()
-                            axios.post("http://localhost:5000/admin/create/User",user)
-                                .then(res=>{
-                                    console.log(res)
-                                    console.log(res.data)
-                                    alert("successful\n the user "+this.state.first_name+"\n" +
-                                        "add to system with id -  "+res.data.insertedId+"\n" +
-                                        "type "+this.state.type)
-                                    loadPage(this.props, "admin", this.state.user)
-                                    // loadPage(this.props,"",this.state)
-                                })
-                            }}>submit
-                        <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
-                        {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
-
-                    </button>
-                    <button hidden={this.state.type!=='user'} id='next' type='button' className="contact100-back-btn"
-                            onClick={()=>{
-                                this.setState({page:page+1})
-                            }}>next
-                        <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
-                        {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
-
-                    </button>
-                </div>
-            </div>
-
-        )
-        else if(page===1)
-            return(
+            )
+        else if (page == 1)
+            return (
                 <div>
                     <h1>מידע על בית האבות</h1>
                     <br/>
                     <div className="wrap-input100 validate-input" data-validate="Nursing Home is required" required>
                         <span className="label-input100">Nursing Home*</span>
-                        <input value={this.state.nursingHome} id='nursingHome' className="input100" type="text" name='nursingHome'
-                               onChange={(e)=>{
-                                   this.setState({nursingHome : e.target.value})
+                        <input value={this.state.nursingHome} id='nursingHome' className="input100" type="text"
+                               name='nursingHome'
+                               onChange={(e) => {
+                                   this.setState({nursingHome: e.target.value})
                                }}
                                placeholder="Enter Nursing Home"/>
                         <span className="focus-input100"></span>
                     </div>
                     <div className="wrap-input100 validate-input" data-validate="Department is required">
-                            <span className="label-input100">Department</span>
-                            <input value={this.state.department}  id='department' className="input100" type="text" name='department'
-                                   onChange={(e)=>{
-                                       this.setState({department : e.target.value})
-                                   }}
-                                   placeholder="Enter Department"/>
-                            <span className="focus-input100"></span>
-                        </div>
+                        <span className="label-input100">Department</span>
+                        <input value={this.state.department} id='department' className="input100" type="text"
+                               name='department'
+                               onChange={(e) => {
+                                   this.setState({department: e.target.value})
+                               }}
+                               placeholder="Enter Department"/>
+                        <span className="focus-input100"></span>
+                    </div>
                     <div className="wrap-input100 validate-input" data-validate="Medical profile is required">
-                            <span className="label-input100">Medical profile</span>
-                            <input value={this.state.medicalProfile}  id='medicalProfile' className="input100" type="text" name='Medical profile'
-                                   onChange={(e)=>{
-                                       this.setState({medicalProfile : e.target.value})
-                                   }}
-                                   placeholder="Enter Medical profile"/>
-                            <span className="focus-input100"></span>
-                        </div>
+                        <span className="label-input100">Medical profile</span>
+                        <input value={this.state.medicalProfile} id='medicalProfile' className="input100" type="text"
+                               name='Medical profile'
+                               onChange={(e) => {
+                                   this.setState({medicalProfile: e.target.value})
+                               }}
+                               placeholder="Enter Medical profile"/>
+                        <span className="focus-input100"></span>
+                    </div>
 
 
                     <div className="wrap-contact100-back-btn">
                         <div className="contact100-back-bgbtn"></div>
                         <button id='next2' type='button' className="contact100-back-btn"
-                                onClick={()=>{
-                                    this.setState({page:page+1})
+                                onClick={() => {
+                                    this.setState({page: page + 1})
                                 }}>next
                             <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
                             {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
 
                         </button>
                         <div className="contact100-back-bgbtn"></div>
-                        <button id='back' type='button' className="contact100-back-btn"
-                                onClick={()=>{
+                        <button id='back1' type='button' className="contact100-back-btn"
+                                onClick={() => {
                                     // console.log(this.state.roles?this.state.roles:[])
-                                    this.setState({page:page-1})
+                                    this.setState({page: page - 1})
                                 }}>back
                             <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
                         </button>
@@ -486,41 +525,45 @@ export default class SignUp extends Component{
                 </div>
             )
 
-        else
-            return(
+        else if (page == 2)
+            return (
                 <div>
 
                     <h1>מידע כללי</h1>
                     <br/>
 
                     <div className="wrap-input100 input100-select">
-                            <span className="label-input100">Year of birth</span>
-                            <div>
-                                <Select label="select year"
-                                        onChange={e=>{
-                                            // this.getDec(e.value)
-                                            console.log(e.value)
-                                            this.setState({birthYear:e.value})
-                                        }}
-                                        style={{zIndex:100}}
-                                        closeMenuOnSelect={true}
-                                        defaultValue={{value:"1925", label:"1925"}}
-                                        value={{value:this.state.birthYear,label:this.state.birthYear}}
-                                        options={getOpt(1925)}//start, end-> today year
-                                        menuPlacement="auto"
-                                        menuPosition="fixed"
-                                />
-                            </div>
+                        <span className="label-input100">Year of birth</span>
+                        <div>
+                            <Select label="select year"
+                                    onChange={e => {
+                                        // this.getDec(e.value)
+                                        console.log(e.value)
+                                        this.setState({birthYear: e.value})
+                                    }}
+                                    style={{zIndex: 100}}
+                                    closeMenuOnSelect={true}
+                                    options={getOpt(1925)}//start, end-> today year
+                                    value={this.state.birthYear?findArrayData(this.state.birthYear, getOpt(1925)):null}
+
+                                    menuPlacement="auto"
+                                    menuPosition="fixed"
+                            />
+                        </div>
                     </div>
                     <div className="wrap-input100 input100-select">
                         <span className="label-input100">Country where you were born</span>
                         <div>
-                            <Select label="select year"
-                                    onChange={e=>{
-                                        this.setState({countryAtTwenty:e.value})
+                            <Select label="select country born"
+                                    onChange={e => {
+                                        console.log(e.value)
+                                        this.setState({countryOrigin: e.value})
                                     }}
-                                    style={{zIndex:100}}
+
+                                    value={this.state.countryOrigin?findArrayData(this.state.countryOrigin,selectCountries):null}
+                                    style={{zIndex: 100}}
                                     closeMenuOnSelect={true}
+
                                     options={selectCountries}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
@@ -533,12 +576,14 @@ export default class SignUp extends Component{
                         <span className="label-input100">Country where you lived at ages 10-25</span>
                         <div>
 
-                            <Select label="select year"
-                                    onChange={e=>{
-                                        this.setState({countryOrigin:e.value})
+                            <Select label="select Country"
+                                    onChange={e => {
+                                        this.setState({countryAtTwenty: e.value})
+                                        console.log(e)
                                     }}
-                                    style={{zIndex:100}}
+                                    style={{zIndex: 100}}
                                     closeMenuOnSelect={true}
+                                    value={this.state.countryAtTwenty?findArrayData(this.state.countryAtTwenty,selectCountries):null}
                                     options={selectCountries}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
@@ -550,10 +595,13 @@ export default class SignUp extends Component{
                         <span className="label-input100">Language spoken since birth</span>
                         <div>
                             <Select label="select year"
-                                    onChange={e=>{
-                                        this.setState({languageOrigin:e.value})
+                                    onChange={e => {
+                                        this.setState({languageOrigin: e.value})
+                                        console.log(e)
                                     }}
-                                    style={{zIndex:100}}
+                                    style={{zIndex: 100}}
+                                    value={this.state.languageOrigin?findArrayData(this.state.languageOrigin,selectLanguage):null}
+
                                     closeMenuOnSelect={true}
                                     options={selectLanguage}//start, end-> today year
                                     menuPlacement="auto"
@@ -567,19 +615,24 @@ export default class SignUp extends Component{
                         <div>
 
                             <Select label="select year"
-                                    style={{zIndex:100}}
+                                    style={{zIndex: 100}}
                                     isMulti
                                     className="basic-multi-select"
                                     closeMenuOnSelect={true}
-                                    options={(this.state.LanguageAtTwenty &&this.state.LanguageAtTwenty.length >= maxSelectLanguage) ?
-                                       []: selectLanguage}//start, end-> today year
+                                    value={this.state.LanguageAtTwenty?findArrayData(this.state.LanguageAtTwenty,selectLanguage):null}
+                                    options={(this.state.LanguageAtTwenty && this.state.LanguageAtTwenty.length >= maxSelectLanguage) ?
+                                        [] : selectLanguage}//start, end-> today year
+
                                     menuPlacement="auto"
                                     menuPosition="fixed"
-                                    onChange={(e)=>{
-                                        let languageAtTwenty=[]
-                                        for(let i=0;i<e.length;i++)
+                                    onChange={(e) => {
+
+                                        let languageAtTwenty = []
+                                        for (let i = 0; i < e.length; i++)
                                             languageAtTwenty.push(e[i].value)
-                                        this.setState({LanguageAtTwenty:languageAtTwenty})
+                                        this.setState({
+                                            LanguageAtTwenty: languageAtTwenty
+                                        })
                                     }}
                             />
                         </div>
@@ -589,26 +642,59 @@ export default class SignUp extends Component{
                         <span className="label-input100">Year of immigration to Israel</span>
                         <div>
                             <Select label="select year"
-                                    onChange={e=>{
-                                        this.setState({yearOfImmigration: e.value})
+                                    onChange={e => {
+                                        this.setState({yearOfImmigration: e.label})
                                     }}
-                                    // defaultValue={{value:,label:new Date.now().getFullYear()}}
-                                    style={{zIndex:100}}
+                                    value={this.state.yearOfImmigration?findArrayData(this.state.yearOfImmigration, getOpt(1925)):null}
+                                    style={{zIndex: 100}}
                                     closeMenuOnSelect={true}
-                                    options={getOpt(1930)}//start, end-> today year
+                                    options={getOpt(1925)}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                             />
                         </div>
                         <span className="focus-input100"></span>
                     </div>
+
+
+                    <div className="wrap-contact100-back-btn">
+                        <div className="contact100-back-bgbtn"></div>
+                        <button id='next3' type='button' className="contact100-back-btn"
+                                onClick={() => {
+                                    this.setState({page: page + 1})
+                                }}>next
+                            <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
+                            {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
+
+                        </button>
+                        <div className="contact100-back-bgbtn"></div>
+                        <button id='back2' type='button' className="contact100-back-btn"
+                                onClick={() => {
+                                    // console.log(this.state.roles?this.state.roles:[])
+                                    this.setState({page: page - 1})
+                                }}>back
+                            <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            )
+
+        else
+            return(
+                <div>
+
+                    <h1>רמת פעילות</h1>
+                    <br/>
+
+
+
                     <div className="wrap-input100 input100-select">
                         <span className="label-input100">Genre 1</span>
                         <div>
 
                             <Select label="select year"
                                 // onChange={e=>{}}
-                                    style={{zIndex:100}}
+                                    style={{zIndex: 100}}
                                     isMulti
                                     className="basic-multi-select"
                                     closeMenuOnSelect={true}
@@ -616,12 +702,54 @@ export default class SignUp extends Component{
                                         [] : getGenre()}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
-                                    onChange={(e)=>{
-                                        let gener=[]
-                                        for(let i=0;i<e.length;i++) {
+                                    value={this.state.Geners?findArrayData(this.state.Geners, getGenre()):null}
+                                    onChange={(e) => {
+                                        let gener = []
+                                        for (let i = 0; i < e.length; i++) {
                                             gener.push(e[i].value)
                                         }
                                         this.setState({Geners: gener})
+                                    }}
+                            />
+                        </div>
+                        <span className="focus-input100"></span>
+                    </div>
+                    <div className="wrap-input100 input100-select">
+                        <span className="label-input100">sessions number per week*</span>
+                        <div>
+
+                            <Select label="select_sessions_number"
+                                // onChange={e=>{}}
+                                    style={{zIndex:100}}
+                                    className="basic-multi-select"
+                                    closeMenuOnSelect={true}
+                                    value={this.state.maxSession?findArrayData(this.state.maxSession, getOpt(1,7)):null}
+                                    options={getOpt(1,7)}//start, end-> today year
+                                    menuPlacement="auto"
+                                    menuPosition="fixed"
+                                    onChange={(e)=>{
+                                        console.log("in1")
+                                        this.setState({maxSession: e.value})
+                                    }}
+                            />
+                        </div>
+                        <span className="focus-input100"></span>
+                    </div>
+                    <div className="wrap-input100 input100-select">
+                        <span className="label-input100">Cognitive level*</span>
+                        <div>
+
+                            <Select label="select sessions number"
+                                // onChange={e=>{}}
+                                    style={{zIndex:100}}
+                                    className="basic-multi-select"
+                                    closeMenuOnSelect={true}
+                                    value={this.state.Cognitive?findArrayData(this.state.Cognitive, Cognitive):null}
+                                    options={Cognitive}//start, end-> today year
+                                    menuPlacement="auto"
+                                    menuPosition="fixed"
+                                    onChange={(e)=>{
+                                        this.setState({Cognitive: e.value})
                                     }}
                             />
                         </div>
@@ -637,12 +765,14 @@ export default class SignUp extends Component{
                                     style={{zIndex:100}}
                                     className="basic-multi-select"
                                     closeMenuOnSelect={true}
+                                    value={this.state.currentAlgorithm?findArrayData(this.state.currentAlgorithm, algo):null}
                                     options={algo}//start, end-> today year
                                     menuPlacement="auto"
                                     menuPosition="fixed"
                                     onChange={(e)=>{
-                                        this.setState({algo: e.value})
+                                        this.setState({currentAlgorithm: e.value})
                                     }}
+
                             />
                         </div>
                         <span className="focus-input100"></span>

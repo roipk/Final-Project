@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+.video-ads ytp-ad-module{
+  Display: none;
+}
+.ytp-chrome-top ytp-show-cards-title{
+  Display: none;
+}
+.ytp-title-channel{
+  Display: none;
+}
