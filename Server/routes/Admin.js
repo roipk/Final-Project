@@ -13,10 +13,12 @@ const CreateToken = require("../middleware/user").CreateToken
 
 
 router.route('/create/:nameCollection').post(async  function (req, res) {
-
     let data =await CreatData(req.params.nameCollection,req.body,)
-    console.log("create new Data in "+req.params.nameCollection)
+    // console.log("create new Data in "+req.params.nameCollection)
     return res.status(200).json(data)
+    // return res.status(200)
+
+
 });
 
 router.route('/update/:nameCollection/:Oid').post(async  function (req, res) {

@@ -167,7 +167,10 @@ export default class SignUp extends Component{
     newElderData(id){
 
         let elderData = {
-            Oid:id,
+            Oid:{
+                collection: "Authentication",
+                id:id,
+            },
             first_name: this.state.first_name,
             last_name:this.state.last_name,
             userName: this.state.user_name,
@@ -200,16 +203,19 @@ export default class SignUp extends Component{
     }
 
 
-    getDec(birthYear, LanguageAtTwenty, coutry) {
+    getDec(birthYear, LanguageAtTwenty) {
         let decade = [];
         let lastTime = new Date()
         lastTime = lastTime.getFullYear() - 20 - lastTime.getFullYear() % 10
         let birthYearDecade = birthYear - birthYear % 10
-        for (let i = birthYearDecade; i <= lastTime; i += 10) {
-            let hundred = Math.floor(i/100) +1
-            let dc =  i%1000===0?"00": i%100
-            decade.push(LanguageAtTwenty+"-" + coutry+"-"+hundred+"-" + dc + "DC")
-        }
+        LanguageAtTwenty.forEach(language=>{
+            for (let i = birthYearDecade; i <= birthYearDecade+30; i += 10) {
+                let hundred = Math.floor(i/100) +1
+                let dc =  i%1000===0?"00": i%100
+                decade.push(language+"-"+hundred+"-" + dc + "DC")
+            }
+        })
+
         return decade
     }
 
@@ -221,12 +227,12 @@ export default class SignUp extends Component{
             lastName: this.state.last_name,
             userName: this.state.user_name,
             languages:this.state.languages,
-            genre:this.state.genre,
+            // genre:this.state.genre,
             yearAtTwenty:this.state.birthYear+20,
             sessions:[],
-            Geners:this.state.Geners,
-            LanguageAtTwenty:this.state.LanguageAtTwenty,
-
+            // Geners:this.state.Geners,
+            // LanguageAtTwenty:this.state.LanguageAtTwenty,
+            playlists:this.getPlaylist(this.state.birthYear,this.state.LanguageAtTwenty,this.state.Geners),
 
             entrance: 0,
             maxSession: this.state.maxSession,
@@ -237,8 +243,12 @@ export default class SignUp extends Component{
         };
         return userSessionData
     }
-    getPlaylist(){
-
+    getPlaylist(birthYear, LanguageAtTwenty,genres){
+        var playlist = this.getDec(birthYear, LanguageAtTwenty)
+        genres.forEach(genre=>{
+            playlist.push(genre)
+        })
+        return playlist
     }
 
 
@@ -804,7 +814,7 @@ export default class SignUp extends Component{
 
                                     let userPlaylistId = await axios.post("http://localhost:5000/admin/create/UserSessions",userPlaylist)
 
-                                    CreateSession(userId.data.insertedId)
+                                    // CreateSession(userId.data.insertedId)
                                     // userPlaylist.session.push()
 
 

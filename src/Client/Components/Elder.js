@@ -62,6 +62,7 @@ export default class ElderPage extends Component {
             notfound: false,
             // videos: [{nameSong: "linkin park - numb", id: "kXYiU_JCYtU"}],
         };
+
     }
 
     async componentDidMount() {
@@ -75,13 +76,17 @@ export default class ElderPage extends Component {
         }
 
 
+        var t= [{name:1,test:2},{name:2,test:2},{name:1,test:2},{name:1,test:2}]
+        var tes = [1,2,3]
+        console.log(await t.filter(x=>x.name in tes))
+
     }
 
 
     async getSession(id) {
         var youtube=[]
         let songs=await axios.get("http://localhost:5000/user/session/"+id)
-        console.log(songs.data.length)
+        // console.log(songs.data.length)
         console.log(songs.data)
         // songs.data.forEach(song=>{
         //     console.log(song)
@@ -130,10 +135,8 @@ export default class ElderPage extends Component {
                                                     {this.state.videos ?
                                                         this.state.videos.map((item,index) => {
                                                             // console.log('item')
-                                                            console.log(item.score)
-
                                                             return (
-                                                                <div  key={item._id}
+                                                                <div  key={item.RecordDisplayId}
                                                                      className="container-contact100-form-btn" style={{
                                                                     display: 'block',
                                                                     padding: '10px',
@@ -167,9 +170,9 @@ export default class ElderPage extends Component {
                                                                             borderStyle:item.score===1?"solid":""
                                                                         }} className="buttonDes" type="button" value={1}
                                                                                 onClick={(e) => {
-                                                                                    this.rated(e, item._id,index)
+                                                                                    this.rated(e, item.RecordDisplayId,index)
                                                                                 }} name="verySad"
-                                                                                id={"verySad" + item._id}
+                                                                                id={"verySad" +item.RecordDisplayId}
                                                                         >😟
                                                                         </button>
                                                                         <button style={{
@@ -178,8 +181,8 @@ export default class ElderPage extends Component {
                                                                             borderStyle:item.score===2?"solid":""
                                                                         }} className="buttonDes" type="button" value={2}
                                                                                 onClick={(e) => {
-                                                                                    this.rated(e, item._id,index)
-                                                                                }} name="Sad" id={"Sad" + item._id}
+                                                                                    this.rated(e, item.RecordDisplayId,index)
+                                                                                }} name="Sad" id={"Sad" + item.RecordDisplayId}
                                                                         >🙁
                                                                         </button>
                                                                         <button style={{
@@ -188,9 +191,9 @@ export default class ElderPage extends Component {
                                                                             borderStyle:item.score===3?"solid":""
                                                                         }} className="buttonDes" type="button" value={3}
                                                                                 onClick={(e) => {
-                                                                                    this.rated(e, item._id,index)
+                                                                                    this.rated(e, item.RecordDisplayId,index)
                                                                                 }} name="Indifferent"
-                                                                                id={"Indifferent" + item._id}
+                                                                                id={"Indifferent" + item.RecordDisplayId}
                                                                         >😐
                                                                         </button>
                                                                         <button style={{
@@ -199,8 +202,8 @@ export default class ElderPage extends Component {
                                                                             borderStyle:item.score===4?"solid":""
                                                                         }} className="buttonDes" type="button" value={4}
                                                                                 onClick={(e) => {
-                                                                                    this.rated(e, item._id,index)
-                                                                                }} name="happy" id={"happy" + item._id}
+                                                                                    this.rated(e, item.RecordDisplayId,index)
+                                                                                }} name="happy" id={"happy" + item.RecordDisplayId}
                                                                         >😀
                                                                         </button>
                                                                         <button style={{
@@ -209,9 +212,9 @@ export default class ElderPage extends Component {
                                                                             borderStyle:item.score===5?"solid":""
                                                                         }} className="buttonDes" type="button" value={5}
                                                                                 onClick={(e) => {
-                                                                                    this.rated(e, item._id,index)
+                                                                                    this.rated(e, item.RecordDisplayId,index)
                                                                                 }} name="Joyful"
-                                                                                id={"Joyful" + item._id}
+                                                                                id={"Joyful" + item.RecordDisplayId}
                                                                         >😆
                                                                         </button>
 
