@@ -235,7 +235,7 @@ export default class SignUp extends Component{
             playlists:this.getPlaylist(this.state.birthYear,this.state.LanguageAtTwenty,this.state.Geners),
 
             entrance: 0,
-            maxSession: this.state.maxSession,
+            maxSession: 7,
             Cognitive:this.state.Cognitive, // 5, 8, 11, 12, 15
             maxSongs:this.state.Cognitive * this.state.maxSession,//max session*Cognitive
             currentAlgorithm:this.state.currentAlgorithm
@@ -724,27 +724,27 @@ export default class SignUp extends Component{
                         </div>
                         <span className="focus-input100"></span>
                     </div>
-                    <div className="wrap-input100 input100-select">
-                        <span className="label-input100">sessions number per week*</span>
-                        <div>
+                    {/*<div className="wrap-input100 input100-select">*/}
+                    {/*    <span className="label-input100">sessions number per week*</span>*/}
+                    {/*    <div>*/}
 
-                            <Select label="select_sessions_number"
-                                // onChange={e=>{}}
-                                    style={{zIndex:100}}
-                                    className="basic-multi-select"
-                                    closeMenuOnSelect={true}
-                                    value={this.state.maxSession?findArrayData(this.state.maxSession, getOpt(1,7)):null}
-                                    options={getOpt(1,7)}//start, end-> today year
-                                    menuPlacement="auto"
-                                    menuPosition="fixed"
-                                    onChange={(e)=>{
-                                        console.log("in1")
-                                        this.setState({maxSession: e.value})
-                                    }}
-                            />
-                        </div>
-                        <span className="focus-input100"></span>
-                    </div>
+                    {/*        <Select label="select_sessions_number"*/}
+                    {/*            // onChange={e=>{}}*/}
+                    {/*                style={{zIndex:100}}*/}
+                    {/*                className="basic-multi-select"*/}
+                    {/*                closeMenuOnSelect={true}*/}
+                    {/*                value={this.state.maxSession?findArrayData(this.state.maxSession, getOpt(1,7)):null}*/}
+                    {/*                options={getOpt(1,7)}//start, end-> today year*/}
+                    {/*                menuPlacement="auto"*/}
+                    {/*                menuPosition="fixed"*/}
+                    {/*                onChange={(e)=>{*/}
+                    {/*                    console.log("in1")*/}
+                    {/*                    this.setState({maxSession: e.value})*/}
+                    {/*                }}*/}
+                    {/*        />*/}
+                    {/*    </div>*/}
+                    {/*    <span className="focus-input100"></span>*/}
+                    {/*</div>*/}
                     <div className="wrap-input100 input100-select">
                         <span className="label-input100">Cognitive level*</span>
                         <div>
