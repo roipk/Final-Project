@@ -7,8 +7,9 @@ export default class CreateResearcher extends Component{
     constructor(props) {
         super(props);
         this.state = {
+        //user: props.location.user
         };
-        // user = props.location
+        
     }
 
     async componentDidMount() {

@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 
 import './Client/css/allStyle';
-import AllPages from "./Client/Components/AllPages";
+import AllPages from "./Client/Components/AllPages"
 
 
 

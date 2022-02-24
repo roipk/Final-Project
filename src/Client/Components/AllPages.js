@@ -14,7 +14,8 @@ import EditUsers from "./EditUsers";
 import DeleteUsers from "./DeleteUsers";
 import ElderPage from "./Elder";
 import CameraTest from "./CameraTest";
-
+import ResearcherPage from './ResearcherPage';
+import CreateResearch from './CreateResearch';
 //69666
 
 export default class AllPages extends Component{
@@ -45,6 +46,9 @@ export default class AllPages extends Component{
                     {/*<Route exact path="/admin/:id" component={AdminPage}/>*/}
                     {/*<Route exact path="/admin" component={NotFoundPage}/>*/}
                     {/*<Route exact path="/404" component={NotFoundPage}/>*/}
+                    <Route exact path="/researcher" component={ResearcherPage}/>
+                    <Route path='/researcher/new-research' component={CreateResearch}/>
+                  
 
                     {/*<Route exact path="/admin/:404" component={NotFoundPage}/>*/}
                 </Switch>
