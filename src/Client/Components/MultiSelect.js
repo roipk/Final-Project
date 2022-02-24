@@ -24,7 +24,7 @@ const MultiSelect = props => {
         onChange={(selected, event) => {
           if (selected !== null && selected.length > 0) {
             if (selected[selected.length - 1].value === props.allOption.value) {
-                
+              console.log([props.allOption, ...props.options]); 
               return props.onChange([props.allOption, ...props.options]);
             }
             let result = [];
@@ -38,8 +38,10 @@ const MultiSelect = props => {
               }
               return props.onChange(result);
             }
-          }
+              
 
+          }
+          
           return props.onChange(selected);
         }}
         styles={colorStyles}

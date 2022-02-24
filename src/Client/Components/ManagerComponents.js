@@ -1,10 +1,12 @@
 import axios from "axios";
 import {url} from "./AllPages";
 
+
 export const loadPage = (props,page,data)=>
 {
     // localStorage.setItem("token",data.token)
     verifyUser(data.type)
+    
     props.history.push({
         pathname: `/${page}`,
         data: data // your data array of objects
@@ -16,7 +18,7 @@ export const verifyUser = async(page)=>
     let token = localStorage.getItem("token");
     if(token)
     {
-        try {
+        try {                    
             let user = await axios.get(url+`/${page}`, {headers: {"x-access-token": token}})
             if (user&&user.data.token) {
                 localStorage.setItem("token", user.data.token)

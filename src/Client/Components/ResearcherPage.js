@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { loadPage, verifyUser, url } from "./ManagerComponents";
 import { Link } from "react-router-dom";
+import NotFound from "./404";
 
 
 export default class ResearcherPage extends Component {
@@ -11,6 +12,15 @@ export default class ResearcherPage extends Component {
       notfound: false,
     };
   }
+
+  async componentDidMount() {
+    let currentUser = await verifyUser("researcher")
+    if (currentUser) {
+        this.setState({user: currentUser})
+    } else {
+        this.setState({notfound: true})
+    }
+}
 
   render() {
     return (
@@ -32,11 +42,11 @@ export default class ResearcherPage extends Component {
                         <div className="wrap-contact100-form-btn">
                           <div className="research contact100-form-bgbtn"></div>
                           <button
-                            id="createGuide"
+                            id="createResearch"
                             type="button"
                             className="contact100-form-btn"
                             onClick={() => {
-                               loadPage(this.props, "researcher/new-research","admin")
+                               loadPage(this.props, "researcher/new-research",this.state.user)
                               // loadPage(this.props, "register", this.state.user)
                     
                             // <Link to='/register'></Link>

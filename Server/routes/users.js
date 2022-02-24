@@ -42,23 +42,8 @@ router.route('/login').get(async  function (req, res) {
         return res.status(401).send("Invalid params");
     }
 });
-router.route('/admin').get(async  function (req, res) {
 
-    const token = req.body.token || req.query.token || req.headers["x-access-token"];
-
-    if (token) {
-        VerifyToken(req,res,token)
-    }
-});
-router.route('/guide').get(async  function (req, res) {
-
-    const token = req.body.token || req.query.token || req.headers["x-access-token"];
-
-    if (token) {
-        VerifyToken(req,res,token)
-    }
-});
-router.route('/user').get(async  function (req, res) {
+router.route('/:user').get(async  function (req, res) {
 
     const token = req.body.token || req.query.token || req.headers["x-access-token"];
 
@@ -67,12 +52,34 @@ router.route('/user').get(async  function (req, res) {
     }
 });
 
-// router.route('admin/createUser').post(async  function (req, res) {
-//     let user =  await addUser(req,'users')
-//     console.log("create user")
-//     console.log("user")
-//     res.status(200).json('create user:'+user)
+
+// router.route('/admin').get(async  function (req, res) {
+
+//     const token = req.body.token || req.query.token || req.headers["x-access-token"];
+
+//     if (token) {
+//         VerifyToken(req,res,token)
+//     }
 // });
+// router.route('/guide').get(async  function (req, res) {
+
+//     const token = req.body.token || req.query.token || req.headers["x-access-token"];
+
+//     if (token) {
+//         VerifyToken(req,res,token)
+//     }
+// });
+// router.route('/user').get(async  function (req, res) {
+
+//     const token = req.body.token || req.query.token || req.headers["x-access-token"];
+
+//     if (token) {
+//         VerifyToken(req,res,token)
+//     }
+// });
+
+
+
 
 
 async function getUser(userId){

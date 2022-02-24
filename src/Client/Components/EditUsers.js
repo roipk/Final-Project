@@ -14,7 +14,7 @@ import * as mongoose from "mongoose";
 // import {iso6393} from 'iso-639-3'
 
 // console.log(Object.entries(languagesAll))
-console.log("in")
+// console.log("in")
 const animatedComponents = makeAnimated();
 
 const countries = Object.entries(Allcountries.countries);

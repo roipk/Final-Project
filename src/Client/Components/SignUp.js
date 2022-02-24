@@ -450,7 +450,7 @@ export default class SignUp extends Component{
                                 className="contact100-back-btn"
                                 onClick={() => {
                                     let user = this.newUserAuthentication()
-                                    axios.post("http://localhost:5000/admin/createUser", user)
+                                    axios.post("http://localhost:5000/admin/create/Authentication", user)
                                         .then(res => {
                                             console.log(res)
                                             console.log(res.data)

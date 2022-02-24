@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import axios from "axios";
 import Select, { components } from "react-select";
 
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -65,13 +65,9 @@ const MultiValue = (props) => {
   );
 };
 
-const dummyOptions = [
-  { value: "Elder1", label: "Elder1" },
-  { value: "Elder2", label: "Elder2" },
-  { value: "Elder3", label: "Elder3" },
-  { value: "Elder4", label: "Elder4" },
-  { value: "Elder5", label: "Elder5" },
-];
+
+
+var options = [];
 
 export default class CreateResearch extends Component {
   constructor(props) {
@@ -87,6 +83,27 @@ export default class CreateResearch extends Component {
       currentAlgorithm: "",
     };
   }
+
+  async componentDidMount() {
+
+      options = await this.getAllUsers("user");
+      console.log(options);
+  }
+
+  async getAllUsers(type) {
+    // console.log(type)
+
+    var res = await axios.get("http://localhost:5000/researcher/getAllUserByType/" + type)
+    let users = []
+    res.data.forEach(user => {
+        // console.log(user)
+        // { value: 'user', label: 'Elder' }
+        users.push({value: user._id, label: user.first_name + " " + user.last_name},)
+    })
+    // console.log(users)
+    return users
+    // loadPage(this.props,"",this.state)
+}
 
   setStartDateHandler = (date) => {
     this.setState({
@@ -131,7 +148,6 @@ export default class CreateResearch extends Component {
                     className="input100"
                     type="text"
                     name="researchName"
-                    
                     placeholder="Enter Research Name"
                   />
                   <span className="focus-input100"></span>
@@ -178,7 +194,7 @@ export default class CreateResearch extends Component {
                   <span className="label-input100">Participents Elders</span>
 
                   <MultiSelect
-                    options={dummyOptions}
+                    options={options}
                     isMulti
                     closeMenuOnSelect={false}
                     hideSelectedOptions={false}
@@ -210,7 +226,7 @@ export default class CreateResearch extends Component {
                           ? findArrayData(this.state.currentAlgorithm, algo)
                           : null
                       }
-                      options={algo} 
+                      options={algo}
                       menuPlacement="auto"
                       menuPosition="fixed"
                       onChange={(e) => {
@@ -287,7 +303,7 @@ export default class CreateResearch extends Component {
                       className="contact100-back-btn"
                       onClick={() => {
                         // console.log(this.state.roles?this.state.roles:[])
-                        loadPage(this.props, "researcher", this.state);
+                        loadPage(this.props, "researcher", this.state.user);
                       }}
                     >
                       <i
