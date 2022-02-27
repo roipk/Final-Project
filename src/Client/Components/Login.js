@@ -4,7 +4,7 @@ import {getServer, loadPage} from "./ManagerComponents";
 import axios from "axios";
 
 
-var user;
+var user,token;
 export default class Login extends Component{
 
     constructor(props) {
@@ -16,8 +16,11 @@ export default class Login extends Component{
         // user = props.location
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+         token = localStorage.getItem("token");
+    }
+
     async componentDidMount() {
-      let token = localStorage.getItem("token");
 
       if(token)
       {
@@ -36,7 +39,6 @@ export default class Login extends Component{
           }
       }
     }
-
 
     render() {
 
@@ -61,7 +63,7 @@ export default class Login extends Component{
 
                         <div className="wrap-input100 validate-input" data-validate="Password is required">
                             <span className="label-input100">Password</span>
-                            <input id='password' className="input100" type="password" name="password"
+                            <input id='password' className="input100" type="password" name="password"  autoComplete="off"
                                    value={this.state.password}
                                    placeholder="Enter Password"
                                    onChange={(e)=>{this.setState({password:e.target.value})}}
@@ -120,7 +122,7 @@ export default class Login extends Component{
 
 							<span>
 								Log In
-								<i className="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+								<i className="fa fa-sign-in m-l-7" aria-hidden="true"></i>
 							</span>
                                 </button>
                             </div>

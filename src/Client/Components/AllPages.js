@@ -1,6 +1,6 @@
 import React, { Component, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
+import Config from "../../ConfigServer.json";
 import HomePage from "./Home";
 import LoginPage from "./Login";
 import LoginAdminPage from "./LoginAdminPage";
@@ -14,6 +14,7 @@ import EditUsers from "./EditUsers";
 import DeleteUsers from "./DeleteUsers";
 import ElderPage from "./Elder";
 import CameraTest from "./CameraTest";
+import ViewUsers from "./ViewUsers";
 
 //69666
 
@@ -40,6 +41,7 @@ export default class AllPages extends Component{
                     <Route exact path="/guide" component={GuidePage}/>
                     {/*<Route exact path="/guide/" component={NotFoundPage}/>*/}
                     <Route exact path="/admin" component={AdminPage}/>
+                    <Route exact path="/admin/ViewUsers" component={ViewUsers}/>
                     <Route exact path="/admin/register" component={SignUpPage}/>
                     <Route exact path="/admin/userRegister" component={userRegister}/>
                     {/*<Route exact path="/admin/:id" component={AdminPage}/>*/}
@@ -54,4 +56,4 @@ export default class AllPages extends Component{
 
 }
 
-export const url="http://localhost:5000"
+export const url=Config.HOST//"http://localhost:5000"

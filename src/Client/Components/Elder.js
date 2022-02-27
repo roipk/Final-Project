@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import {loadPage,verifyUser,url} from "./ManagerComponents";
+import {url} from "./AllPages";
+import {loadPage,verifyUser} from "./ManagerComponents";
 import axios from "axios";
 import NotFound from "./404";
 import YouTube from "react-youtube";
-import * as ReactDOM from "react-dom";
 
 
 const opts = {
@@ -60,6 +60,7 @@ export default class ElderPage extends Component {
         this.state = {
             user: props.location.data,
             notfound: false,
+            session:"personal" // personal,family, research1, research2
             // videos: [{nameSong: "linkin park - numb", id: "kXYiU_JCYtU"}],
         };
 
@@ -85,7 +86,7 @@ export default class ElderPage extends Component {
 
     async getSession(id) {
         var youtube=[]
-        let songs=await axios.get("http://localhost:5000/user/session/"+id)
+        let songs=await axios.get(url+"/user/session/"+id+"/"+this.state.session)
         // console.log(songs.data.length)
         console.log(songs.data)
         // songs.data.forEach(song=>{
@@ -238,7 +239,7 @@ export default class ElderPage extends Component {
                                                     <p/>
                                                     <button onClick={async ()=>{
                                                         alert("you have new session")
-                                                        await axios.get("http://localhost:5000/user/Create/session/"+this.state.user._id)
+                                                        await axios.get(url+"/user/Create/session/"+this.state.user._id+"/"+this.state.session)
                                                         this.componentDidMount()
                                                     }}>click me</button>
 
@@ -344,7 +345,7 @@ export default class ElderPage extends Component {
            score :  e.target.style.borderStyle==="solid"?parseInt(e.target.value):0
        }
        console.log(this.state.user._id)
-      var t= await axios.post("http://localhost:5000/user/RateSession/"+this.state.user._id,rate)
+      var t= await axios.post(url+"/user/RateSession/"+this.state.user._id,rate)
        alert("thanks for rate")
 
     }

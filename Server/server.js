@@ -5,11 +5,12 @@ const cors = require('cors')
 
 const bodyParser = require("body-parser");
 const path = require("path")
+const Config = require("../src/ConfigServer.json")
 
 require('dotenv').config()
 const mongo = require("./Mongo/mongodb").mongo;
 const app = express()
-const port = process.env.Port || 5000
+const port = Config.Port|| 5000
 
 
 

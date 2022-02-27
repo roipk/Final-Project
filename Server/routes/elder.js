@@ -13,76 +13,36 @@ const CreateToken = require("../middleware/user").CreateToken
 
 
 
-routerElder.route('/session/:id').get(async  function (req, res) {
-    var resolvedPromisesArray = []
-    console.log( req.params.id)
-    let session = await getData("UserSessions", req.params.id)
-    if(Array.isArray(session.sessions) && session.sessions.length>0 )
+routerElder.route('/session/:id/:algorithm').get(async  function (req, res) {
+
+    let id=req.params.id
+    let algorithm=req.params.algorithm
+    let session = await getData("UserSessions",id)
+    if(Array.isArray(session.sessions[algorithm]) && session.sessions[algorithm].length>0 )
     {
         var songs = {
             songsView: [],
             songsBlock: []
         }
 
-        songs.songsView = session.sessions[session.sessions.length-1]
+        songs.songsView = session.sessions[algorithm][session.sessions[algorithm].length-1]
 
-        // let tes = session.sessions[session.sessions.length-1].filter(s=>s.score>=4).sort((a, b) => { if (a.score == b.score) return b.date - a.date;
-        //     return b.score - a.score;})
-
-
-        // songs.songsView = session.sessions[session.sessions.length-2].filter(x => x.score < 3);
-        // var OriginSongId=[]
-        // var OriginSongListView=[]
-        // var songListView=[]
-        // var songList=[]
-
-        // songs.songsView.forEach(item=>{
-        //     OriginSongId.push(item.RecordDisplayId)
-        //     OriginSongListView.push(item)
-        // })
-        // console.log(OriginSongListView)
-        // songListView = await db.collection("RecordDisplay").find({_id:{$in:OriginSongId}})
-        // await songListView.forEach(item=>{
-        //     songList.push(item)
-        // })
-        // console.log(songList)
-        // songListView=[]
-        // await OriginSongListView.forEach(item=>
-        // {
-        //     console.log(item.RecordDisplayId.toString())
-        //     console.log(songList[0]._id.toString())
-        //     console.log(songList[0])
-        //     console.log(songList[0]._id.toString() ===item.RecordDisplayId.toString())
-        //     var index= songList.findIndex(x => x._id.toString() === item.RecordDisplayId.toString())
-            // var index= songList.findIndex(x => x._id.toString() === item.RecordDisplayId.toString())
-            // console.log(index)
-            // if(index<0)
-            // {
-            //     console.log(item)
-            // }
-            // console.log(songList[index])
-            // songList[index]['score'] = item.score
-            // songListView.push(songList[index])
-        // })
-
-
-        songs = {sessionNumber:session.sessions.length,
+        songs = {sessionNumber:session.sessions[algorithm].length,
         list:songs.songsView
         }
         return res.status(200).json(songs)
     }
-
-    // var songs = await CreateSession(session)
-    // return res.status(200).json(songs)
     return res.status(404)
 
 
 });
 
-routerElder.route('/Create/session/:id').get(async  function (req, res) {
-    var resolvedPromisesArray = []
-    let session = await getData("UserSessions", req.params.id)
-    var songs =await CreateSession(session)
+routerElder.route('/Create/session/:id/:algorithm').get(async  function (req, res) {
+
+    let id=req.params.id
+    let algorithm=req.params.algorithm
+    let session = await getData("UserSessions", id)
+    var songs =await CreateSession(session,algorithm)
     return res.status(200).json(songs.songsView)
 
 
@@ -90,7 +50,7 @@ routerElder.route('/Create/session/:id').get(async  function (req, res) {
 
 
 
-async function CreateSession(session)
+async function CreateSession(session,algorithm)
 {
     // console.log(session)
     var songs = {
@@ -98,8 +58,8 @@ async function CreateSession(session)
         songsBlock: [],
         songsViewBefor:[]
     }
-    if(session.sessions&& session.sessions.length > 0) {
-        var prevSong = await getBestsongPrevSessions(session.sessions, 3, 4, 3)
+    if(session.sessions[algorithm] && session.sessions[algorithm].length > 0) {
+        var prevSong = await getBestsongPrevSessions(session.sessions[algorithm], 3, 4, 3)
         songs.songsBlock =  prevSong.block
         songs.songsViewBefor = prevSong.view.map(s => {
             if(s.RecordDisplayId)
@@ -120,7 +80,7 @@ async function CreateSession(session)
             originArtistName:song.originArtistName,
             score: -1|| song.score})
     })
-    session.sessions.push(songSession)
+    session.sessions[algorithm].push(songSession)
     // console.log(session)
     await updateData("UserSessions",session.Oid,session)
     return songs
@@ -128,12 +88,14 @@ async function CreateSession(session)
 }
 
 
-routerElder.route('/RateSession/:id').post(async  function (req, res) {
-    var userSession = await getData("UserSessions",req.params.id)
+routerElder.route('/RateSession/:id/:algorithm').post(async  function (req, res) {
+    let id=req.params.id
+    let algorithm=req.params.algorithm
+    var userSession = await getData("UserSessions",id)
     var rate = req.body
-    userSession.sessions[rate.sesionNumber-1][rate.songNumber].score =rate.score
-    userSession.sessions[rate.sesionNumber-1][rate.songNumber].date =new Date()
-    var userSession = await updateData("UserSessions",req.params.id,userSession)
+    userSession.sessions[algorithm][rate.sesionNumber-1][rate.songNumber].score =rate.score
+    userSession.sessions[algorithm][rate.sesionNumber-1][rate.songNumber].date =new Date()
+    var userSession = await updateData("UserSessions",id,userSession)
     if(userSession) {
         return res.status(200).json(userSession)
     }else {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {loadPage} from "./ManagerComponents";
 import axios from "axios";
+import {url} from "./AllPages";
 // import { MongoClient } from 'mongodb'
 // const { MongoClient } = require('mongodb');
 // const url = 'mongodb://localhost:27017';
@@ -95,7 +96,7 @@ export default class LoginAdminPage extends Component{
                                             // test:"123"
                                         }
 
-                                        axios.post("http://localhost:5000/users/add",user)
+                                        axios.post(url+"/users/add",user)
                                             .then(res=>{
                                                 // console.log(res.data)
                                                 // loadPage(this.props,"",this.state)

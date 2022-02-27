@@ -34,7 +34,20 @@ router.route('/getAllUserByType/:type').get(async  function (req, res) {
     res.status(200).json(users)
 });
 
+router.route('/getAllUserInfoByType/:type').get(async  function (req, res) {
+
+    let users = await getAllAuthType("Authentication",req.params.type)
+    var usersInfo=[]
+    for(var i=0;i<users.length;i++)
+    {
+        let userInfo = await getData("UserInfo",users[i]._id.toString())
+        usersInfo.push(userInfo)
+    }
+    res.status(200).json(usersInfo)
+});
+
 router.route('/getUserById/:Oid').get(async  function (req, res) {
+    console.log(req.params.Oid)
     let user = await getData("UserInfo",req.params.Oid)
     res.status(200).json(user)
 });
@@ -42,9 +55,9 @@ router.route('/getUserById/:Oid').get(async  function (req, res) {
 
 router.route('/DeleteUser/:id').get(async  function (req, res) {
     console.log("delete user")
-    await deleteData("Authentication",req.params.id)
-    await deleteData("UserInfo",req.params.id)
     await deleteData("UserSessions",req.params.id)
+    await deleteData("UserInfo",req.params.id)
+    await deleteData("Authentication",req.params.id)
     res.status(200).json()
 });
 
@@ -60,17 +73,27 @@ async function CreatData(nameCollection,data){
 }
 
 async function getData(nameCollection,Oid){
+    if(nameCollection === "Authentication")
+        return await db.collection(nameCollection).findOne({_id: ObjectId(Oid)})
+    else
         return await db.collection(nameCollection).findOne({Oid:Oid})
+
+
 }
 
 async function updateData(nameCollection,doc,data){
     console.log(doc)
-    var newData = await db.collection(nameCollection).replaceOne({Oid: doc}, data);
-    return newData;
+    if(nameCollection === "Authentication")
+        return await db.collection(nameCollection).replaceOne({_id: ObjectId(Oid)})
+    else
+        return await db.collection(nameCollection).replaceOne({Oid:Oid})
+
+    // var newData = await db.collection(nameCollection).replaceOne({Oid: doc}, data);
+    // return newData;
 }
 
 async function deleteData(nameCollection,Oid) {
-    if(nameCollection == "Authentication")
+    if(nameCollection === "Authentication")
         db.collection(nameCollection).deleteOne({_id: ObjectId(Oid)})
     else
         db.collection(nameCollection).deleteOne({Oid:Oid})

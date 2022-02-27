@@ -1,0 +1,6 @@
+{
+  "MONGOURL": "mongodb://localhost:27017",
+  "JWT_KEY":"secret",
+  "HOST":"http://localhost:5000",
+  "Port": 5000
+}

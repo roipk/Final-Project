@@ -1,5 +1,6 @@
 import React, {Component, useState} from 'react';
 import axios from "axios";
+import {url} from "./AllPages"
 import {loadloadPage, loadPage, verifyUser} from "./ManagerComponents";
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
@@ -52,8 +53,6 @@ let maxSelectGenere = 2;
 
 
 
-
-var timeoutHandle = setTimeout( ()=> {} , 0);
 export default class DeleteUsers extends Component {
 
     constructor(props) {
@@ -352,9 +351,10 @@ export default class DeleteUsers extends Component {
                         <div className="contact100-back-bgbtn"></div>
                         <button id='submit' type='button'
                                 className="contact100-back-btn"
-                        onClick={() => {
-                            alert("do you want remove this user?")
-                            axios.get("http://localhost:5000/admin/DeleteUser/"+this.state.Oid)
+                                onClick={() => {
+                                    alert("do you want remove this user?")
+
+                                    axios.get(url+"/admin/DeleteUser/"+this.state.Oid)
                                         .then(res => {
                                             console.log("the user removed")
                                             loadPage(this.props, "admin", this.state.user)
@@ -633,18 +633,18 @@ export default class DeleteUsers extends Component {
                                 onClick={async () => {
                                     // let user = this.newUser()
                                     //
-                                    // let userId = await axios.post("http://localhost:5000/admin/createUser", user)
+                                    // let userId = await axios.post(url+"/admin/createUser", user)
                                     //
                                     console.log(this.state.OidInfo)
                                     console.log(this.state.Oid)
                                     let userData = this.newElderData(this.state.Oid)
                                     console.log(userData)
-                                    let userInfoId = await axios.post("http://localhost:5000/admin/updateUserInfo", [userData,this.state.OidInfo])
+                                    let userInfoId = await axios.post(url+"/admin/updateUserInfo", [userData,this.state.OidInfo])
 
                                     //
                                     // let UserSessions = this.newElderPlaylist(this.state.Oid)
                                     //
-                                    // let userPlaylistId = await axios.post("http://localhost:5000/admin/createUserPlaylist", UserSessions)
+                                    // let userPlaylistId = await axios.post(url+"/admin/createUserPlaylist", UserSessions)
                                     //
                                     //
                                     // alert("the user " + this.state.first_name + " add to system")
@@ -775,13 +775,16 @@ export default class DeleteUsers extends Component {
     }
 
     async getUserById(oid) {
-        return await axios.get("http://localhost:5000/admin/getUserById/"+oid)
+        console.log(oid)
+        var res =await axios.get(url+"/admin/getUserById/"+oid)
+        console.log(res.data)
+        return res
     }
 
     async getAllUsers(type) {
         // console.log(type)
 
-        var res = await axios.get("http://localhost:5000/admin/getAllUserByType/" + type)
+        var res = await axios.get(url+"/admin/getAllUserByType/" + type)
         let users = []
         res.data.forEach(user => {
             console.log(user)
@@ -827,6 +830,8 @@ export default class DeleteUsers extends Component {
         })
     }
 }
+
+var timeoutHandle = setTimeout( ()=> {} , 0);
 
 function getOpt(start,end=(new Date().getFullYear())) {
     var options =[]

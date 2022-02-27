@@ -10,11 +10,11 @@ import {iso6392} from 'iso-639-2'
 import Allcountries, {languagesAll}from "countries-list"
 import Carousel from "react-elastic-carousel";
 import * as mongoose from "mongoose";
+import {url} from "./AllPages";
 // console.log(languagesalpha-3 )
 // import {iso6393} from 'iso-639-3'
 
 // console.log(Object.entries(languagesAll))
-console.log("in")
 const animatedComponents = makeAnimated();
 
 const countries = Object.entries(Allcountries.countries);
@@ -229,7 +229,7 @@ export default class EditUsers extends Component {
             languages:this.state.languages,
             genre:this.state.genre,
             yearAtTwenty:this.state.birthYear+20,
-            sessions:[],
+            sessions:{personal:[],family:[]},
             Geners:this.state.Geners,
             LanguageAtTwenty:this.state.LanguageAtTwenty,
 
@@ -424,7 +424,7 @@ export default class EditUsers extends Component {
                                 className="contact100-back-btn"
                                 onClick={() => {
                                     let user = this.newUserAuthentication()
-                                    axios.post("http://localhost:5000/admin/createUser", user)
+                                    axios.post(url+"/admin/createUser", user)
                                         .then(res => {
                                             console.log(res)
                                             console.log(res.data)
@@ -779,9 +779,9 @@ export default class EditUsers extends Component {
                                 console.log(userData)
                                 let userPlaylist = this.newElderSessions(this.state.Oid)
                                 console.log(userPlaylist)
-                                let userInfoId = await axios.post("http://localhost:5000/admin/update/UserInfo/"+this.state.Oid, userData)
+                                let userInfoId = await axios.post(url+"/admin/update/UserInfo/"+this.state.Oid, userData)
                                 console.log(userInfoId)
-                                let userPlaylistId = await axios.post("http://localhost:5000/admin/update/UserSessions/"+this.state.Oid, userPlaylist)
+                                let userPlaylistId = await axios.post(url+"/admin/update/UserSessions/"+this.state.Oid, userPlaylist)
                                 console.log(userPlaylistId)
                                 loadPage(this.props, "admin", this.state.user)
                                 alert("the user " + this.state.first_name + " update")
@@ -944,12 +944,12 @@ export default class EditUsers extends Component {
     }
 
     async getUserById(oid) {
-        return await axios.get("http://localhost:5000/admin/getUserById/"+oid)
+        return await axios.get(url+"/admin/getUserById/"+oid)
     }
 
     async getAllUsers(type) {
 
-        var res = await axios.get("http://localhost:5000/admin/getAllUserByType/" + type)
+        var res = await axios.get(url+"/admin/getAllUserByType/" + type)
         let users = []
         res.data.forEach(user => {
             console.log(user)

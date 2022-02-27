@@ -46,6 +46,23 @@ export default class AdminPage extends Component {
                                                         <button type="button" id='createUser'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
+                                                                    loadPage(this.props, "admin/ViewUsers", this.state.user)
+                                                                }}>
+                                <span>
+                                    <i className="fa fa-blind fa-2x" aria-hidden="true"
+                                       style={{padding_right: '10px'}}></i>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;View Users
+                                </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div className="container-contact100-form-btn">
+                                                    <div className="wrap-contact100-form-btn">
+                                                        <div className="user contact100-form-bgbtn"></div>
+                                                        <button type="button" id='createUser'
+                                                                className="contact100-form-btn"
+                                                                onClick={() => {
                                                                     loadPage(this.props, "register", this.state.user)
                                                                 }}>
                                 <span>
@@ -95,8 +112,8 @@ export default class AdminPage extends Component {
 
 
                                         <div className="container-section-space">
-
                                             <div className="container-section">
+
                                                 <div className="container-contact100-form-btn">
                                                     <div className="wrap-contact100-form-btn">
                                                         <div className="research contact100-form-bgbtn"></div>
@@ -108,7 +125,7 @@ export default class AdminPage extends Component {
                                 <span>
                                     <i className="fa fa-users fa-lg fa-fw" aria-hidden="true"
                                        style={{padding_right: '10px'}}></i>
-                                    Create Guide
+                                    &nbsp;&nbsp;&nbsp;&nbsp; Create Guide
                                 </span>
                                                         </button>
                                                     </div>
@@ -125,12 +142,11 @@ export default class AdminPage extends Component {
                                 <span>
                                     <i className="fa fa-users fa-lg fa-fw" aria-hidden="true"
                                        style={{padding_right: '10px'}}></i>
-                                    Create Researcher
+                                    &nbsp;&nbsp;&nbsp;&nbsp;Create Researcher
                                 </span>
                                                         </button>
                                                     </div>
                                                 </div>
-
 
                                                 <div className="container-contact100-form-btn">
                                                     <div className="wrap-contact100-form-btn">
@@ -143,7 +159,7 @@ export default class AdminPage extends Component {
                                 <span>
                                     <i className="fa fa-users fa-lg fa-fw" aria-hidden="true"
                                        style={{padding_right: '10px'}}></i>
-                                    Create Research Group
+                                    &nbsp;&nbsp;&nbsp;&nbsp;Create Research Group
                                 </span>
                                                         </button>
                                                     </div>
@@ -166,7 +182,7 @@ export default class AdminPage extends Component {
                                     <span>
                                         <i className="fa fa-list-ol fa-lg fa-fw" aria-hidden="true"
                                            style={{padding_right: '10px'}}></i>
-                                        Create Playlist
+                                        &nbsp;&nbsp;&nbsp;&nbsp;Create Playlist
                                     </span>
                                                         </button>
                                                     </div>
@@ -182,7 +198,7 @@ export default class AdminPage extends Component {
                                     <span>
                                         <i className="fa fa-list-ol fa-lg fa-fw" aria-hidden="true"
                                            style={{padding_right: '10px'}}></i>
-                                        Edit Playlist
+                                        &nbsp;&nbsp;&nbsp;&nbsp; Edit Playlist
                                     </span>
                                                         </button>
                                                     </div>
@@ -198,7 +214,7 @@ export default class AdminPage extends Component {
                                     <span>
                                         <i className="fa fa-music fa-lg fa-fw" aria-hidden="true"
                                            style={{padding_right: '10px'}}></i>
-                                        Add Media
+                                        &nbsp;&nbsp;&nbsp;&nbsp;  Add Media
                                     </span>
                                                         </button>
                                                     </div>
@@ -209,6 +225,7 @@ export default class AdminPage extends Component {
 
                                         <div className="container-section-space">
                                             <div className="container-section">
+
                                                 <div className="container-contact100-form-btn">
                                                     <div className="wrap-contact100-form-btn">
                                                         <div className="admin contact100-form-bgbtn"></div>
@@ -220,11 +237,29 @@ export default class AdminPage extends Component {
                                     <span>
                                         <i className="fa fa-music fa-lg fa-fw" aria-hidden="true"
                                            style={{padding_right: '10px'}}></i>
-                                        Youtube
+                                        &nbsp;&nbsp;&nbsp;&nbsp;Youtube
                                     </span>
                                                         </button>
                                                     </div>
                                                 </div>
+
+                                                <div className="container-contact100-form-btn">
+                                                    <div className="wrap-contact100-form-btn">
+                                                        <div className="research contact100-form-bgbtn"></div>
+                                                        <button id='createGuide' type='button'
+                                                                className="contact100-form-btn"
+                                                                onClick={() => {
+                                                                    loadPage(this.props, "")
+                                                                }}>
+                                <span>
+                                    <i className="fa fa-sign-out fa-lg fa-fw" aria-hidden="true"
+                                       style={{padding_right: '10px'}}></i>
+                                    &nbsp;&nbsp;&nbsp;&nbsp; LOG OUT
+                                </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
 

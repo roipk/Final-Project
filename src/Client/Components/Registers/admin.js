@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from "axios";
 import {loadPage} from "../ManagerComponents";
+import {url} from "../AllPages";
 
 
 
@@ -99,7 +100,7 @@ export default class CreateAdmin extends Component{
                                                 timeOut:0,
                                                 permissions:this.state.roles?this.state.roles:[]
                                             }
-                                            axios.post("http://localhost:5000/admin/createUser",user)
+                                            axios.post(url+"/admin/createUser",user)
                                                 .then(res=>{
                                                     console.log("in")
                                                     console.log(res.data)

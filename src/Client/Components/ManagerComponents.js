@@ -3,6 +3,13 @@ import {url} from "./AllPages";
 
 export const loadPage = (props,page,data)=>
 {
+    if(!data)
+    {
+        localStorage.setItem("token", null)
+        props.history.push({
+            pathname: `/`})
+        return
+    }
     // localStorage.setItem("token",data.token)
     verifyUser(data.type)
     props.history.push({
@@ -33,7 +40,8 @@ export const verifyUser = async(page)=>
     }
 }
 
-export const getServer = async (url,config=null,data=null)=>{
+
+    export const getServer = async (url,config=null,data=null)=>{
 let get = await axios.get(url,config,data)
     return get;
 }

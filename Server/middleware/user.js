@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
-
-const secret = process.env.TOKEN_KEY+"tamaringa";
-const expiresIn="30m"
+const Config = require("../../src/ConfigServer.json")
+const Secret = Config.JWT_KEY+"tamaringa";
+const ExpiresIn="30m"
 
 
 const VerifyToken = (req,res,token) => {
@@ -10,7 +10,7 @@ const VerifyToken = (req,res,token) => {
         return res.status(403).send("A token is required for authentication");
     }
     try {
-        const decoded = jwt.verify(token, "" + secret);
+        const decoded = jwt.verify(token, "" + Secret);
         if(type!==decoded.user.type)
         {
             return res.status(404).send("Invalid user");
@@ -25,12 +25,12 @@ const VerifyToken = (req,res,token) => {
 const CreateToken = (data,res)=>{
     const token = jwt.sign(
         {user: data},
-        "" + secret,
+        "" + Secret,
         {
-            expiresIn: expiresIn,
+            expiresIn: ExpiresIn,
         }
     );
-    const decoded = jwt.verify(token, "" + secret);
+    const decoded = jwt.verify(token, "" + Secret);
     data.timeOut=decoded.exp
     // save user token
     return res.status(200).json({token:token,user:data});

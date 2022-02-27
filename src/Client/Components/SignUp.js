@@ -1,8 +1,10 @@
 import React, {Component, useState} from 'react';
 import axios from "axios";
+import Config from "../../Config.json"
 import {loadPage, verifyUser} from "./ManagerComponents";
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
+import Switch from "react-switch";
 import CreateAdmin from "./Registers/admin";
 import CreateResearcher from "./Registers/resarcher";
 import CreateUser from "./Registers/oldMan";
@@ -10,6 +12,7 @@ import {iso6392} from 'iso-639-2'
 import Allcountries, {languagesAll}from "countries-list"
 import Carousel from "react-elastic-carousel";
 import * as mongoose from "mongoose";
+import {url} from "./AllPages";
 // import {iso6393} from 'iso-639-3'
 
 const animatedComponents = makeAnimated();
@@ -100,7 +103,7 @@ var timeoutHandle = setTimeout( ()=> {} , 0);
 
 async function  CreateSession(id) {
 
-        let songs=await axios.get("http://localhost:5000/user/Create/session/"+id)
+        let songs=await axios.get(url+"/user/Create/session/"+id+"/personal")
         return songs.data
 }
 
@@ -140,10 +143,10 @@ export default class SignUp extends Component{
             userName:"",
             yearAtTwenty : "",
             yearOfImmigration:"",
-            maxSession:"",
-            Cognitive:"",
-            currentAlgorithm:""
-
+            maxSession:7,
+            Cognitive:Config.HIGH_COGNITIVE,
+            currentAlgorithm:"",
+            checked:true
         };
 
 
@@ -167,10 +170,7 @@ export default class SignUp extends Component{
     newElderData(id){
 
         let elderData = {
-            Oid:{
-                collection: "Authentication",
-                id:id,
-            },
+            Oid:id,
             first_name: this.state.first_name,
             last_name:this.state.last_name,
             userName: this.state.user_name,
@@ -229,7 +229,7 @@ export default class SignUp extends Component{
             languages:this.state.languages,
             // genre:this.state.genre,
             yearAtTwenty:this.state.birthYear+20,
-            sessions:[],
+            sessions:{personal:[],family:[]},
             // Geners:this.state.Geners,
             // LanguageAtTwenty:this.state.LanguageAtTwenty,
             playlists:this.getPlaylist(this.state.birthYear,this.state.LanguageAtTwenty,this.state.Geners),
@@ -369,7 +369,7 @@ export default class SignUp extends Component{
 
     registerUser(page) {
 
-        if (page == 0)
+        if (page === 0)
             return (
                 <div>
                     <h1>פרטי הזדהות עבור המערכת</h1>
@@ -405,7 +405,7 @@ export default class SignUp extends Component{
 
                         <span className="focus-input100"></span>
                     </div>
-                    <div hidden={this.state.type != 'admin' && this.state.type != 'researcher'}
+                    <div hidden={this.state.type !== 'admin' && this.state.type !== 'researcher'}
                          className="wrap-input100 validate-input" data-validate="Email is required">
                         <span className="label-input100">Email*</span>
                         <input value={this.state.email} id='email' disabled={false} className="input100" type="text" name="email"
@@ -448,7 +448,8 @@ export default class SignUp extends Component{
                                 className="contact100-back-btn"
                                 onClick={() => {
                                     let user = this.newUserAuthentication()
-                                    axios.post("http://localhost:5000/admin/createUser", user)
+                                    console.log("done")
+                                    axios.post(url+"/admin/create/Authentication", user)
                                         .then(res => {
                                             console.log(res)
                                             console.log(res.data)
@@ -476,7 +477,7 @@ export default class SignUp extends Component{
                 </div>
 
             )
-        else if (page == 1)
+        else if (page === 1)
             return (
                 <div>
                     <h1>מידע על בית האבות</h1>
@@ -535,7 +536,7 @@ export default class SignUp extends Component{
                 </div>
             )
 
-        else if (page == 2)
+        else if (page === 2)
             return (
                 <div>
 
@@ -722,6 +723,8 @@ export default class SignUp extends Component{
                                     }}
                             />
                         </div>
+
+
                         <span className="focus-input100"></span>
                     </div>
                     {/*<div className="wrap-input100 input100-select">*/}
@@ -746,27 +749,33 @@ export default class SignUp extends Component{
                     {/*    <span className="focus-input100"></span>*/}
                     {/*</div>*/}
                     <div className="wrap-input100 input100-select">
-                        <span className="label-input100">Cognitive level*</span>
-                        <div>
+                        <span className="label-input100">Good Cognitive</span>
+                        {/*<div>*/}
 
-                            <Select label="select sessions number"
-                                // onChange={e=>{}}
-                                    style={{zIndex:100}}
-                                    className="basic-multi-select"
-                                    closeMenuOnSelect={true}
-                                    value={this.state.Cognitive?findArrayData(this.state.Cognitive, Cognitive):null}
-                                    options={Cognitive}//start, end-> today year
-                                    menuPlacement="auto"
-                                    menuPosition="fixed"
-                                    onChange={(e)=>{
-                                        this.setState({Cognitive: e.value})
-                                    }}
-                            />
+                        {/*    <Select label="select sessions number"*/}
+                        {/*        // onChange={e=>{}}*/}
+                        {/*            style={{zIndex:100}}*/}
+                        {/*            className="basic-multi-select"*/}
+                        {/*            closeMenuOnSelect={true}*/}
+                        {/*            value={this.state.Cognitive?findArrayData(this.state.Cognitive, Cognitive):null}*/}
+                        {/*            options={Cognitive}//start, end-> today year*/}
+                        {/*            menuPlacement="auto"*/}
+                        {/*            menuPosition="fixed"*/}
+                        {/*            onChange={(e)=>{*/}
+                        {/*                this.setState({Cognitive: e.value})*/}
+                        {/*            }}*/}
+                        {/*    />*/}
+                        {/*</div>*/}
+                        <div>
+                            <Switch onChange={(check)=>{
+                                check? this.setState({ checked:check,Cognitive:Config.HIGH_COGNITIVE}):
+                                    this.setState({ checked:check,Cognitive:Config.LOW_COGNITIVE})
+                            }} checked={this.state.checked} />
                         </div>
                         <span className="focus-input100"></span>
                     </div>
                     <div className="wrap-input100 input100-select">
-                        <span className="label-input100">Algorythem*</span>
+                        <span className="label-input100">Algorithm*</span>
                         <div>
 
                             <Select label="select year"
@@ -802,17 +811,18 @@ export default class SignUp extends Component{
                                 onClick={async ()=>{
                                     let user = this.newUserAuthentication()
 
-                                    let userId = await axios.post("http://localhost:5000/admin/create/Authentication",user)
+                                    let userId = await axios.post(url+"/admin/create/Authentication",user)
 
 
                                     let userData = this.newElderData(userId.data.insertedId)
 
-                                    let userInfoId = await axios.post("http://localhost:5000/admin/create/UserInfo",userData)
+                                    let userInfoId = await axios.post(url+"/admin/create/UserInfo",userData)
 
 
                                     let userPlaylist = this.newElderSessions(userId.data.insertedId)
 
-                                    let userPlaylistId = await axios.post("http://localhost:5000/admin/create/UserSessions",userPlaylist)
+                                    let userPlaylistId = await axios.post(url+"/admin/create/UserSessions",userPlaylist)
+                                    await axios.get(url+"/user/Create/session/"+userId.data.insertedId+"/personal")
 
                                     // CreateSession(userId.data.insertedId)
                                     // userPlaylist.session.push()
@@ -932,7 +942,6 @@ function getOpt(start,end=(new Date().getFullYear())) {
 }
 
 
-
 function getLanguageList() {
     languages.map((language,index)=>{
         selectLanguage.push( { value: language[1].iso6392B, label:language[1].name})
@@ -944,6 +953,7 @@ function getLanguageList() {
 function getCountriesList() {
     countries.map((country,index)=>{
         selectCountries.push( { value: country[0], label:country[1].name},)
+
     })
     return selectCountries
 }
