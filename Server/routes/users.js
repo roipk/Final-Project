@@ -61,6 +61,8 @@ router.route('/login').get(async  function (req, res) {
 // });
 router.route('/:user').get(async  function (req, res) {
 
+router.route('/:user').get(async  function (req, res) {
+
     const token = req.body.token || req.query.token || req.headers["x-access-token"];
 
     if (token) {
@@ -74,6 +76,17 @@ router.route('/:user').get(async  function (req, res) {
 //     console.log("user")
 //     res.status(200).json('create user:'+user)
 // });
+// router.route('/user').get(async  function (req, res) {
+
+//     const token = req.body.token || req.query.token || req.headers["x-access-token"];
+
+//     if (token) {
+//         VerifyToken(req,res,token)
+//     }
+// });
+
+
+
 
 
 async function getUser(userId){

@@ -15,6 +15,8 @@ import * as mongoose from "mongoose";
 import {url} from "./AllPages";
 // import {iso6393} from 'iso-639-3'
 
+// Checkkkkkkkkkkkkk
+
 const animatedComponents = makeAnimated();
 
 const countries = Object.entries(Allcountries.countries);
@@ -80,7 +82,7 @@ function timefomat(timestamp)
     return formattedTime
 }
 
-function findArrayData(array,selectOptions) {
+export function findArrayData(array,selectOptions) {
 
     let data=[]
     let options = selectOptions
@@ -798,15 +800,15 @@ export default class SignUp extends Component{
                     </div>
 
 
-                    <div className="wrap-contact100-back-btn">
+                       <div className="wrap-contact100-back-btn">
                         <div className="contact100-back-bgbtn"></div>
-                        <button hidden={this.state.type!=='user'} id='submit' type='button' className="contact100-back-btn"
+                           {/* <button hidden={this.state.type!=='user'} id='submit' type='button' className="contact100-back-btn"
                                 onClick={async ()=>{
                                     let userPlaylist = this.newElderSessions("61a8b86ca4e25312dbdce029")
                                 }
                                 }>
                             click me
-                        </button>
+                        </button> */}
                         <button hidden={this.state.type!=='user'} id='submit' type='button' className="contact100-back-btn"
                                 onClick={async ()=>{
                                     let user = this.newUserAuthentication()

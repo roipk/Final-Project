@@ -5,6 +5,7 @@ import axios from "axios";
 
 
 var user,token;
+var user, token;
 export default class Login extends Component{
 
     constructor(props) {
@@ -40,6 +41,12 @@ export default class Login extends Component{
       }
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        token = localStorage.getItem("token");
+   }
+
+
+
     render() {
 
 
@@ -67,6 +74,8 @@ export default class Login extends Component{
                                    value={this.state.password}
                                    placeholder="Enter Password"
                                    onChange={(e)=>{this.setState({password:e.target.value})}}
+                                   autoComplete="off"
+
                             />
                             <span className="focus-input100"></span>
                         </div>

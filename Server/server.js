@@ -30,10 +30,13 @@ app.use(express.static(path.join(__dirname, 'build')));
 const adminRouter = require('./routes/Admin')
 const userRouter = require('./routes/users')
 const elderRouter = require('./routes/elder')
+const researcherRouter = require('./routes/researcher')
 
 app.use('/',userRouter)
 app.use('/admin',adminRouter)
 app.use('/user',elderRouter)
+app.use('/researcher',researcherRouter)
+
 
 
 
