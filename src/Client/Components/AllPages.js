@@ -51,6 +51,7 @@ export default class AllPages extends Component {
           <Route exact path="/guide" component={GuidePage} />
           {/*<Route exact path="/guide/" component={NotFoundPage}/>*/}
           <Route exact path="/admin" component={AdminPage} />
+          <Route exact path="/admin/ViewUsers" component={ViewUsers}/>
           <Route exact path="/admin/register" component={SignUpPage} />
           <Route exact path="/admin/userRegister" component={userRegister} />
           {/*<Route exact path="/admin/:id" component={AdminPage}/>*/}
@@ -64,7 +65,6 @@ export default class AllPages extends Component {
       </Router>
     );
   }
-                    <Route exact path="/admin/ViewUsers" component={ViewUsers}/>
 }
 
 export const url=Config.HOST//"http://localhost:5000"
