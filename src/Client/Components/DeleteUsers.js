@@ -4,12 +4,12 @@ import {url} from "./AllPages"
 import {loadloadPage, loadPage, verifyUser} from "./ManagerComponents";
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import CreateAdmin from "./Registers/admin";
-import CreateResearcher from "./Registers/resarcher";
-import CreateUser from "./Registers/oldMan";
+// import CreateAdmin from "./Registers/admin";
+// import CreateResearcher from "./Registers/resarcher";
+// import CreateUser from "./Registers/oldMan";
 import Allcountries, {languagesAll} from "countries-list"
-import Carousel from "react-elastic-carousel";
-import * as mongoose from "mongoose";
+// import Carousel from "react-elastic-carousel";
+// import * as mongoose from "mongoose";
 // import {iso6393} from 'iso-639-3'
 
 const animatedComponents = makeAnimated();

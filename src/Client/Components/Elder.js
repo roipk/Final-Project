@@ -265,8 +265,6 @@ export default class ElderPage extends Component {
                         </div>
                 }
             </div>
-
-
         );
     }
 

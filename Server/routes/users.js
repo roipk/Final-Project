@@ -42,24 +42,6 @@ router.route('/login').get(async  function (req, res) {
         return res.status(401).send("Invalid params");
     }
 });
-//
-// router.route('/admin').get(async  function (req, res) {
-//
-//     const token = req.body.token || req.query.token || req.headers["x-access-token"];
-//
-//     if (token) {
-//         VerifyToken(req,res,token)
-//     }
-// });
-// router.route('/guide').get(async  function (req, res) {
-//
-//     const token = req.body.token || req.query.token || req.headers["x-access-token"];
-//
-//     if (token) {
-//         VerifyToken(req,res,token)
-//     }
-// });
-router.route('/:user').get(async  function (req, res) {
 
 router.route('/:user').get(async  function (req, res) {
 
