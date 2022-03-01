@@ -46,6 +46,7 @@ export default class ResearcherPage extends Component {
                             type="button"
                             className="contact100-form-btn"
                             onClick={() => {
+                              console.log(this.state.user)
                                loadPage(this.props, "researcher/new-research",this.state.user)
                               // loadPage(this.props, "register", this.state.user)
                     
@@ -72,7 +73,7 @@ export default class ResearcherPage extends Component {
                             type="button"
                             className="contact100-form-btn"
                             onClick={() => {
-                              // loadPage(this.props, "edit", this.state.user)
+                              loadPage(this.props, "researcher/edit-research/", this.state.user)
                             }}
                           >
                             <i

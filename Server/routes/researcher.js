@@ -17,9 +17,25 @@ router.route('/create/:nameCollection').post(async  function (req, res) {
     console.log("create new Data in "+req.params.nameCollection)
     return res.status(200).json(data)
     // return res.status(200)
-
-
 });
+
+router.route("createResearch").post(async function (req, res) {
+    let research = await addUser(req, "Researches");
+    console.log("create research");
+    console.log("research");
+    res.status(200).json("create research:" + research);
+  });
+
+  router.route("/getResearchByName/:researchName").get(async function (req, res) {
+    console.log(req.params);
+    let researches = await getResearch("Researches", req.params.researchName);
+    res.status(200).json(researches);
+  });
+  
+  router.route("/getAllResearches/").get(async function (req, res) {
+    let users = await getAllResarches("Researches");
+    res.status(200).json(users);
+  });
 
 router.route('createUser').post(async  function (req, res) {
     let user =  await addUser(req,'users')
@@ -34,6 +50,26 @@ router.route('/update/:nameCollection/:Oid').post(async  function (req, res) {
     let UserSessions = await updateData( req.params.nameCollection,doc,data)
     res.status(200).json(UserSessions)
 });
+
+router
+  .route("/addResearchToResearches/:researchersOid/:researchName")
+  .get(async function (req, res) {
+    let researchersOid = req.params.researchersOid;
+    let researchName = req.params.researchName;
+    // let updated = researchersOid.forEach((researcherOid) => {
+    //   updateData("ResearchesInfo", researcherOid, researchName);
+    // });
+    let updated = updateResarchersInfo(
+      "ResearchersInfo",
+      researchersOid,
+      researchName
+    );
+    // console.log(researchName)
+    // console.log(researchersOid)
+
+    // let updated = await addResearch(researchers, data);
+    res.status(200).json(updated);
+  });
 
 router.route('/getAllUserByType/:type').get(async  function (req, res) {
 
@@ -57,6 +93,9 @@ router.route('/DeleteUser/:id').get(async  function (req, res) {
 
 module.exports = router
 
+async function addResearch(researchers, data) {
+    //  console.log(data)
+  }
 
 
 async function CreatData(nameCollection,data){
@@ -66,15 +105,55 @@ async function CreatData(nameCollection,data){
     return newData;
 }
 
-async function getData(nameCollection,Oid){
-        return await db.collection(nameCollection).findOne({Oid:Oid})
-}
+
+async function getData(nameCollection, Oid) {
+    return await db.collection(nameCollection).findOne({ Oid: Oid });
+  }
+  
+  async function getResearch(nameCollection, researchName) {
+    var newData = await db
+      .collection(nameCollection)
+      .find({ researchName: researchName });
+    let researches = [];
+    await newData.forEach((research) => {
+      researches.push(research);
+    });
+    return researches;
+  }
+  
+  async function getAllResarches(nameCollection) {
+    var allResearches = await db.collection(nameCollection).find();
+    let researches = [];
+    await allResearches.forEach((research) => {
+      // user.password = "";
+      researches.push(research);
+    });
+    return researches;
+  }
 
 async function updateData(nameCollection,doc,data){
     console.log(doc)
     var newData = await db.collection(nameCollection).replaceOne({Oid: doc}, data);
     return newData;
 }
+
+async function updateResarchersInfo(
+    nameCollection,
+    researchersOid,
+    researchName
+  ) {
+    let researchersOids = researchersOid.split(",");
+    researchersOids.forEach((rOid) => {
+      db.collection(nameCollection).updateOne(
+        { Oid: rOid },
+        { $addToSet: { researches: researchName } }
+      );
+      //   console.log(rOid)
+    });
+    console.log(researchersOids);
+  
+    console.log(typeof researchersOids);
+  }
 
 async function deleteData(nameCollection,Oid) {
     if(nameCollection == "Authentication")

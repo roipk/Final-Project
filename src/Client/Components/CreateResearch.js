@@ -11,7 +11,7 @@ import DurationPicker from "react-duration-picker";
 
 import { findArrayData } from "./SignUp";
 import MultiSelect from "./MultiSelect";
-import { loadPage, verifyUser } from "./ManagerComponents";
+import { loadPage } from "./ManagerComponents";
 
 const Option = (props) => {
   return (
@@ -65,45 +65,85 @@ const MultiValue = (props) => {
   );
 };
 
-
-
-var options = [];
+// var eldersOptions = [];
+// var researchersOptions = [];
+var allResearchesFullData = [];
 
 export default class CreateResearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
       user: props.location.data,
-      optionSelected: null,
+      // optionSelected: null,
       researchName: "",
       startDate: new Date(),
       endDate: new Date(),
-      researchDuration: "",
-      participents: [],
+      sessionDuration: { hours: 0, minutes: 0, seconds: 0 },
+      eldersOptions: [],
+      participantsElders: [],
+      researchersOptions: [],
+      participantsResearchers: [],
       currentAlgorithm: "",
     };
   }
 
   async componentDidMount() {
+    await this.getAllUsers("user").then((result) => {
+      this.setState({
+        eldersOptions: result,
+      });
+    });
+    await this.getAllUsers("researcher").then((result) => {
+      this.setState({
+        researchersOptions: result,
+      });
+    });
+  }
 
-      options = await this.getAllUsers("user");
-      console.log(options);
+  // async componentDidUpdate() {
+  //   researchersOptions = await this.getAllUsers("researcher");
+  // }
+
+  async addResearchToResearchers(researchers, researchName) {
+    let resarchersOid = [];
+    researchers.forEach((researcher) => resarchersOid.push(researcher.value));
+    console.log(resarchersOid);
+    var res = await axios.get(
+      "http://localhost:5000/researcher/addResearchToResearches/" +
+        resarchersOid +
+        "/" +
+        researchName
+    );
   }
 
   async getAllUsers(type) {
-    // console.log(type)
+    var res = await axios.get(
+      "http://localhost:5000/researcher/getAllUserByType/" + type
+    );
+    allResearchesFullData = res.data;
+    let users = [];
+    res.data.forEach((user) => {
+      // { value: 'user', label: 'Elder' }
+      users.push({
+        value: user._id,
+        label: user.first_name + " " + user.last_name,
+      });
+    });
+    return users;
+  }
 
-    var res = await axios.get("http://localhost:5000/researcher/getAllUserByType/" + type)
-    let users = []
-    res.data.forEach(user => {
-        // console.log(user)
-        // { value: 'user', label: 'Elder' }
-        users.push({value: user._id, label: user.first_name + " " + user.last_name},)
-    })
-    // console.log(users)
-    return users
-    // loadPage(this.props,"",this.state)
-}
+  async isResearchExist(researchName) {
+    var res = await axios.get(
+      "http://localhost:5000/researcher/getResearchByName/" + researchName
+    );
+    return res.data.length == 1;
+  }
+
+  setResearchNameHandler = (event) => {
+    this.setState({
+      researchName: event.target.value,
+    });
+  };
 
   setStartDateHandler = (date) => {
     this.setState({
@@ -118,14 +158,86 @@ export default class CreateResearch extends Component {
   };
 
   setDurationHandler = (duration) => {
-    const { hours, minutes, seconds } = duration;
-    this.setState({ hours, minutes, seconds });
+    this.setState({
+      sessionDuration: duration,
+    });
   };
 
-  multiSelectHandler = (selectedOption) => {
+  setParticipantsElders = (selectedEldersOption) => {
     this.setState({
-      optionSelected: selectedOption,
+      participantsElders: selectedEldersOption,
     });
+  };
+
+  setParticipantsResearchers = (selectedResearchersOption) => {
+    this.setState({
+      participantsResearchers: selectedResearchersOption,
+    });
+  };
+
+  validateForm = (newResearch) => {
+    if (newResearch.participantsElders.length == 0) {
+      console.log("Need to choose Elders");
+    }
+  };
+
+  createResearchHandler = (event) => {
+    event.preventDefault();
+
+    let eldersParticipants = this.state.participantsElders;
+    if (
+      eldersParticipants.length > 0 &&
+      eldersParticipants[0].label === "Select all"
+    ) {
+      eldersParticipants.splice(0, 1);
+    }
+    let researchersParticipants = this.state.participantsResearchers;
+    if (
+      researchersParticipants.length > 0 &&
+      researchersParticipants[0].label === "Select all"
+    ) {
+      researchersParticipants.splice(0, 1);
+    }
+    const newResearch = {
+      researchName: this.state.researchName,
+      startDate: this.state.startDate,
+      endDate: this.state.endDate,
+      sessionDuration: this.state.sessionDuration,
+      participantsElders: this.state.participantsElders,
+      participantsResearchers: this.state.participantsResearchers,
+      algorithm: this.state.currentAlgorithm,
+    };
+
+    // this.validateForm(newResearch);
+
+    this.isResearchExist(newResearch.researchName).then((isExist) => {
+      if (!isExist) {
+        axios
+          .post(
+            "http://localhost:5000/researcher/create/Researches",
+            newResearch
+          )
+          .then((res) => {
+            console.log(res);
+            console.log(res.data);
+            alert(
+              "successful\n the research " +
+                this.state.researchName +
+                "\n" +
+                "add to system"
+            );
+            this.addResearchToResearchers(
+              newResearch.participantsResearchers,
+              newResearch.researchName
+            );
+
+            loadPage(this.props, "researcher", this.state.user);
+          });
+      } else {
+        alert("Research already exist");
+      }
+    });
+    // console.log(newResearch);
   };
 
   render() {
@@ -135,187 +247,186 @@ export default class CreateResearch extends Component {
           <span className="contact100-form-title" translate="yes" lang="he">
             New Research
           </span>
-          <div style={{ width: "100%" }} className="container-section-space">
-            <div className="container-section">
-              <div>
-                <div
-                  className="wrap-input100 validate-input"
-                  data-validate="Name is required"
-                >
-                  <span className="label-input100">Research Name</span>
-                  <input
-                    id="researchName"
-                    className="input100"
-                    type="text"
-                    name="researchName"
-                    placeholder="Enter Research Name"
-                  />
-                  <span className="focus-input100"></span>
-                </div>
-                <div
-                  className="wrap-input100 validate-input"
-                  data-validate="Name is required"
-                >
-                  <span className="label-input100">Research Period</span>
-                  <div className="grid-container">
-                    <div className="grid-item">
-                      <span className="label-input100">Start Date:</span>
-                      <DatePicker
-                        selected={this.state.startDate}
-                        onSelect={this.setStartDateHandler}
-                        dateFormat="dd/MM/yyyy"
-                        locale={he}
-                        showTimeSelect
-                      ></DatePicker>
-                    </div>
-                    <div className="grid-item">
-                      <span className="label-input100">End Date:</span>
-                      <DatePicker
-                        selected={this.state.endDate}
-                        onSelect={this.setEndDateHandler}
-                        dateFormat="dd/MM/yyyy"
-                        locale={he}
-                      ></DatePicker>
-                    </div>
-                    <div className="grid-item">
-                      <span className="label-input100">Session Duration:</span>
-                      <DurationPicker
-                        onChange={this.setDurationHandler}
-                        initialDuration={{ hours: 1, minutes: 0, seconds: 0 }}
-                        // maxHours={5}
-                      ></DurationPicker>
+
+          <form onSubmit={this.createResearchHandler}>
+            <div style={{ width: "100%" }} className="container-section-space">
+              <div className="container-section">
+                <div>
+                  <div
+                    className="wrap-input100 validate-input"
+                    data-validate="Name is required"
+                  >
+                    <span className="label-input100">Research Name</span>
+                    <input
+                      id="researchName"
+                      className="input100"
+                      onChange={this.setResearchNameHandler}
+                      type="text"
+                      name="researchName"
+                      placeholder="Enter Research Name"
+                      required
+                    />
+
+                    <span className="focus-input100"></span>
+                  </div>
+                  <div
+                    className="wrap-input100 validate-input"
+                    data-validate="Name is required"
+                  >
+                    <span className="label-input100">Research Period</span>
+                    <div className="grid-container">
+                      <div className="grid-item">
+                        <span className="label-input100">Start Date:</span>
+                        <DatePicker
+                          selected={this.state.startDate}
+                          onSelect={this.setStartDateHandler}
+                          dateFormat="dd/MM/yyyy"
+                          locale={he}
+                          // showTimeSelect
+                        ></DatePicker>
+                      </div>
+                      <div className="grid-item">
+                        <span className="label-input100">End Date:</span>
+                        <DatePicker
+                          selected={this.state.endDate}
+                          onSelect={this.setEndDateHandler}
+                          dateFormat="dd/MM/yyyy"
+                          locale={he}
+                        ></DatePicker>
+                      </div>
+                      <div className="grid-item">
+                        <span className="label-input100">
+                          Session Duration:
+                        </span>
+                        <DurationPicker
+                          onChange={this.setDurationHandler}
+                          initialDuration={{ hours: 1, minutes: 0, seconds: 0 }}
+                          // maxHours={5}
+                        ></DurationPicker>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div
-                  className="wrap-input100 validate-input"
-                  data-validate="Name is required"
-                >
-                  <span className="label-input100">Participents Elders</span>
+                  <div
+                    className="wrap-input100 validate-input"
+                    data-validate="Name is required"
+                  >
+                    <span className="label-input100">Participents Elders</span>
 
-                  <MultiSelect
-                    options={options}
-                    isMulti
-                    closeMenuOnSelect={false}
-                    hideSelectedOptions={false}
-                    components={{
-                      Option,
-                      MultiValue,
-                      ValueContainer,
-                    }}
-                    isSearchable
-                    onChange={this.multiSelectHandler}
-                    allowSelectAll={true}
-                    value={this.state.optionSelected}
-                    // styles={colourStyles}
-                  />
-                </div>
-
-                <div className="wrap-input100 input100-select">
-                  <span className="label-input100">Algorithm </span>
-
-                  <div>
-                    <Select
-                      // onChange={e=>{}}
-
-                      style={{ zIndex: 100 }}
-                      className="basic-multi-select"
-                      closeMenuOnSelect={true}
-                      value={
-                        this.state.currentAlgorithm
-                          ? findArrayData(this.state.currentAlgorithm, algo)
-                          : null
-                      }
-                      options={algo}
-                      menuPlacement="auto"
-                      menuPosition="fixed"
-                      onChange={(e) => {
-                        this.setState({ currentAlgorithm: e.value });
+                    <MultiSelect
+                      options={this.state.eldersOptions}
+                      isMulti
+                      closeMenuOnSelect={false}
+                      hideSelectedOptions={false}
+                      components={{
+                        Option,
+                        MultiValue,
+                        ValueContainer,
                       }}
+                      isSearchable
+                      onChange={this.setParticipantsElders}
+                      allowSelectAll={true}
+                      value={this.state.participantsElders}
+                      // styles={colourStyles}
                     />
                   </div>
-                  <span className="focus-input100"></span>
-                </div>
 
-                <div className="container-contact100-form-btn">
                   <div
-                    className="wrap-contact100-form-btn"
-                    style={{ zIndex: 0 }}
+                    className="wrap-input100 validate-input"
+                    data-validate="Name is required"
                   >
-                    <div className="contact100-form-bgbtn"></div>
-                    <button
-                      type="button"
-                      id="signup"
-                      className="contact100-form-btn"
-                      onClick={() => {
-                        if (
-                          !(
-                            this.state.firstName ||
-                            this.state.lastName ||
-                            this.state.password
-                          )
-                        )
-                          return alert("Fill in all required fields");
-                        // console.log(this.state.firstName)
-                        const user = {
-                          first_name: this.state.firstName,
-                          last_name: this.state.lastName,
-                          password: this.state.password,
-                          type: this.state.type,
-                          timeOut: 0,
-                          permissions: this.state.roles ? this.state.roles : [],
-                        };
-                        axios
-                          .post("http://localhost:5000/admin/createUser", user)
-                          .then((res) => {
-                            console.log("in");
-                            console.log(res.data);
-                            // loadPage(this.props,"",this.state)
-                          });
+                    <span className="label-input100">
+                      Participents Researchers
+                    </span>
 
-                        //     axios.post("http://localhost:5000/users/register",user)
-                        //     .then(res=>{
-                        //         // console.log(res.data)
-                        //         loadPage(this.props,"",this.state)
-                        //     })
+                    <MultiSelect
+                      options={this.state.researchersOptions}
+                      isMulti
+                      closeMenuOnSelect={false}
+                      hideSelectedOptions={false}
+                      components={{
+                        Option,
+                        MultiValue,
+                        ValueContainer,
                       }}
+                      isSearchable
+                      onChange={this.setParticipantsResearchers}
+                      allowSelectAll={true}
+                      value={this.state.participantsResearchers}
+                      // styles={colourStyles}
+                    />
+                  </div>
+
+                  <div className="wrap-input100 input100-select">
+                    <span className="label-input100">Algorithm </span>
+
+                    <div>
+                      <Select
+                        style={{ zIndex: 100 }}
+                        className="basic-multi-select"
+                        closeMenuOnSelect={true}
+                        value={
+                          this.state.currentAlgorithm
+                            ? findArrayData(this.state.currentAlgorithm, algo)
+                            : null
+                        }
+                        options={algo}
+                        menuPlacement="auto"
+                        menuPosition="fixed"
+                        onChange={(e) => {
+                          this.setState({ currentAlgorithm: e.value });
+                        }}
+                      />
+                    </div>
+                    <span className="focus-input100"></span>
+                  </div>
+
+                  <div className="container-contact100-form-btn">
+                    <div
+                      className="wrap-contact100-form-btn"
+                      style={{ zIndex: 0 }}
                     >
-                      <span>
-                        Create Research
+                      <div className="contact100-form-bgbtn"></div>
+                      <button
+                        type="submit"
+                        id="signup"
+                        className="contact100-form-btn"
+                      >
+                        <span>
+                          Create Research
+                          <i
+                            className="fa fa-long-arrow-right m-l-7"
+                            aria-hidden="true"
+                          ></i>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="container-contact100-back-btn">
+                    <div
+                      className="wrap-contact100-back-btn"
+                      style={{ zIndex: 0 }}
+                    >
+                      <div className="contact100-back-bgbtn"></div>
+                      <button
+                        id="main"
+                        type="button"
+                        className="contact100-back-btn"
+                        onClick={() => {
+                          loadPage(this.props, "researcher", this.state.user);
+                        }}
+                      >
                         <i
-                          className="fa fa-long-arrow-right m-l-7"
+                          className="fa fa-arrow-left m-l-7"
                           aria-hidden="true"
                         ></i>
-                      </span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="container-contact100-back-btn">
-                  <div
-                    className="wrap-contact100-back-btn"
-                    style={{ zIndex: 0 }}
-                  >
-                    <div className="contact100-back-bgbtn"></div>
-                    <button
-                      id="main"
-                      type="button"
-                      className="contact100-back-btn"
-                      onClick={() => {
-                        // console.log(this.state.roles?this.state.roles:[])
-                        loadPage(this.props, "researcher", this.state.user);
-                      }}
-                    >
-                      <i
-                        className="fa fa-arrow-left m-l-7"
-                        aria-hidden="true"
-                      ></i>
-                    </button>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     );

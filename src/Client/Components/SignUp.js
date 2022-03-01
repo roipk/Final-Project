@@ -169,6 +169,16 @@ export default class SignUp extends Component{
         return user
     }
 
+    newResearcherData(id) {
+        let authData = this.newUserAuthentication();
+        let researcherData = {
+          Oid: id,
+          ...authData,
+          researches: [],
+        };
+        return researcherData;
+      }
+
     newElderData(id){
 
         let elderData = {
@@ -453,12 +463,24 @@ export default class SignUp extends Component{
                                     console.log("done")
                                     axios.post(url+"/admin/create/Authentication", user)
                                         .then(res => {
+                                            let id = res.data.insertedId;
                                             console.log(res)
                                             console.log(res.data)
                                             alert("successful\n the user " + this.state.first_name + "\n" +
                                                 "add to system with id -  " + res.data.insertedId + "\n" +
                                                 "type " + this.state.type)
-                                            loadPage(this.props, "admin", this.state.user)
+                                                if (this.state.type === "researcher") {
+                                                    console.log(id);
+                                                    let researcherInfo = this.newResearcherData(id);
+                                                    axios
+                                                      .post(url+"/admin/create/ResearchersInfo",researcherInfo)
+                                                      .then((res) => {
+                                                        alert("Added also to researcherInfo:" + res.data);
+                                                      });
+                                                      loadPage(this.props, "admin", this.state.user);
+                                                    }
+                                                    loadPage(this.props, "admin", this.state.user);
+                                            // loadPage(this.props, "admin", this.state.user)
                                             // loadPage(this.props,"",this.state)
                                         })
                                 }}>submit
