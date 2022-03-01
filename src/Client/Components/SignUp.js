@@ -15,7 +15,7 @@ import Allcountries, {languagesAll}from "countries-list"
 import {url} from "./AllPages";
 // import {iso6393} from 'iso-639-3'
 
-// Checkkkkkkkkkkkkk
+
 
 const animatedComponents = makeAnimated();
 
