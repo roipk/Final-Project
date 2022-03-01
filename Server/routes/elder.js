@@ -13,12 +13,23 @@ const CreateToken = require("../middleware/user").CreateToken
 
 
 
-routerElder.route('/session/:id/:algorithm').get(async  function (req, res) {
 
+routerElder.route('/session/:id/:algorithm?').get(async  function (req, res) {
+
+    console.log(req.params)
     let id=req.params.id
     let algorithm=req.params.algorithm
     let session = await getData("UserSessions",id)
-    if(Array.isArray(session.sessions[algorithm]) && session.sessions[algorithm].length>0 )
+
+     if(algorithm === undefined)
+    {
+        let keys = []
+        Object.entries(session.sessions).forEach(([key]) => {
+            keys.push(key)
+        })
+        return res.status(200).json(keys)
+    }
+    else if(algorithm && Array.isArray(session.sessions[algorithm]) && session.sessions[algorithm].length>0 )
     {
         var songs = {
             songsView: [],
@@ -32,10 +43,12 @@ routerElder.route('/session/:id/:algorithm').get(async  function (req, res) {
         }
         return res.status(200).json(songs)
     }
+
     return res.status(404)
 
 
 });
+
 
 routerElder.route('/Create/session/:id/:algorithm').get(async  function (req, res) {
 
