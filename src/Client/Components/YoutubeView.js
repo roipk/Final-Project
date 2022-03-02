@@ -52,127 +52,132 @@ const opts = {
 }
 
 var videoData=[]
+var _user={}
+var _algorithm=null
 
-export default class YoutubeView  extends Component {
+export default function YoutubeView (user,algorithm,videos,sessionNumber){
 
-    constructor(props) {
-        super(props);
-        console.log(props)
-        this.state = {
-            videos: props.videos,
-            session: props.session // personal,family, research1, research2
-            // videos: [{nameSong: "linkin park - numb", id: "kXYiU_JCYtU"}],
-        };
-    }
+    // constructor(props) {
+    //     super(props);
+    //     console.log(props)
+    //     this.state = {
+    //         videos: props.videos,
+    //         session: props.session // personal,family, research1, research2
+    //         // videos: [{nameSong: "linkin park - numb", id: "kXYiU_JCYtU"}],
+    //     };
+    // }
+    console.log(videos)
+    _user=user
+    _algorithm=algorithm
 
-    componentDidMount() {
+    return (
+        <div>
+            {
+               videos.map((item, index) => {
+                    // console.log('item')
+                    return (
+                        <div key={item.RecordDisplayId}
+                             className="container-contact100-form-btn" style={{
+                            display: 'block',
+                            padding: '10px',
+                            textAlign: 'center',
+                            // border: '10px solid black'
+                        }}>
 
-    }
+                            <h4>{item.originTitle + " - " + item.originArtistName}</h4>
+                            <YouTube id={item.youtube.videoId} videoId={item.youtube.videoId}
+                                     opts={opts}
 
-    render() {
-        return (
-            <div>
-                {
-                    this.state.videos.map((item, index) => {
-                        // console.log('item')
-                        return (
-                            <div key={item.RecordDisplayId}
-                                 className="container-contact100-form-btn" style={{
-                                display: 'block',
-                                padding: '10px',
-                                textAlign: 'center',
-                                // border: '10px solid black'
-                            }}>
-
-                                <h4>{item.originTitle + " - " + item.originArtistName}</h4>
-                                <YouTube id={item.youtube.videoId} videoId={item.youtube.videoId}
-                                         opts={opts}
-
-                                         onReady={(e) => {
-                                             this.onReady(e.target)
-                                         }}
-                                         onPlay={(e) => {
-                                             this.onPlay(e.target)
-                                         }}
-                                         onPause={(e) => {
-                                             this.onPause(e.target)
-                                         }}
-                                         onEnd={(e) => {
-                                             this.onEnd(e.target)
-                                         }}
+                                     onReady={(e) => {
+                                         onReady(e.target)
+                                     }}
+                                     onPlay={(e) => {
+                                         onPlay(e.target)
+                                     }}
+                                     onPause={(e) => {
+                                         onPause(e.target)
+                                     }}
+                                     onEnd={(e) => {
+                                         onEnd(e.target)
+                                     }}
 
 
-                                />
-                                <div>
-                                    <button style={{
-                                        fontSize: '400%',
-                                        textAlign: 'center',
-                                        borderStyle: item.score === 1 ? "solid" : ""
-                                    }} className="buttonDes" type="button" value={1}
-                                            onClick={(e) => {
-                                                this.rated(e, item.RecordDisplayId, index)
-                                            }} name="verySad"
-                                            id={"verySad" + item.RecordDisplayId}
-                                    >😟
-                                    </button>
-                                    <button style={{
-                                        fontSize: '400%',
-                                        textAlign: 'center',
-                                        borderStyle: item.score === 2 ? "solid" : ""
-                                    }} className="buttonDes" type="button" value={2}
-                                            onClick={(e) => {
-                                                this.rated(e, item.RecordDisplayId, index)
-                                            }} name="Sad" id={"Sad" + item.RecordDisplayId}
-                                    >🙁
-                                    </button>
-                                    <button style={{
-                                        fontSize: '400%',
-                                        textAlign: 'center',
-                                        borderStyle: item.score === 3 ? "solid" : ""
-                                    }} className="buttonDes" type="button" value={3}
-                                            onClick={(e) => {
-                                                this.rated(e, item.RecordDisplayId, index)
-                                            }} name="Indifferent"
-                                            id={"Indifferent" + item.RecordDisplayId}
-                                    >😐
-                                    </button>
-                                    <button style={{
-                                        fontSize: '400%',
-                                        textAlign: 'center',
-                                        borderStyle: item.score === 4 ? "solid" : ""
-                                    }} className="buttonDes" type="button" value={4}
-                                            onClick={(e) => {
-                                                this.rated(e, item.RecordDisplayId, index)
-                                            }} name="happy" id={"happy" + item.RecordDisplayId}
-                                    >😀
-                                    </button>
-                                    <button style={{
-                                        fontSize: '400%',
-                                        textAlign: 'center',
-                                        borderStyle: item.score === 5 ? "solid" : ""
-                                    }} className="buttonDes" type="button" value={5}
-                                            onClick={(e) => {
-                                                this.rated(e, item.RecordDisplayId, index)
-                                            }} name="Joyful"
-                                            id={"Joyful" + item.RecordDisplayId}
-                                    >😆
-                                    </button>
+                            />
+                            <div>
+                                <button style={{
+                                    fontSize: '400%',
+                                    textAlign: 'center',
+                                    borderStyle: item.score === 1 ? "solid" : ""
+                                }} className="buttonDes" type="button" value={1}
+                                        onClick={(e) => {
+                                            rated(e, item.RecordDisplayId, index, sessionNumber)
+                                        }} name="verySad"
+                                        id={"verySad" + item.RecordDisplayId}
+                                >😟
+                                </button>
+                                <button style={{
+                                    fontSize: '400%',
+                                    textAlign: 'center',
+                                    borderStyle: item.score === 2 ? "solid" : ""
+                                }} className="buttonDes" type="button" value={2}
+                                        onClick={(e) => {
+                                            rated(e, item.RecordDisplayId, index, sessionNumber)
+                                        }} name="Sad" id={"Sad" + item.RecordDisplayId}
+                                >🙁
+                                </button>
+                                <button style={{
+                                    fontSize: '400%',
+                                    textAlign: 'center',
+                                    borderStyle: item.score === 3 ? "solid" : ""
+                                }} className="buttonDes" type="button" value={3}
+                                        onClick={(e) => {
+                                            rated(e, item.RecordDisplayId, index, sessionNumber)
+                                        }} name="Indifferent"
+                                        id={"Indifferent" + item.RecordDisplayId}
+                                >😐
+                                </button>
+                                <button style={{
+                                    fontSize: '400%',
+                                    textAlign: 'center',
+                                    borderStyle: item.score === 4 ? "solid" : ""
+                                }} className="buttonDes" type="button" value={4}
+                                        onClick={(e) => {
+                                            rated(e, item.RecordDisplayId, index, sessionNumber)
+                                        }} name="happy" id={"happy" + item.RecordDisplayId}
+                                >😀
+                                </button>
+                                <button style={{
+                                    fontSize: '400%',
+                                    textAlign: 'center',
+                                    borderStyle: item.score === 5 ? "solid" : ""
+                                }} className="buttonDes" type="button" value={5}
+                                        onClick={(e) => {
+                                            rated(e, item.RecordDisplayId, index, sessionNumber)
+                                        }} name="Joyful"
+                                        id={"Joyful" + item.RecordDisplayId}
+                                >😆
+                                </button>
 
-                                </div>
-                                <hr/>
                             </div>
-                        )
-                    })
-                }
-            </div>
+                            <hr/>
+                        </div>
+                    )
+                })
+            }
+        </div>
 
-        )
-    }
+    )
+}
 
 
-    //class="ytp-chrome-top ytp-show-cards-title"
-    //ytp-impression-link
-    onReady(player) {
+
+
+//
+//
+//
+//     //class="ytp-chrome-top ytp-show-cards-title"
+//     //ytp-impression-link
+    function onReady(player) {
 
         // player.seekTo(80,true)
 
@@ -181,7 +186,7 @@ export default class YoutubeView  extends Component {
         console.log("onReady")
     }
 
-    onPlay(player) {
+function onPlay(player) {
 
         // console.log(e)
 
@@ -193,19 +198,19 @@ export default class YoutubeView  extends Component {
         console.log("onPlay")
     }
 
-    onPause(player) {
+function  onPause(player) {
         // player.loadVideoById({videoId:"eVTXPUF4Oz4",
         //     startSeconds:30,//start clip in sec
         //     // endSeconds:35//end clip
         // })
         console.log(player)
         console.log(player.getDuration())
-        var time = this.convert(player.getCurrentTime())
+        var time = convert(player.getCurrentTime())
         // console.log("you paused "+ time +"\n "+this.convertHMS(time) +"sec")
-        console.log(`you paused  ${time} \n ${this.convertHMS(time)} sec`)
+        console.log(`you paused  ${time} \n ${convertHMS(time)} sec`)
     }
 
-    onEnd(player) {
+function onEnd(player) {
 
         console.log("onEnd")
         // console.log(player.getDuration())
@@ -214,14 +219,14 @@ export default class YoutubeView  extends Component {
         player.stopVideo()
     }
 
-    convert(SECONDS) {
+function convert(SECONDS) {
         if (SECONDS < 3600)
             return new Date(SECONDS * 1000).toISOString().substr(14, 5)
         return new Date(SECONDS * 1000).toISOString().substr(11, 8)
 
     }
 
-    convertHMS(timeString) {
+function convertHMS(timeString) {
         if (timeString.length < 6)
             timeString = "00:" + timeString
         const arr = timeString.split(":");
@@ -230,7 +235,7 @@ export default class YoutubeView  extends Component {
 
     }
 
-    async rated(e, id, index) {
+    async function rated(e, id, index,sessionNumber) {
         var state = e.target.style.borderStyle
         // console.log( document.getElementById('verySad'+index))
         document.getElementById('verySad' + id).style.borderStyle = ""
@@ -240,15 +245,12 @@ export default class YoutubeView  extends Component {
         document.getElementById('Joyful' + id).style.borderStyle = ""
         e.target.style.borderStyle = state === "solid" ? "" : "solid"
         var rate = {
-            sesionNumber: this.state.sessionNumber,
+            sesionNumber: sessionNumber,
             songNumber: index,
             score: e.target.style.borderStyle === "solid" ? parseInt(e.target.value) : 0
         }
-        console.log(this.state.user._id)
-        var t = await axios.post(url + "/user/RateSession/" + this.state.user._id, rate)
+        console.log(_user._id)
+        var t = await axios.post(url + "/user/RateSession/" + _user._id+"/"+_algorithm, rate)
         alert("thanks for rate")
 
     }
-
-
-}

@@ -20,6 +20,11 @@ routerElder.route('/session/:id/:algorithm?').get(async  function (req, res) {
     let id=req.params.id
     let algorithm=req.params.algorithm
     let session = await getData("UserSessions",id)
+    var songs = {
+        songsView: [],
+        songsBlock: []
+    }
+    // console.log(session)
 
      if(algorithm === undefined)
     {
@@ -31,11 +36,6 @@ routerElder.route('/session/:id/:algorithm?').get(async  function (req, res) {
     }
     else if(algorithm && Array.isArray(session.sessions[algorithm]) && session.sessions[algorithm].length>0 )
     {
-        var songs = {
-            songsView: [],
-            songsBlock: []
-        }
-
         songs.songsView = session.sessions[algorithm][session.sessions[algorithm].length-1]
 
         songs = {sessionNumber:session.sessions[algorithm].length,
@@ -43,6 +43,13 @@ routerElder.route('/session/:id/:algorithm?').get(async  function (req, res) {
         }
         return res.status(200).json(songs)
     }
+    else if(session.sessions[algorithm].length===0)
+     {
+         songs = {sessionNumber:session.sessions[algorithm].length,
+             list:songs.songsView
+         }
+         return res.status(200).json(songs)
+     }
 
     return res.status(404)
 

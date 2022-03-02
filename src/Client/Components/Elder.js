@@ -27,7 +27,7 @@ export default class ElderPage extends Component {
     async componentDidMount() {
         currentUser = await verifyUser("user")
         if (currentUser) {
-            let videos = await this.getSession(currentUser._id)
+            let videos = await this.getSession(currentUser._id,this.state.session)
             await this.getSessionsKey(currentUser._id)
 
             this.setState({user: currentUser, videos: videos})
@@ -37,9 +37,11 @@ export default class ElderPage extends Component {
 
     }
 
-    async getSession(id) {
+    async getSession(id,session) {
         console.log(this.state.session)
-        let songs = await axios.get(url + "/user/session/" + id + "/" + this.state.session)
+        console.log(url + "/user/session/" + id + "/" + session)
+        let songs = await axios.get(url + "/user/session/" + id + "/" + session)
+        console.log(songs)
         this.setState({sessionNumber: songs.data.sessionNumber})
         console.log(songs.data.sessionNumber)
         return songs.data.list
@@ -92,9 +94,9 @@ export default class ElderPage extends Component {
                                                         <div className="container-section">
                                                             <div className="container-contact100-form-btn">
                                                                 {this.state.videos ?
-                                                                    <YoutubeView session={this.state.session}
-                                                                                 videos={this.state.videos}/> :
-                                                                    "no found video for this session"
+                                                                    // <YoutubeView session={this.state.session}
+                                                                    //              videos={this.state.videos}/> :
+                                                                    YoutubeView(this.state.user,this.state.session, this.state.videos, this.state.sessionNumber):"no found video for this session"
                                                                 }
 
                                                             </div>
@@ -145,12 +147,13 @@ export default class ElderPage extends Component {
                                                                             value = {{value:this.state.session,label:this.state.session,}}
                                                                             defaultValue={sessionOpt[0]}
                                                                             onChange={async e => {
-                                                                                console.log(e.value)
-                                                                                await this.setState({session:e.value})
-                                                                                console.log(currentUser._id)
-                                                                                let videos = await this.getSession(currentUser._id)
-                                                                                console.log(videos)
-                                                                                this.setState({user: currentUse, videos: videos})
+                                                                                // console.log(e.value)
+                                                                                // console.log(currentUser)
+                                                                                // await this.setState({session:e.value})
+                                                                                // console.log(currentUser._id)
+                                                                                let videos = await this.getSession(currentUser._id,e.value)
+                                                                                // console.log(videos)
+                                                                                this.setState({videos: videos,session:e.value})
                                                                             }}
                                                                             menuPlacement="auto"
                                                                             menuPosition="fixed"
