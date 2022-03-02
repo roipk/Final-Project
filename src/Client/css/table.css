@@ -200,6 +200,7 @@ iframe {
 }
 
 .container-section {
+    text-align: center;
     width: 100%;
     background: #fff;
     border-style: solid;

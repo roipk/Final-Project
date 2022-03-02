@@ -12,6 +12,45 @@ const VerifyToken = require("../middleware/user").VerifyToken
 const CreateToken = require("../middleware/user").CreateToken
 
 
+routerElder.route('/currentSession/:id/:algorithm?').post(async  function (req, res) {
+    let id = req.params.id
+    let session = await getData("UserSessions", id)
+    session.currentAlgorithm = req.body.currentSession
+    await updateData("UserSessions",id,session)
+    return res.status(200)
+});
+
+routerElder.route('/session/:id/:algorithm?').post(async  function (req, res) {
+    let id=req.params.id
+    let algorithm=req.params.algorithm
+    let session = await getData("UserSessions",id)
+
+    if(algorithm && Array.isArray(session.sessions[algorithm]) && session.sessions[algorithm].length>0 )
+    {
+        var found = false
+        await session.sessions[algorithm][session.sessions[algorithm].length-1].forEach(item=> {
+            if (item.youtube.videoId === req.body.youtube.videoId)
+            {
+                found = true
+                return res.status(200).json({massage:"the song exist"})
+            }
+        })
+
+        if(!found)
+            session.sessions[algorithm][session.sessions[algorithm].length-1].push(req.body)
+    }
+    else if(session.sessions[algorithm].length===0)
+    {
+        session.sessions[algorithm].push([req.body])
+    }
+
+    let t = await updateData("UserSessions",id,session)
+    return res.status(200).json({massage:"success"})
+
+
+
+
+});
 
 
 routerElder.route('/session/:id/:algorithm?').get(async  function (req, res) {
@@ -28,11 +67,14 @@ routerElder.route('/session/:id/:algorithm?').get(async  function (req, res) {
 
      if(algorithm === undefined)
     {
+
         let keys = []
         Object.entries(session.sessions).forEach(([key]) => {
             keys.push(key)
         })
-        return res.status(200).json(keys)
+        let data={keys:keys,
+        currentAlgorithm: session.currentAlgorithm}
+        return res.status(200).json(data)
     }
     else if(algorithm && Array.isArray(session.sessions[algorithm]) && session.sessions[algorithm].length>0 )
     {

@@ -149,7 +149,7 @@ export default class EditUsers extends Component {
             yearOfImmigration: "",
             maxSession:null,
             Cognitive:null,
-            currentAlgorithm:'History'
+            currentAlgorithm:'personal'
 
         };
 

@@ -1,5 +1,5 @@
 import YouTube from "react-youtube";
-import React, {Component} from "react";
+import React, {Component,useCallback } from "react";
 import {verifyUser} from "./ManagerComponents";
 import axios from "axios";
 import {url} from "./AllPages";
@@ -55,7 +55,7 @@ var videoData=[]
 var _user={}
 var _algorithm=null
 
-export default function YoutubeView (user,algorithm,videos,sessionNumber){
+export function YoutubeView (userID,algorithm,videos,sessionNumber){
 
     // constructor(props) {
     //     super(props);
@@ -67,7 +67,7 @@ export default function YoutubeView (user,algorithm,videos,sessionNumber){
     //     };
     // }
     console.log(videos)
-    _user=user
+    _user=userID
     _algorithm=algorithm
 
     return (
@@ -76,7 +76,7 @@ export default function YoutubeView (user,algorithm,videos,sessionNumber){
                videos.map((item, index) => {
                     // console.log('item')
                     return (
-                        <div key={item.RecordDisplayId}
+                        <div key={index}
                              className="container-contact100-form-btn" style={{
                             display: 'block',
                             padding: '10px',
@@ -170,8 +170,44 @@ export default function YoutubeView (user,algorithm,videos,sessionNumber){
 }
 
 
+function YoutubeData({url,onReady})
+{
+    const onItemTest = useCallback(event => {
+        console.log('You clicked ', event.target.getVideoData().title);
+        onReady = event.target.getVideoData().title
+    }, [onReady]);
 
 
+
+    const indexStart = url.indexOf("=")>0?url.indexOf("=")+1:0;
+    const indexEnd = url.indexOf("&")===-1?url.length:url.indexOf("&");
+    url = url.slice(indexStart,indexEnd)
+    var d = " hi "
+
+    return(
+        <YouTube  id={url} videoId={url}
+                 opts={opts}
+                    onReady={onReady}
+                 // onReady={(e) => {
+                 //    d = e.target.getVideoData().title
+                 //     console.log(e.target.getVideoData().title)
+                 //    props.onReady = e
+                 //     // onReady(e.target)
+                 // }}
+                 // onPlay={(e) => {
+                 //     onPlay(e.target)
+                 // }}
+                 // onPause={(e) => {
+                 //     onPause(e.target)
+                 // }}
+                 // onEnd={(e) => {
+                 //     onEnd(e.target)
+                 // }}
+        />
+    )
+}
+
+export default  React.memo(YoutubeData)
 //
 //
 //
@@ -191,6 +227,7 @@ function onPlay(player) {
         // console.log(e)
 
         console.log(player)
+        console.log(player.getVideoData().title)
         videoData.forEach(video => {
             if (video !== player)
                 video.pauseVideo();
@@ -249,8 +286,8 @@ function convertHMS(timeString) {
             songNumber: index,
             score: e.target.style.borderStyle === "solid" ? parseInt(e.target.value) : 0
         }
-        console.log(_user._id)
-        var t = await axios.post(url + "/user/RateSession/" + _user._id+"/"+_algorithm, rate)
+        console.log(_user)
+        var t = await axios.post(url + "/user/RateSession/" + _user+"/"+_algorithm, rate)
         alert("thanks for rate")
 
     }

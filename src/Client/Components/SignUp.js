@@ -798,28 +798,28 @@ export default class SignUp extends Component{
                         </div>
                         <span className="focus-input100"></span>
                     </div>
-                    <div className="wrap-input100 input100-select">
-                        <span className="label-input100">Algorithm*</span>
-                        <div>
+                    {/*<div className="wrap-input100 input100-select">*/}
+                    {/*    <span className="label-input100">Algorithm*</span>*/}
+                    {/*    <div>*/}
 
-                            <Select label="select year"
-                                // onChange={e=>{}}
+                    {/*        <Select label="select year"*/}
+                    {/*            // onChange={e=>{}}*/}
 
-                                    style={{zIndex:100}}
-                                    className="basic-multi-select"
-                                    closeMenuOnSelect={true}
-                                    value={this.state.currentAlgorithm?findArrayData(this.state.currentAlgorithm, algo):null}
-                                    options={algo}//start, end-> today year
-                                    menuPlacement="auto"
-                                    menuPosition="fixed"
-                                    onChange={(e)=>{
-                                        this.setState({currentAlgorithm: e.value})
-                                    }}
+                    {/*                style={{zIndex:100}}*/}
+                    {/*                className="basic-multi-select"*/}
+                    {/*                closeMenuOnSelect={true}*/}
+                    {/*                value={this.state.currentAlgorithm?findArrayData(this.state.currentAlgorithm, algo):null}*/}
+                    {/*                options={algo}//start, end-> today year*/}
+                    {/*                menuPlacement="auto"*/}
+                    {/*                menuPosition="fixed"*/}
+                    {/*                onChange={(e)=>{*/}
+                    {/*                    this.setState({currentAlgorithm: e.value})*/}
+                    {/*                }}*/}
 
-                            />
-                        </div>
-                        <span className="focus-input100"></span>
-                    </div>
+                    {/*        />*/}
+                    {/*    </div>*/}
+                    {/*    <span className="focus-input100"></span>*/}
+                    {/*</div>*/}
 
 
                        <div className="wrap-contact100-back-btn">
