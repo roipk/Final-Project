@@ -11,6 +11,13 @@ export const loadPage = (props, page, data) => {
   });
 };
 
+export const logOut = (props) => {
+  localStorage.setItem("token",null)
+  props.history.push({
+    pathname: `/login`,
+  });
+};
+
 export const verifyUser = async (page) => {
   let token = localStorage.getItem("token");
   if (token) {
@@ -22,14 +29,14 @@ export const verifyUser = async (page) => {
         localStorage.setItem("token", user.data.token);
         return user.data.user;
       } else {
-        
+
         // loadPage(this.props,"404")
       }
     } catch (e) {
       // window.location.href = "404"
       console.log("need new token");
-      
-   
+
+
     }
   }
 };

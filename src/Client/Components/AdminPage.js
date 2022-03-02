@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {loadPage,verifyUser,url} from "./ManagerComponents";
+import {logOut,loadPage,verifyUser,url} from "./ManagerComponents";
 import axios from "axios";
 import NotFound from "./404";
 
@@ -249,7 +249,7 @@ export default class AdminPage extends Component {
                                                         <button id='createGuide' type='button'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "")
+                                                                    logOut(this.props)
                                                                 }}>
                                 <span>
                                     <i className="fa fa-sign-out fa-lg fa-fw" aria-hidden="true"

@@ -98,6 +98,17 @@ export default class ViewUsers extends Component {
                                         }
 
                                     </div>
+
+                                    <div hidden={this.state.page > 0} className="wrap-contact100-back-btn">
+                                        <div className="contact100-back-bgbtn"></div>
+                                        <button id='back' type='button' className="contact100-back-btn"
+                                                onClick={() => {
+                                                    // console.log(this.state.roles?this.state.roles:[])
+                                                    loadPage(this.props, "admin", this.state.user)
+                                                }}>back
+                                            <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
                                 </form>
                             </div>
                         </div>
