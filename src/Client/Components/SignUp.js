@@ -147,7 +147,7 @@ export default class SignUp extends Component{
             yearOfImmigration:"",
             maxSession:7,
             Cognitive:Config.HIGH_COGNITIVE,
-            currentAlgorithm:"",
+            currentAlgorithm:"personal",
             checked:true
         };
 
