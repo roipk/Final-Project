@@ -8,12 +8,13 @@ import he from "date-fns/locale/he";
 registerLocale("he", he);
 
 import DurationPicker from "react-duration-picker";
+import Combobox from "react-widgets/Combobox";
+import MultiSelect from "./MultiSelect";
 
 import { findArrayData } from "./SignUp";
-import MultiSelect from "./MultiSelect";
 import { loadPage } from "./ManagerComponents";
 
-const Option = (props) => {
+export const Option = (props) => {
   return (
     <div>
       <components.Option {...props}>
@@ -33,13 +34,22 @@ const allOption = {
   value: "*",
 };
 
-const algo = [
+export const algo = [
   // { value: '', label: 'Admin' },
   { value: "History", label: "History" },
   // { value: 'Family', label: 'Family' },
 ];
 
-const ValueContainer = ({ children, ...props }) => {
+const hours = [];
+const minutes = [];
+for (var i = 0; i < 60; i++) {
+  if (i < 24) {
+    hours.push(i);
+  }
+  minutes.push(i);
+}
+
+export const ValueContainer = ({ children, ...props }) => {
   const currentValues = props.getValue();
   let toBeRendered = children;
   if (currentValues.some((val) => val.value === allOption.value)) {
@@ -53,7 +63,7 @@ const ValueContainer = ({ children, ...props }) => {
   );
 };
 
-const MultiValue = (props) => {
+export const MultiValue = (props) => {
   let labelToBeDisplayed = `${props.data.label}, `;
   if (props.data.value === allOption.value) {
     labelToBeDisplayed = "All is selected";
@@ -78,7 +88,7 @@ export default class CreateResearch extends Component {
       researchName: "",
       startDate: new Date(),
       endDate: new Date(),
-      sessionDuration: { hours: 0, minutes: 0, seconds: 0 },
+      sessionDuration: { hours: 0, minutes: 0 },
       eldersOptions: [],
       participantsElders: [],
       researchersOptions: [],
@@ -157,10 +167,17 @@ export default class CreateResearch extends Component {
     });
   };
 
-  setDurationHandler = (duration) => {
-    this.setState({
-      sessionDuration: duration,
-    });
+  setDurationHandler = (duration, type) => {
+    if (type === "hours")
+      this.setState({
+        sessionDuration: { ...this.state.sessionDuration, hours: duration },
+      });
+    if (type === "minutes") {
+      this.setState({
+        sessionDuration: { ...this.state.sessionDuration, minutes: duration },
+      });
+    }
+    console.log(duration);
   };
 
   setParticipantsElders = (selectedEldersOption) => {
@@ -279,7 +296,7 @@ export default class CreateResearch extends Component {
                         <span className="label-input100">Start Date:</span>
                         <DatePicker
                           selected={this.state.startDate}
-                          onSelect={this.setStartDateHandler}
+                          onSelect={(Date) => this.setStartDateHandler(Date)}
                           dateFormat="dd/MM/yyyy"
                           locale={he}
                           // showTimeSelect
@@ -289,7 +306,7 @@ export default class CreateResearch extends Component {
                         <span className="label-input100">End Date:</span>
                         <DatePicker
                           selected={this.state.endDate}
-                          onSelect={this.setEndDateHandler}
+                          onSelect={(Date) => this.setEndDateHandler(Date)}
                           dateFormat="dd/MM/yyyy"
                           locale={he}
                         ></DatePicker>
@@ -298,11 +315,34 @@ export default class CreateResearch extends Component {
                         <span className="label-input100">
                           Session Duration:
                         </span>
-                        <DurationPicker
-                          onChange={this.setDurationHandler}
-                          initialDuration={{ hours: 1, minutes: 0, seconds: 0 }}
-                          // maxHours={5}
-                        ></DurationPicker>
+                        <div className="duration-container">
+                          <span className="combobox">
+                            <Combobox
+                              defaultValue="0"
+                              data={hours}
+                              filter={false}
+                              // ref={comboRef}
+                              autoSelectMatches
+                              onSelect={(val) => {
+                                this.setDurationHandler(val, "hours");
+                              }}
+                            />
+                            <p className="label-input100">Hours</p>
+                          </span>
+                          <span className="combobox">
+                            <Combobox
+                              defaultValue="0"
+                              data={minutes}
+                              filter={false}
+                              autoSelectMatches
+                              //  ref={comboRef}
+                              onSelect={(val) => {
+                                this.setDurationHandler(val, "minutes");
+                              }}
+                            />
+                            <p className="label-input100">Minutes</p>
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -199,6 +199,26 @@ iframe {
   background-size: 100% 100%;
 }
 
+.container-researcher-edit {
+  width: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  /*background-image: url("../images/background/musicBackground.jpg"); !* The image used *!*/
+  /*background-color: #878183; !* Used if the image is unavailable *!*/
+  /*height: 500px;  You must set a specified height */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
+  background-size: 100% 100%;
+}
+
 .wrap-contact100 {
   width: 500px;
   background: #fff;
@@ -899,41 +919,51 @@ textarea.input100 {
   display: grid;
   grid-template-columns: 25% 25% 50%;
 }
-.grid-item{
-    margin-top: 0.5em;
-    display: flex;
-    align-items: center;
+.grid-item {
+  margin-top: 0.5em;
+  display: flex;
+  align-items: center;
 }
 
-.react-datepicker-wrapper{
-    width: auto !important;
-    margin-left: 0.5em;
-    
+.react-datepicker-wrapper {
+  width: auto !important;
+  margin-left: 0.5em;
 }
 
-
-.react-datepicker__input-container{
-    width: auto !important;
-    cursor: pointer !important;
-    border-style: solid;
-    border-radius: 5em;
-    border-color: #aaa;
-}:hover{
-    cursor: pointer;
+.duration-container {
+  display: contents;
 }
 
-.react-datepicker__input-container input{
-    border-radius: 5em;
-    text-align: center;
-    font-size: 10pt;
+.combobox {
+  width: 35% !important;
+  display: flex;
+  margin-left: 5px;
+  align-items: baseline;
 }
 
-.react-datepicker-ignore-onclickoutside input{
-    border-style: solid !important;
-    border-color: #aaa !important;
+.react-datepicker__input-container {
+  width: auto !important;
+  cursor: pointer !important;
+  border-style: solid;
+  border-radius: 5em;
+  border-color: #aaa;
+}
+:hover {
+  cursor: pointer;
 }
 
-#multiselectContainerReact li:hover{
-    background-color: #dadada;
-    color: #000000;
+.react-datepicker__input-container input {
+  border-radius: 5em;
+  text-align: center;
+  font-size: 10pt;
+}
+
+.react-datepicker-ignore-onclickoutside input {
+  border-style: solid !important;
+  border-color: #aaa !important;
+}
+
+#multiselectContainerReact li:hover {
+  background-color: #dadada;
+  color: #000000;
 }

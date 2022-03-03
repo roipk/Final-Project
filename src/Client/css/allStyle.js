@@ -6,4 +6,5 @@ import './dashStyles.css';
 import './404.css';
 import '../fonts/style'
 import '../vendor/style'
+import "react-widgets/styles.css";
 
