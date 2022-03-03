@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import he from "date-fns/locale/he";
 registerLocale("he", he);
 
-import DurationPicker from "react-duration-picker";
+import { url } from "./AllPages";
 import Combobox from "react-widgets/Combobox";
 import MultiSelect from "./MultiSelect";
 
@@ -119,7 +119,7 @@ export default class CreateResearch extends Component {
     researchers.forEach((researcher) => resarchersOid.push(researcher.value));
     console.log(resarchersOid);
     var res = await axios.get(
-      "http://localhost:5000/researcher/addResearchToResearches/" +
+      url + "/researcher/addResearchToResearches/" +
         resarchersOid +
         "/" +
         researchName
@@ -128,7 +128,7 @@ export default class CreateResearch extends Component {
 
   async getAllUsers(type) {
     var res = await axios.get(
-      "http://localhost:5000/researcher/getAllUserByType/" + type
+      url + "/researcher/getAllUserByType/" + type
     );
     allResearchesFullData = res.data;
     let users = [];
@@ -144,7 +144,7 @@ export default class CreateResearch extends Component {
 
   async isResearchExist(researchName) {
     var res = await axios.get(
-      "http://localhost:5000/researcher/getResearchByName/" + researchName
+      url + "/researcher/getResearchByName/" + researchName
     );
     return res.data.length == 1;
   }
@@ -231,7 +231,7 @@ export default class CreateResearch extends Component {
       if (!isExist) {
         axios
           .post(
-            "http://localhost:5000/researcher/create/Researches",
+            url + "/researcher/create/Researches",
             newResearch
           )
           .then((res) => {

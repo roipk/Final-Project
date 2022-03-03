@@ -430,9 +430,7 @@ export default class EditResearch extends Component {
               </div>
               <span className="focus-input100"></span>
             </div>
-            {/* <div hidden={this.state.researchName.length == 0}>
-            <EditResearchForm research = {this.state.researchName}></EditResearchForm>
-            </div> */}
+
             {this.researchPage(
               this.state.researchName.length != 0 ? true : false,
               this.state.sessionDuration
