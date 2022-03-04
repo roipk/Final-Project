@@ -148,6 +148,7 @@ db.collection(nameCollection).updateOne(
   {$set: {
     startDate: updatedResearch.startDate,
     endDate: updatedResearch.endDate,
+    numberOfSessions: updatedResearch.numberOfSessions,
     sessionDuration: updatedResearch.sessionDuration,
     participantsElders: updatedResearch.participantsElders,
     participantsResearchers: updatedResearch.participantsResearchers

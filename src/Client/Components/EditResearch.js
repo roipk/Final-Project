@@ -39,6 +39,7 @@ export default class EditResearch extends Component {
       researchName: "",
       startDate: new Date(),
       endDate: new Date(),
+      numberOfSessions: 0,
       sessionDuration: { hours: 0, minutes: 0 },
       participantsElders: [],
       participantsResearchers: [],
@@ -95,6 +96,7 @@ export default class EditResearch extends Component {
       researchName: res.data[0].researchName,
       startDate: res.data[0].startDate,
       endDate: res.data[0].endDate,
+      numberOfSessions: res.data[0].numberOfSessions,
       sessionDuration: res.data[0].sessionDuration,
       participantsElders: res.data[0].participantsElders,
       participantsEldersOld: res.data[0].participantsElders,
@@ -124,6 +126,12 @@ export default class EditResearch extends Component {
       endDate: date,
     });
     // console.log(typeof this.state.startDate)
+  };
+
+  setNumberOfSessionsHandler = (number) => {
+    this.setState({
+      numberOfSessions: number,
+    });
   };
 
   setDurationHandler = (duration, type) => {
@@ -195,6 +203,7 @@ export default class EditResearch extends Component {
       researchName: this.state.researchName,
       startDate: this.state.startDate,
       endDate: this.state.endDate,
+      numberOfSessions: this.state.numberOfSessions,
       sessionDuration: this.state.sessionDuration,
       participantsElders: this.state.participantsElders,
       participantsResearchers: this.state.participantsResearchers,
@@ -283,8 +292,29 @@ export default class EditResearch extends Component {
                         // showTimeSelect
                       ></DatePicker>
                     </div>
+
                     <div className="grid-item">
-                      <span className="label-input100">End Date:</span>
+                        <span className="label-input100">
+                          Number Of Sessions:
+                        </span>
+                        <div className="duration-container">
+                          <span className="combobox">
+                            <Combobox
+                              defaultValue="0"
+                              data={hoursData}
+                              filter={false}
+                              // ref={comboRef}
+                              autoSelectMatches
+                              onSelect={(val) => {
+                                this.setNumberOfSessionsHandler(val);
+                              }}
+                              value={this.state.numberOfSessions}
+                            />
+                          </span>
+                        </div>
+                      </div>
+                    <div className="grid-item">
+                      <span className="label-input100" id="endDate">End Date:</span>
                       <DatePicker
                         selected={Date.parse(this.state.endDate)}
                         onSelect={(Date) => this.setEndDateHandler(Date)}
@@ -295,7 +325,7 @@ export default class EditResearch extends Component {
                     <div className="grid-item">
                       <span className="label-input100">Session Duration:</span>
                       <div className="duration-container">
-                        <span className="combobox">
+                        <span className="duration-combobox">
                           <Combobox
                             defaultValue="0"
                             data={hoursData}
@@ -309,7 +339,7 @@ export default class EditResearch extends Component {
                           />
                           <p className="label-input100">Hours</p>
                         </span>
-                        <span className="combobox">
+                        <span className="duration-combobox">
                           <Combobox
                             defaultValue="0"
                             data={minutesData}

@@ -917,12 +917,16 @@ textarea.input100 {
 
 .grid-container {
   display: grid;
-  grid-template-columns: 25% 25% 50%;
+  grid-template-columns: 30% 50%;
 }
 .grid-item {
-  margin-top: 0.5em;
+  margin: 1em;
   display: flex;
   align-items: center;
+}
+
+#endDate {
+  margin-right: 00.5em;
 }
 
 .react-datepicker-wrapper {
@@ -935,10 +939,27 @@ textarea.input100 {
 }
 
 .combobox {
-  width: 35% !important;
+  width: 20% !important;
   display: flex;
   margin-left: 5px;
+  flex-wrap: wrap;
   align-items: baseline;
+}
+
+#hoursCombobox {
+  margin-left: 1.65em;
+  margin-top: 2em;
+
+}
+
+.duration-combobox{
+  width: 20% !important;
+  display: flex;
+  margin-left: 5px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  margin-left: 1.65em;
+  margin-top: 2em;
 }
 
 .react-datepicker__input-container {
