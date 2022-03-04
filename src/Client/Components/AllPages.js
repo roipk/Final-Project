@@ -25,7 +25,6 @@ import ViewUsers from "./ViewUsers";
 import ResearcherPage from "./ResearcherPage";
 import CreateResearch from "./CreateResearch";
 import EditResearch from "./EditResearch";
-import EditResearchForm from "./EditResearchForm";
 import Login from "./Login";
 //69666
 
@@ -62,7 +61,6 @@ export default class AllPages extends Component {
       
           <Route exact path="/researcher" component={ResearcherPage} />
           <Route excat path="/researcher/new-research" component={CreateResearch} />
-          <Route exact path="/researcher/edit-research/:researchId" component={EditResearchForm} />
           <Route excat path="/researcher/edit-research" component={EditResearch} />
 
 

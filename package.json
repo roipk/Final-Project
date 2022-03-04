@@ -13,6 +13,7 @@
     "@types/react-select": "^5.0.1",
     "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
+    "collect.js": "^4.31.3",
     "cors": "^2.8.5",
     "countries-list": "^2.6.1",
     "crypto-js": "^4.1.1",

@@ -12,7 +12,7 @@ import Combobox from "react-widgets/Combobox";
 import MultiSelect from "./MultiSelect";
 
 import { findArrayData } from "./SignUp";
-import { loadPage } from "./ManagerComponents";
+import { loadPage, verifyUser } from "./ManagerComponents";
 
 export const Option = (props) => {
   return (
@@ -49,6 +49,8 @@ for (var i = 0; i < 60; i++) {
   minutes.push(i);
 }
 
+var currentUser = {};
+
 export const ValueContainer = ({ children, ...props }) => {
   const currentValues = props.getValue();
   let toBeRendered = children;
@@ -75,10 +77,6 @@ export const MultiValue = (props) => {
   );
 };
 
-// var eldersOptions = [];
-// var researchersOptions = [];
-var allResearchesFullData = [];
-
 export default class CreateResearch extends Component {
   constructor(props) {
     super(props);
@@ -98,6 +96,14 @@ export default class CreateResearch extends Component {
   }
 
   async componentDidMount() {
+    // console.log(this.state.user)
+    currentUser = await verifyUser("researcher");
+    if (currentUser) {
+      this.setState({ user: currentUser });
+    } else {
+      this.setState({ notfound: true });
+      return;
+    }
     await this.getAllUsers("user").then((result) => {
       this.setState({
         eldersOptions: result,
@@ -119,7 +125,8 @@ export default class CreateResearch extends Component {
     researchers.forEach((researcher) => resarchersOid.push(researcher.value));
     console.log(resarchersOid);
     var res = await axios.get(
-      url + "/researcher/addResearchToResearches/" +
+      url +
+        "/researcher/addResearchToResearches/" +
         resarchersOid +
         "/" +
         researchName
@@ -127,10 +134,7 @@ export default class CreateResearch extends Component {
   }
 
   async getAllUsers(type) {
-    var res = await axios.get(
-      url + "/researcher/getAllUserByType/" + type
-    );
-    allResearchesFullData = res.data;
+    var res = await axios.get(url + "/researcher/getAllUserByType/" + type);
     let users = [];
     res.data.forEach((user) => {
       // { value: 'user', label: 'Elder' }
@@ -177,7 +181,6 @@ export default class CreateResearch extends Component {
         sessionDuration: { ...this.state.sessionDuration, minutes: duration },
       });
     }
-    console.log(duration);
   };
 
   setParticipantsElders = (selectedEldersOption) => {
@@ -196,6 +199,14 @@ export default class CreateResearch extends Component {
     if (newResearch.participantsElders.length == 0) {
       console.log("Need to choose Elders");
     }
+  };
+
+  addSessionToElders = async (Oids, researchName) => {
+    await Oids.forEach(async (Oid) => {
+      await axios.get(
+        url + "/user/Create/session/" + Oid.value + "/" + researchName
+      );
+    });
   };
 
   createResearchHandler = (event) => {
@@ -230,10 +241,7 @@ export default class CreateResearch extends Component {
     this.isResearchExist(newResearch.researchName).then((isExist) => {
       if (!isExist) {
         axios
-          .post(
-            url + "/researcher/create/Researches",
-            newResearch
-          )
+          .post(url + "/researcher/create/Researches", newResearch)
           .then((res) => {
             console.log(res);
             console.log(res.data);
@@ -245,6 +253,12 @@ export default class CreateResearch extends Component {
             );
             this.addResearchToResearchers(
               newResearch.participantsResearchers,
+              newResearch.researchName
+            );
+
+            console.log(newResearch.participantsElders);
+            this.addSessionToElders(
+              newResearch.participantsElders,
               newResearch.researchName
             );
 
@@ -326,6 +340,7 @@ export default class CreateResearch extends Component {
                               onSelect={(val) => {
                                 this.setDurationHandler(val, "hours");
                               }}
+                              value={this.state.sessionDuration.hours}
                             />
                             <p className="label-input100">Hours</p>
                           </span>
@@ -339,6 +354,7 @@ export default class CreateResearch extends Component {
                               onSelect={(val) => {
                                 this.setDurationHandler(val, "minutes");
                               }}
+                              value={this.state.sessionDuration.minutes}
                             />
                             <p className="label-input100">Minutes</p>
                           </span>

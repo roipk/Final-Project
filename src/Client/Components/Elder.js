@@ -196,7 +196,7 @@ export default class ElderPage extends Component {
                                                 </TabPanel>
                                                 <TabPanel>
                                                     <div className="container-section-space">
-                                                        <div className="container-section">
+                                                        <div className="container-section1">
                                                             <h1> הוספת שירים עבור הדייר</h1>
                                                             <div className="container-contact100-form-btn">
 

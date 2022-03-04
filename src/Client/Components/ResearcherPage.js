@@ -3,7 +3,6 @@ import { loadPage, verifyUser, url } from "./ManagerComponents";
 import { Link } from "react-router-dom";
 import NotFound from "./404";
 
-
 export default class ResearcherPage extends Component {
   constructor(props) {
     super(props);
@@ -14,13 +13,13 @@ export default class ResearcherPage extends Component {
   }
 
   async componentDidMount() {
-    let currentUser = await verifyUser("researcher")
+    let currentUser = await verifyUser("researcher");
     if (currentUser) {
-        this.setState({user: currentUser})
+      this.setState({ user: currentUser });
     } else {
-        this.setState({notfound: true})
+      this.setState({ notfound: true });
     }
-}
+  }
 
   render() {
     return (
@@ -46,11 +45,16 @@ export default class ResearcherPage extends Component {
                             type="button"
                             className="contact100-form-btn"
                             onClick={() => {
-                              console.log(this.state.user)
-                               loadPage(this.props, "researcher/new-research",this.state.user)
+                              console.log("in (48)");
+                              console.log(this.state.user);
+                              loadPage(
+                                this.props,
+                                "researcher/new-research",
+                                this.state.user
+                              );
                               // loadPage(this.props, "register", this.state.user)
-                    
-                            // <Link to='/register'></Link>
+
+                              // <Link to='/register'></Link>
                             }}
                           >
                             <span>
@@ -73,7 +77,13 @@ export default class ResearcherPage extends Component {
                             type="button"
                             className="contact100-form-btn"
                             onClick={() => {
-                              loadPage(this.props, "researcher/edit-research/", this.state.user)
+                              console.log("in (76)");
+                              console.log(this.state.user);
+                              loadPage(
+                                this.props,
+                                "researcher/edit-research/",
+                                this.state.user
+                              );
                             }}
                           >
                             <i

@@ -200,6 +200,18 @@ iframe {
 }
 
 .container-section {
+    width: 100%;
+    background: #fff;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #d6d6c2;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 10px 10px 10px 10px;
+    padding-top: 13px;
+}
+
+.container-section1 {
     text-align: center;
     width: 100%;
     background: #fff;

@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import Select from "react-select";
 import axios from "axios";
-import { loadPage } from "./ManagerComponents";
+import { loadPage, verifyUser } from "./ManagerComponents";
 
 import { url } from "./AllPages";
+import collect from "collect.js";
 
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -26,6 +27,8 @@ for (var i = 0; i < 60; i++) {
   minutesData.push(i);
 }
 
+var currentUser = {};
+
 export default class EditResearch extends Component {
   constructor(props) {
     super(props);
@@ -44,6 +47,13 @@ export default class EditResearch extends Component {
   }
 
   async componentDidMount() {
+    currentUser = await verifyUser("researcher");
+    if (currentUser) {
+      this.setState({ user: currentUser });
+    } else {
+      this.setState({ notfound: true });
+      return;
+    }
     await this.getAllResearches().then((result) => {
       this.setState({
         researchesOptions: result,
@@ -87,6 +97,7 @@ export default class EditResearch extends Component {
       endDate: res.data[0].endDate,
       sessionDuration: res.data[0].sessionDuration,
       participantsElders: res.data[0].participantsElders,
+      participantsEldersOld: res.data[0].participantsElders,
       participantsResearchers: res.data[0].participantsResearchers,
       currentAlgorithm: res.data[0].algorithm,
     });
@@ -141,9 +152,7 @@ export default class EditResearch extends Component {
     });
   };
   async getAllUsers(type) {
-    var res = await axios.get(
-      "http://localhost:5000/researcher/getAllUserByType/" + type
-    );
+    var res = await axios.get(url + "/researcher/getAllUserByType/" + type);
     let users = [];
     res.data.forEach((user) => {
       // { value: 'user', label: 'Elder' }
@@ -155,6 +164,14 @@ export default class EditResearch extends Component {
     // console.log(users)
     return users;
   }
+
+  addSessioToElder = async (Oid, researchName) => {
+    await axios.get(url + "/user/Create/session/" + Oid + "/" + researchName);
+  };
+
+  setIsActive = async (Oid, researchName) => {
+    await axios.get(url + "/user/update/session/" + Oid + "/" + researchName);
+  };
 
   updateResearchHandler = (event) => {
     event.preventDefault();
@@ -184,7 +201,27 @@ export default class EditResearch extends Component {
       algorithm: this.state.currentAlgorithm,
     };
 
-    // console.log(updatedResearch);
+    let oldElders = this.state.participantsEldersOld;
+    let newElders = this.state.participantsElders;
+
+    let oldEldersCollection = collect(oldElders);
+    let newEldersCollection = collect(newElders);
+
+    oldEldersCollection.each((item) => {
+      if (newEldersCollection.contains("label", item.label)) {
+        console.log("do nothing with elder " + item.label);
+      } else {
+        console.log("need to set isActive to false for elder " + item.label);
+        this.setIsActive(item.value, updatedResearch.researchName);
+      }
+    });
+
+    newEldersCollection.each((item) => {
+      if (oldEldersCollection.doesntContain("label", item.label)) {
+        console.log("need to create session for elder " + item.label);
+        this.addSessioToElder(item.value, updatedResearch.researchName);
+      }
+    });
 
     axios
       .post(url + "/researcher/updateResearch/Researches", updatedResearch)
@@ -380,28 +417,6 @@ export default class EditResearch extends Component {
                     </button>
                   </div>
                 </div>
-
-                <div className="container-contact100-back-btn">
-                  <div
-                    className="wrap-contact100-back-btn"
-                    style={{ zIndex: 0 }}
-                  >
-                    <div className="contact100-back-bgbtn"></div>
-                    <button
-                      id="main"
-                      type="button"
-                      className="contact100-back-btn"
-                      onClick={() => {
-                        loadPage(this.props, "researcher", this.state.user);
-                      }}
-                    >
-                      <i
-                        className="fa fa-arrow-left m-l-7"
-                        aria-hidden="true"
-                      ></i>
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -435,6 +450,21 @@ export default class EditResearch extends Component {
               this.state.researchName.length != 0 ? true : false,
               this.state.sessionDuration
             )}
+            <div className="container-contact100-back-btn">
+              <div className="wrap-contact100-back-btn" style={{ zIndex: 0 }}>
+                <div className="contact100-back-bgbtn"></div>
+                <button
+                  id="main"
+                  type="button"
+                  className="contact100-back-btn"
+                  onClick={() => {
+                    loadPage(this.props, "researcher", this.state.user);
+                  }}
+                >
+                  <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
