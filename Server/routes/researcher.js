@@ -31,8 +31,9 @@ router.route("/getResearchByName/:researchName").get(async function (req, res) {
   res.status(200).json(researches);
 });
 
-router.route("/getAllResearches/").get(async function (req, res) {
-  let users = await getAllResarches("Researches");
+router.route("/getAllResearches/:researcherOid").get(async function (req, res) {
+  let researcherOid = req.params.researcherOid;
+  let users = await getAllResarches("ResearchersInfo", researcherOid);
   res.status(200).json(users);
 });
 
@@ -51,29 +52,33 @@ router.route("/update/:nameCollection/:Oid").post(async function (req, res) {
 });
 
 router.route("/updateResearch/:nameCollection").post(async function (req, res) {
-  let updatedResearch = await updateResearch(req.params.nameCollection, req.body);
-  console.log(updatedResearch)
+  let updatedResearch = await updateResearch(
+    req.params.nameCollection,
+    req.body
+  );
+  console.log(updatedResearch);
   // let updated = updateResearch("ResearchersInfo", updatedResearch);
   res.status(200).json(updatedResearch);
 });
 
 router
-  .route("/addResearchToResearches/:researchersOid/:researchName")
+  .route(
+    "/updateResearchersInfo/:researchersOid/:researchName/:researchOid/:action"
+  )
   .get(async function (req, res) {
     let researchersOid = req.params.researchersOid;
     let researchName = req.params.researchName;
-    // let updated = researchersOid.forEach((researcherOid) => {
-    //   updateData("ResearchesInfo", researcherOid, researchName);
-    // });
+    let researchOid = req.params.researchOid;
+    let action = req.params.action;
+
     let updated = updateResarchersInfo(
       "ResearchersInfo",
       researchersOid,
-      researchName
+      researchName,
+      researchOid,
+      action
     );
-    // console.log(researchName)
-    // console.log(researchersOid)
 
-    // let updated = await addResearch(researchers, data);
     res.status(200).json(updated);
   });
 
@@ -123,12 +128,15 @@ async function getResearch(nameCollection, researchName) {
   return researches;
 }
 
-async function getAllResarches(nameCollection) {
-  var allResearches = await db.collection(nameCollection).find();
+async function getAllResarches(nameCollection, researcherOid) {
+  var allResearches = await db
+    .collection(nameCollection)
+    .find({ Oid: researcherOid });
+  // console.log(allResearches)
   let researches = [];
   await allResearches.forEach((research) => {
     // user.password = "";
-    researches.push(research);
+    researches.push(research.researches);
   });
   return researches;
 }
@@ -141,37 +149,53 @@ async function updateData(nameCollection, doc, data) {
   return newData;
 }
 
-async function updateResearch(nameCollection,updatedResearch){
-
-db.collection(nameCollection).updateOne(
-  {researchName: updatedResearch.researchName},
-  {$set: {
-    startDate: updatedResearch.startDate,
-    endDate: updatedResearch.endDate,
-    numberOfSessions: updatedResearch.numberOfSessions,
-    sessionDuration: updatedResearch.sessionDuration,
-    participantsElders: updatedResearch.participantsElders,
-    participantsResearchers: updatedResearch.participantsResearchers
-  }}
-);
+async function updateResearch(nameCollection, updatedResearch) {
+  db.collection(nameCollection).updateOne(
+    { researchName: updatedResearch.researchName },
+    {
+      $set: {
+        startDate: updatedResearch.startDate,
+        endDate: updatedResearch.endDate,
+        numberOfSessions: updatedResearch.numberOfSessions,
+        sessionDuration: updatedResearch.sessionDuration,
+        participantsElders: updatedResearch.participantsElders,
+        participantsResearchers: updatedResearch.participantsResearchers,
+      },
+    }
+  );
 }
 
 async function updateResarchersInfo(
   nameCollection,
   researchersOid,
-  researchName
+  researchName,
+  researchOid,
+  action
 ) {
   let researchersOids = researchersOid.split(",");
   researchersOids.forEach((rOid) => {
-    db.collection(nameCollection).updateOne(
-      { Oid: rOid },
-      { $addToSet: { researches: researchName } }
-    );
-    //   console.log(rOid)
-  });
-  console.log(researchersOids);
+    if (action === "Add") {
+      db.collection(nameCollection).updateOne(
+        { Oid: rOid },
+        {
+          $addToSet: {
+            researches: { Oid: researchOid, researchName: researchName },
+          },
+        }
+      );
+    }
 
-  console.log(typeof researchersOids);
+    if (action === "Remove") {
+      db.collection(nameCollection).updateOne(
+        { Oid: rOid },
+        {
+          $pull: {
+            researches: { Oid: researchOid, researchName: researchName },
+          },
+        }
+      );
+    }
+  });
 }
 
 async function deleteData(nameCollection, Oid) {

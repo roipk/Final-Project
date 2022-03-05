@@ -121,7 +121,7 @@ export default class CreateResearch extends Component {
   //   researchersOptions = await this.getAllUsers("researcher");
   // }
 
-  async addResearchToResearchers(researchers, researchName) {
+  async addResearchToResearchers(researchers, researchName, researchOid) {
     let resarchersOid = [];
     researchers.forEach((researcher) => resarchersOid.push(researcher.value));
     console.log(resarchersOid);
@@ -130,7 +130,9 @@ export default class CreateResearch extends Component {
         "/researcher/addResearchToResearches/" +
         resarchersOid +
         "/" +
-        researchName
+        researchName +
+        "/" +
+        researchOid
     );
   }
 
@@ -261,7 +263,8 @@ export default class CreateResearch extends Component {
             );
             this.addResearchToResearchers(
               newResearch.participantsResearchers,
-              newResearch.researchName
+              newResearch.researchName,
+              res.data.insertedId
             );
 
             console.log(newResearch.participantsElders);

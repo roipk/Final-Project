@@ -75,12 +75,15 @@ export default class EditResearch extends Component {
   }
 
   async getAllResearches() {
-    var res = await axios.get(url + "/researcher/getAllResearches/");
+    // console.log(currentUser)
+    var res = await axios.get(
+      url + "/researcher/getAllResearches/" + currentUser._id
+    );
     let researches = [];
-    res.data.forEach((research) => {
+    res.data[0].forEach((research) => {
       // { value: 'user', label: 'Elder' }
       researches.push({
-        value: research._id,
+        value: research.Oid,
         label: research.researchName,
       });
     });
@@ -101,6 +104,7 @@ export default class EditResearch extends Component {
       participantsElders: res.data[0].participantsElders,
       participantsEldersOld: res.data[0].participantsElders,
       participantsResearchers: res.data[0].participantsResearchers,
+      participantsResearchersOld: res.data[0].participantsResearchers,
       currentAlgorithm: res.data[0].algorithm,
     });
   }
@@ -173,13 +177,30 @@ export default class EditResearch extends Component {
     return users;
   }
 
-  addSessioToElder = async (Oid, researchName) => {
+  addSessionToElder = async (Oid, researchName) => {
     await axios.get(url + "/user/Create/session/" + Oid + "/" + researchName);
   };
 
   setIsActive = async (Oid, researchName) => {
     await axios.get(url + "/user/update/session/" + Oid + "/" + researchName);
   };
+
+  async updateResearchersInfo(researchers, researchName, researchOid, action) {
+    let resarchersOid = [];
+    researchers.forEach((researcher) => resarchersOid.push(researcher.value));
+    console.log(resarchersOid);
+    var res = await axios.get(
+      url +
+        "/researcher/updateResearchersInfo/" +
+        resarchersOid +
+        "/" +
+        researchName +
+        "/" +
+        researchOid +
+        "/" +
+        action
+    );
+  }
 
   updateResearchHandler = (event) => {
     event.preventDefault();
@@ -213,8 +234,14 @@ export default class EditResearch extends Component {
     let oldElders = this.state.participantsEldersOld;
     let newElders = this.state.participantsElders;
 
+    let oldResearchers = this.state.participantsResearchersOld;
+    let newResearchers = this.state.participantsResearchers;
+
     let oldEldersCollection = collect(oldElders);
     let newEldersCollection = collect(newElders);
+
+    let oldResearchersCollection = collect(oldResearchers);
+    let newResearchersCollection = collect(newResearchers);
 
     oldEldersCollection.each((item) => {
       if (newEldersCollection.contains("label", item.label)) {
@@ -228,15 +255,48 @@ export default class EditResearch extends Component {
     newEldersCollection.each((item) => {
       if (oldEldersCollection.doesntContain("label", item.label)) {
         console.log("need to create session for elder " + item.label);
-        this.addSessioToElder(item.value, updatedResearch.researchName);
+        this.addSessionToElder(item.value, updatedResearch.researchName);
+      }
+    });
+
+    oldResearchersCollection.each((item) => {
+      let researchersToUpdate = [];
+      if (newResearchersCollection.contains("label", item.label)) {
+        console.log("do nothing with researcher " + item.label);
+      } else {
+        console.log(
+          "need to remove research from ResearcherInfo for researcher " +
+            item.label
+        );
+        researchersToUpdate.push(item);
+        this.updateResearchersInfo(
+          researchersToUpdate,
+          updatedResearch.researchName,
+          this.state.researchToEdit.value,
+          "Remove"
+        );
+      }
+    });
+
+    newResearchersCollection.each((item) => {
+      let researchersToUpdate = [];
+      if (oldResearchersCollection.doesntContain("label", item.label)) {
+        console.log("need to add research to researcher " + item.label);
+        researchersToUpdate.push(item);
+        this.updateResearchersInfo(
+          researchersToUpdate,
+          updatedResearch.researchName,
+          this.state.researchToEdit.value,
+          "Add"
+        );
       }
     });
 
     axios
       .post(url + "/researcher/updateResearch/Researches", updatedResearch)
       .then((res) => {
-        console.log(res);
-        console.log(res.data);
+        // console.log(res);
+        // console.log(res.data);
         alert(
           "successful\n the research " +
             this.state.researchName +
@@ -294,27 +354,29 @@ export default class EditResearch extends Component {
                     </div>
 
                     <div className="grid-item">
-                        <span className="label-input100">
-                          Number Of Sessions:
+                      <span className="label-input100">
+                        Number Of Sessions:
+                      </span>
+                      <div className="duration-container">
+                        <span className="combobox">
+                          <Combobox
+                            defaultValue="0"
+                            data={hoursData}
+                            filter={false}
+                            // ref={comboRef}
+                            autoSelectMatches
+                            onSelect={(val) => {
+                              this.setNumberOfSessionsHandler(val);
+                            }}
+                            value={this.state.numberOfSessions}
+                          />
                         </span>
-                        <div className="duration-container">
-                          <span className="combobox">
-                            <Combobox
-                              defaultValue="0"
-                              data={hoursData}
-                              filter={false}
-                              // ref={comboRef}
-                              autoSelectMatches
-                              onSelect={(val) => {
-                                this.setNumberOfSessionsHandler(val);
-                              }}
-                              value={this.state.numberOfSessions}
-                            />
-                          </span>
-                        </div>
                       </div>
+                    </div>
                     <div className="grid-item">
-                      <span className="label-input100" id="endDate">End Date:</span>
+                      <span className="label-input100" id="endDate">
+                        End Date:
+                      </span>
                       <DatePicker
                         selected={Date.parse(this.state.endDate)}
                         onSelect={(Date) => this.setEndDateHandler(Date)}
