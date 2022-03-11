@@ -919,12 +919,32 @@ textarea.input100 {
   display: grid;
   grid-template-columns: 30% 50%;
 }
+
 .grid-item {
   margin: 1em;
   display: flex;
   align-items: center;
 }
 
+.card-grid-container {
+  display: grid;
+  grid-template-columns: 20% 20% 20% 40%;
+}
+
+.card-grid-item {
+  margin: 1em;
+  display: flex;
+  align-items: center;
+}
+
+.view-research-grid{
+  display: grid;
+  grid-template-columns: 30% 30% 30%;
+}
+
+.grid-col-right{
+  text-align: left !important;
+}
 #endDate {
   margin-right: 00.5em;
 }

@@ -31,6 +31,12 @@ router.route("/getResearchByName/:researchName").get(async function (req, res) {
   res.status(200).json(researches);
 });
 
+router.route("/getUserSessions/:userOid").get(async function (req, res) {
+ let Oid = req.params.userOid;
+ let user = await getData("UserSessions", Oid);
+  res.status(200).json(user);
+});
+
 router.route("/getAllResearches/:researcherOid").get(async function (req, res) {
   let researcherOid = req.params.researcherOid;
   let users = await getAllResarches("ResearchersInfo", researcherOid);

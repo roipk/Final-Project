@@ -328,7 +328,8 @@ export default class EditResearch extends Component {
                     name="researchName"
                     placeholder="Enter Research Name"
                     required
-                    defaultValue={this.state.researchName}
+                    // defaultValue={this.state.researchName}
+                    value={this.state.researchName}
                     readOnly
                   />
 
@@ -423,7 +424,7 @@ export default class EditResearch extends Component {
                   className="wrap-input100 validate-input"
                   data-validate="Name is required"
                 >
-                  <span className="label-input100">Participents Elders</span>
+                  <span className="label-input100">Participants Elders</span>
 
                   <MultiSelect
                     options={this.state.eldersOptions}
@@ -448,7 +449,7 @@ export default class EditResearch extends Component {
                   data-validate="Name is required"
                 >
                   <span className="label-input100">
-                    Participents Researchers
+                    Participants Researchers
                   </span>
 
                   <MultiSelect

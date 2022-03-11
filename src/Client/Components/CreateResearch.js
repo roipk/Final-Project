@@ -402,7 +402,7 @@ export default class CreateResearch extends Component {
                     className="wrap-input100 validate-input"
                     data-validate="Name is required"
                   >
-                    <span className="label-input100">Participents Elders</span>
+                    <span className="label-input100">Participants Elders</span>
 
                     <MultiSelect
                       options={this.state.eldersOptions}
@@ -427,7 +427,7 @@ export default class CreateResearch extends Component {
                     data-validate="Name is required"
                   >
                     <span className="label-input100">
-                      Participents Researchers
+                    Participants Researchers
                     </span>
 
                     <MultiSelect
