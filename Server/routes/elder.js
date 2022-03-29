@@ -112,7 +112,6 @@ routerElder
         await setSessionIsActive(session, algorithm);
       }
     }
-
     var songs = await CreateSession(session, algorithm);
     return res.status(200).json(songs.songsView);
   });
@@ -174,7 +173,6 @@ async function CreateSession(session, algorithm) {
     });
   });
   session.sessions[algorithm].sessions.push(songSession);
-  // console.log(session)
   await updateData("UserSessions", session.Oid, session);
   return songs;
 }
@@ -237,7 +235,7 @@ async function createFilter(songs = {}, filters, sort) {
     ],
   };
 
-  var allSong = await getAllDataFilter("NewPlaylists", filter, sort);
+  var allSong = await getAllDataFilter("Playlists", filter, sort);
   // allSong.slice(0,filters.Cognitive)
   var randomized = [];
 
