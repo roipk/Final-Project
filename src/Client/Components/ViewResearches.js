@@ -13,6 +13,7 @@ var currentUser = {};
 export default class ViewResearches extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       user: props.location.data,
       researchesName: [],
@@ -50,7 +51,7 @@ export default class ViewResearches extends Component {
 
   async getAllResearchesByResearcher() {
     var res = await axios.get(
-      url + "/researcher/getAllResearches/" + currentUser._id
+      url + "/researcher/getAllResearchesByResearcher/" + currentUser._id
     );
     let researches = [];
     res.data[0].forEach((research) => {
@@ -125,7 +126,6 @@ export default class ViewResearches extends Component {
           userData.push(temp);
         });
       });
-
       return (
         <ResearchCard
           key={researchName}
@@ -136,7 +136,7 @@ export default class ViewResearches extends Component {
     }
   }
 
-  viewResearch(isInit, duration) {
+  viewResearch(isInit) {
     if (isInit) {
       var details = this.getDetials(this.state.researchDetails);
       return (
@@ -173,6 +173,7 @@ export default class ViewResearches extends Component {
               </div>
             </div>
             <span className="label-input100">Participants Elders </span>
+
             {this.eldersGrid(
               this.state.researchName.length != 0 ? true : false,
               this.state.researchName,

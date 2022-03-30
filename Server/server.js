@@ -31,11 +31,15 @@ const adminRouter = require('./routes/Admin')
 const userRouter = require('./routes/users')
 const elderRouter = require('./routes/elder')
 const researcherRouter = require('./routes/researcher')
+const musicGuideRouter = require('./routes/MusicGuide')
+
 
 app.use('/',userRouter)
 app.use('/admin',adminRouter)
 app.use('/user',elderRouter)
 app.use('/researcher',researcherRouter)
+app.use('/musicGuide',musicGuideRouter)
+
 
 
 

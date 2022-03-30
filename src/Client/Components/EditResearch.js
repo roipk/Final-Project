@@ -55,7 +55,7 @@ export default class EditResearch extends Component {
       this.setState({ notfound: true });
       return;
     }
-    await this.getAllResearches().then((result) => {
+    await this.getAllResearchesByResearcher().then((result) => {
       this.setState({
         researchesOptions: result,
       });
@@ -74,10 +74,10 @@ export default class EditResearch extends Component {
     });
   }
 
-  async getAllResearches() {
+  async getAllResearchesByResearcher() {
     // console.log(currentUser)
     var res = await axios.get(
-      url + "/researcher/getAllResearches/" + currentUser._id
+      url + "/researcher/getAllResearchesByResearcher/" + currentUser._id
     );
     let researches = [];
     res.data[0].forEach((research) => {

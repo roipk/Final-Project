@@ -32,15 +32,25 @@ router.route("/getResearchByName/:researchName").get(async function (req, res) {
 });
 
 router.route("/getUserSessions/:userOid").get(async function (req, res) {
- let Oid = req.params.userOid;
- let user = await getData("UserSessions", Oid);
+  let Oid = req.params.userOid;
+  let user = await getData("UserSessions", Oid);
   res.status(200).json(user);
 });
 
-router.route("/getAllResearches/:researcherOid").get(async function (req, res) {
-  let researcherOid = req.params.researcherOid;
-  let users = await getAllResarches("ResearchersInfo", researcherOid);
-  res.status(200).json(users);
+router
+  .route("/getAllResearchesByResearcher/:researcherOid")
+  .get(async function (req, res) {
+    let researcherOid = req.params.researcherOid;
+    let users = await getAllResearchesByResearcher(
+      "ResearchersInfo",
+      researcherOid
+    );
+    res.status(200).json(users);
+  });
+
+router.route("/getAllResearches").get(async function (req, res) {
+  let researches = await getAllResearches("Researches");
+  res.status(200).json(researches);
 });
 
 router.route("createUser").post(async function (req, res) {
@@ -134,7 +144,7 @@ async function getResearch(nameCollection, researchName) {
   return researches;
 }
 
-async function getAllResarches(nameCollection, researcherOid) {
+async function getAllResearchesByResearcher(nameCollection, researcherOid) {
   var allResearches = await db
     .collection(nameCollection)
     .find({ Oid: researcherOid });
@@ -144,6 +154,18 @@ async function getAllResarches(nameCollection, researcherOid) {
     // user.password = "";
     researches.push(research.researches);
   });
+  return researches;
+}
+
+async function getAllResearches(nameCollection) {
+  var allResearches = await db.collection(nameCollection).find();
+  console.log(allResearches)
+  let researches = [];
+  await allResearches.forEach((research) => {
+    // user.password = "";
+    researches.push(research);
+  });
+  console.log(researches)
   return researches;
 }
 

@@ -937,14 +937,99 @@ textarea.input100 {
   align-items: center;
 }
 
-.view-research-grid{
+.view-research-grid {
   display: grid;
   grid-template-columns: 30% 30% 30%;
 }
 
-.grid-col-right{
+.grid-col-right {
   text-align: left !important;
 }
+
+.song-grid-container {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  border: solid 1px #000000;
+  border-radius: 1em;
+  grid-template-columns: 40% 60%;
+}
+
+.song-grid-item {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 20px;
+  font-size: 30px;
+}
+
+.item1 {
+  text-align: left;
+  margin-left: 3em;
+}
+
+.item1 label {
+  font-size: 14pt;
+  margin-left: 0.75em;
+  font-family: Poppins-Regular;
+  color: #666666;
+  text-align: center;
+}
+
+.item2 {
+  margin: 0.5em;
+  height: 98%;
+}
+
+.item2 iframe{
+  width: 115%;
+  margin: -0.75em -0 -1em -2em;
+}
+
+.item3 {
+  grid-column: span 2;
+  direction: rtl;
+  text-align: right;
+  font-family: Poppins-Regular;
+  font-size: 12pt;
+}
+
+.item3 textarea {
+  text-align: right;
+  direction: rtl;
+  border-radius: 1em;
+  background-color: #f3f3f3;
+  width: -webkit-fill-available;
+  padding: 0 5px;
+}
+
+.item3 label {
+  font-size: 14pt;
+  margin-left: 0.75em;
+  font-family: Poppins-Regular;
+  color: #666666;
+  text-align: center;
+}
+
+.song-card-btn{
+display: grid;
+grid-template-columns: 50% 50%;
+justify-items: baseline;
+gap: 24em;
+}
+
+.song-card-btn-container{
+ 
+  display: block;
+  position: relative;
+  z-index: 1;
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.item4 #prev{
+  text-align: left;
+}
+
 #endDate {
   margin-right: 00.5em;
 }
@@ -969,10 +1054,9 @@ textarea.input100 {
 #hoursCombobox {
   margin-left: 1.65em;
   margin-top: 2em;
-
 }
 
-.duration-combobox{
+.duration-combobox {
   width: 20% !important;
   display: flex;
   margin-left: 5px;

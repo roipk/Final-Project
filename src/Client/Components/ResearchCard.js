@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 
-import DataGrid, { Column, MasterDetail } from "devextreme-react/data-grid";
-
-import { url } from "./AllPages";
-
-import axios from "axios";
-import collect from "collect.js";
+import DataGrid, {
+  Column,
+  MasterDetail,
+  Export,
+} from "devextreme-react/data-grid";
+import { Workbook } from "exceljs";
+import { saveAs } from "file-saver";
+import { exportDataGrid } from "devextreme/excel_exporter";
 
 const sessionDetailsGrid = (props) => {
   var songs = props.data.data.SessionSongs;
@@ -56,7 +58,7 @@ const sessionsGrid = (props) => {
   for (var i = 0; i < sessions.length; i++) {
     temp = {
       ID: i,
-      Session: i,
+      Session: i+1,
       SessionSongs: sessions[i],
     };
 
@@ -76,12 +78,10 @@ const sessionsGrid = (props) => {
   );
 };
 
-const elders = [];
-// const temp;
-
 export default class ResearchCard extends Component {
   constructor(props) {
     super(props);
+    this.onExporting = this.onExporting.bind(this);
     this.state = {
       //   user: props.location.data,
       researchName: props.researchName,
@@ -91,8 +91,31 @@ export default class ResearchCard extends Component {
       userData: props.userdata,
     };
   }
+  componentDidMount() {
+    this.setState({
+      userData: this.props.userdata,
+    });
+  }
 
-  async componentDidMount() {}
+  onExporting(e) {
+    const workbook = new Workbook();
+    const worksheet = workbook.addWorksheet("Main sheet");
+
+    exportDataGrid({
+      component: <DataGrid></DataGrid>,
+      //   component: sessionDetailsGrid,
+      worksheet,
+      autoFilterEnabled: true,
+    }).then(() => {
+      workbook.xlsx.writeBuffer().then((buffer) => {
+        saveAs(
+          new Blob([buffer], { type: "application/octet-stream" }),
+          "DataGrid.xlsx"
+        );
+      });
+    });
+    e.cancel = true;
+  }
 
   render() {
     return (
@@ -101,6 +124,7 @@ export default class ResearchCard extends Component {
         dataSource={this.state.userData}
         keyExpr="FirstName"
         showBorders={true}
+        onExporting={this.onExporting}
       >
         <Column dataField="FirstName" caption="First Name" />
         <Column dataField="LastName" caption="Last Name" />
@@ -110,11 +134,13 @@ export default class ResearchCard extends Component {
           dataType="number"
           cssClass="grid-col-right"
         />
+
         <MasterDetail
           enabled={true}
           component={sessionsGrid}
           data={this.state.userData.Sessions + this.state.researchName}
         />
+        {/* <Export enabled={true} allowExportSelectedData={true} /> */}
       </DataGrid>
     );
   }
