@@ -78,7 +78,7 @@ export default class ResearcherPage extends Component {
                               loadPage(
                                 this.props,
                                 "researcher/edit-research/",
-                                this.state.user
+                                this.state.user,this.state.user
                               );
                             }}
                           >
@@ -100,7 +100,7 @@ export default class ResearcherPage extends Component {
                             type="button"
                             className="contact100-form-btn"
                             onClick={() => {
-                              loadPage(this.props, "researcher/view-researches/", this.state.user)
+                              loadPage(this.props, "researcher/view-researches/", this.state.user,this.state.user)
                             }}
                           >
                             <i
@@ -123,7 +123,7 @@ export default class ResearcherPage extends Component {
                         type="button"
                         className="contact100-back-btn"
                         onClick={() => {
-                          loadPage(this.props, "", this.state.user);
+                          loadPage(this.props, "", this.state.user,this.state.user);
                         }}
                       >
                         <i

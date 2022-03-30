@@ -11,6 +11,9 @@ import Allcountries, {languagesAll}from "countries-list"
 // import Carousel from "react-elastic-carousel";
 // import * as mongoose from "mongoose";
 import {url} from "./AllPages";
+import Switch from "react-switch";
+import Config from "../../Config.json";
+import CarouselApp from "./Carousel/Carousel";
 // console.log(languagesalpha-3 )
 // import {iso6393} from 'iso-639-3'
 
@@ -24,6 +27,7 @@ const languages = Object.entries(iso6392);
 
 var selectLanguage=[]
 var selectCountries=[]
+var sessionOpt=[]
 init()
 
 function init()
@@ -45,14 +49,14 @@ const roles = [
     { value: 'guide', label: 'Guide' },
     { value: 'user', label: 'Elder' }
 ]
-const Cognitive = [
-    // { value: '', label: 'Admin' },
-    { value: 5, label: 'Very Low Cognitive' },
-    { value: 8, label: 'Low Cognitive' },
-    { value: 11, label: 'Normal Cognitive' },
-    { value: 12, label: 'Good Cognitive' },
-    { value: 15, label: 'Excellent Cognitive' }
-]
+// const Cognitive = [
+//     // { value: '', label: 'Admin' },
+//     { value: 5, label: 'Very Low Cognitive' },
+//     { value: 8, label: 'Low Cognitive' },
+//     { value: 11, label: 'Normal Cognitive' },
+//     { value: 12, label: 'Good Cognitive' },
+//     { value: 15, label: 'Excellent Cognitive' }
+// ]
 
 //sum of playlist
 
@@ -115,10 +119,12 @@ export default class EditUsers extends Component {
 
     constructor(props) {
         super(props);
+        console.log(props.location.data)
         this.state = {
-            user: props.location.data,
             language: null,
             page: 0,
+            editor:true,
+
 
             //user
             first_name: '',
@@ -149,9 +155,55 @@ export default class EditUsers extends Component {
             yearOfImmigration: "",
             maxSession:null,
             Cognitive:null,
-            currentAlgorithm:'personal'
+            currentSession:'personal',
 
         };
+        if(props.location.data && props.location.data.Cognitive)
+        {
+            var user = props.location.data
+
+            console.log(props.location.data&&props.location.data.editor)
+            var check = user.Cognitive === Config.HIGH_COGNITIVE
+            this.state =
+                {
+                    editor:user.editor,
+                    session: "personal",
+                    page: 0,
+                    type: user.type,
+                    checked:check,
+                    userSelect:user,
+                    first_name:user.first_name ,
+                    last_name: user.last_name,
+                    id: user.id,
+                    email: user.email,
+                    user_name: user.userName,
+
+
+                    Oid:user.Oid,
+                    Geners: user.Geners,
+                    LanguageAtTwenty: user.LanguageAtTwenty,
+                    birthYear: user.birthYear,
+                    countryAtTwenty: user.countryAtTwenty,
+                    countryOrigin: user.countryOrigin,
+                    department: user.department,
+                    entrance: user.entrance,
+                    firstName: user.firstName,
+                    languageOrigin: user.languageOrigin,
+                    lastName: user.lastName,
+                    medicalProfile: user.medicalProfile,
+                    nursingHome: user.nursingHome,
+                    // password:"SpaEngYidCla30",
+                    userName: user.userName,
+                    yearAtTwenty: user.yearAtTwenty,
+                    yearOfImmigration: user.yearOfImmigration,
+                    OidInfo:user._id,
+                    maxSession:user.maxSession,
+                    Cognitive:user.Cognitive,
+                    currentSession:user.currentSession
+                }
+
+
+        }
 
 
     }
@@ -196,7 +248,7 @@ export default class EditUsers extends Component {
             maxSession: this.state.maxSession,
             Cognitive:this.state.Cognitive, // 5, 8, 11, 12, 15
             maxSongs:this.state.Cognitive * this.state.maxSession,//max session*Cognitive
-            currentAlgorithm:this.state.currentAlgorithm
+            currentSession:this.state.currentSession
 
 
 
@@ -238,7 +290,7 @@ export default class EditUsers extends Component {
             maxSession: this.state.maxSession,
             Cognitive:this.state.Cognitive, // 5, 8, 11, 12, 15
             maxSongs:this.state.Cognitive * this.state.maxSession,//max session*Cognitive
-            currentAlgorithm:this.state.currentAlgorithm
+            currentSession:this.state.currentSession
 
 
         };
@@ -250,9 +302,52 @@ export default class EditUsers extends Component {
 
         let currentUser = await verifyUser("admin")
         if (currentUser)
+        {
             this.setState({user: currentUser})
 
+        }
+        if(this.state.userSelect)
+        {
+            console.log("in")
+            let currentSession =  await this.getSessionsKey(this.state.Oid)
+            console.log(this.state.Oid)
+            let videos = await this.getSession(this.state.Oid, currentSession)
+            this.setState({userSelect: this.state.userSelect, videos: videos})
+        }
+
+
+
     }
+
+
+    async getSession(id, session) {
+        console.log(this.state.session)
+        console.log(url + "/user/session/" + id + "/" + session)
+        let songs = await axios.get(url + "/user/allSession/" + id + "/" + session)
+        console.log(songs)
+        this.setState({session:session,sessionNumber: songs.data.sessionNumber,sessionView:songs.data.list})
+        console.log(songs.data.sessionNumber)
+        return songs.data.list
+        // return []
+
+    }
+
+    async getSessionsKey(id) {
+        console.log("in 1")
+        console.log(id)
+        console.log(this.state.session)
+        let songs = await axios.get(url + "/user/session/" + id)
+        console.log(songs.data)
+        sessionOpt=[]
+        await songs.data.keys.forEach(key => {
+            sessionOpt.push({value: key, label: key})
+        })
+        console.log(sessionOpt)
+        return songs.data.currentSession
+
+    }
+
+
 
     // algorithm
 
@@ -359,7 +454,7 @@ export default class EditUsers extends Component {
 
     registerUser(page) {
 
-        if (page == 0)
+        if (page === 0)
             return (
                 <div>
                     <h1>פרטי הזדהות עבור המערכת</h1>
@@ -385,16 +480,7 @@ export default class EditUsers extends Component {
                                placeholder="Enter Last Name" required/>
                         <span className="focus-input100"></span>
                     </div>
-                    <div className="wrap-input100 validate-input" data-validate="ID is required">
-                        <span className="label-input100">ID*</span>
-                        <input value={this.state.id} id='id'  disabled={true} className="input100" type="text" name="id"
-                               onChange={(e) => {
-                                   this.setState({id: e.target.value})
-                               }}
-                               placeholder="Enter ID" required/>
 
-                        <span className="focus-input100"></span>
-                    </div>
                     <div hidden={this.state.type != 'admin' && this.state.type != 'researcher'}
                          className="wrap-input100 validate-input" data-validate="Email is required">
                         <span className="label-input100">Email*</span>
@@ -431,8 +517,8 @@ export default class EditUsers extends Component {
                                             alert("successful\n the user " + this.state.first_name + "\n" +
                                                 "add to system with id -  " + res.data.insertedId + "\n" +
                                                 "type " + this.state.type)
-                                            loadPage(this.props, "admin", this.state.user)
-                                            // loadPage(this.props,"",this.state)
+                                            loadPage(this.props, "admin/ViewUsers", this.state.user,this.state.user)
+                                            // loadPage(this.props,"",this.state,this.state.user)
                                         })
                                 }}>submit
                             <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
@@ -452,14 +538,14 @@ export default class EditUsers extends Component {
                 </div>
 
             )
-        else if (page == 1)
+        else if (page === 1)
             return (
                 <div>
                     <h1>מידע על בית האבות</h1>
                     <br/>
                     <div className="wrap-input100 validate-input" data-validate="Nursing Home is required" required>
                         <span className="label-input100">Nursing Home*</span>
-                        <input value={this.state.nursingHome} id='nursingHome' className="input100" type="text"
+                        <input  disabled={!this.state.editor} value={this.state.nursingHome} id='nursingHome' className="input100" type="text"
                                name='nursingHome'
                                onChange={(e) => {
                                    this.setState({nursingHome: e.target.value})
@@ -469,7 +555,7 @@ export default class EditUsers extends Component {
                     </div>
                     <div className="wrap-input100 validate-input" data-validate="Department is required">
                         <span className="label-input100">Department</span>
-                        <input value={this.state.department} id='department' className="input100" type="text"
+                        <input disabled={!this.state.editor}  value={this.state.department} id='department' className="input100" type="text"
                                name='department'
                                onChange={(e) => {
                                    this.setState({department: e.target.value})
@@ -479,7 +565,7 @@ export default class EditUsers extends Component {
                     </div>
                     <div className="wrap-input100 validate-input" data-validate="Medical profile is required">
                         <span className="label-input100">Medical profile</span>
-                        <input value={this.state.medicalProfile} id='medicalProfile' className="input100" type="text"
+                        <input disabled={!this.state.editor}  value={this.state.medicalProfile} id='medicalProfile' className="input100" type="text"
                                name='Medical profile'
                                onChange={(e) => {
                                    this.setState({medicalProfile: e.target.value})
@@ -511,7 +597,7 @@ export default class EditUsers extends Component {
                 </div>
             )
 
-        else if (page == 2)
+        else if (page === 2)
             return (
                 <div>
 
@@ -521,38 +607,56 @@ export default class EditUsers extends Component {
                     <div className="wrap-input100 input100-select">
                         <span className="label-input100">Year of birth</span>
                         <div>
-                            <Select label="select year"
-                                    onChange={e => {
-                                        // this.getDec(e.value)
-                                        console.log(e.value)
-                                        this.setState({birthYear: e.value})
-                                    }}
-                                    style={{zIndex: 100}}
-                                    closeMenuOnSelect={true}
-                                    options={getOpt(1925)}//start, end-> today year
-                                    value={findArrayData(this.state.birthYear, getOpt(1925))}
-                                    menuPlacement="auto"
-                                    menuPosition="fixed"
-                            />
+                            {
+                                !this.state.editor? <Select   label="select year"
+                                                              style={{zIndex: 100}}
+                                                              closeMenuOnSelect={true}
+                                                              value={findArrayData(this.state.birthYear, getOpt(1925))}
+                                                              menuPlacement="auto"
+                                                              menuPosition="fixed"
+                                />: <Select   label="select year"
+                                              onChange={e => {
+                                                  // this.getDec(e.value)
+                                                  console.log(e.value)
+                                                  this.setState({birthYear: e.value})
+                                              }}
+                                              style={{zIndex: 100}}
+                                              closeMenuOnSelect={true}
+                                              options={getOpt(1925)}//start, end-> today year
+                                              value={findArrayData(this.state.birthYear, getOpt(1925))}
+                                              menuPlacement="auto"
+                                              menuPosition="fixed"
+                                />
+                            }
+
                         </div>
                     </div>
                     <div className="wrap-input100 input100-select">
                         <span className="label-input100">Country where you were born</span>
                         <div>
-                            <Select label="select country born"
-                                    onChange={e => {
-                                        console.log(e.value)
-                                        this.setState({countryOrigin: e.value})
-                                    }}
+                            {
+                                !this.state.editor? <Select label="select country born"
+                                                            value={findArrayData(this.state.countryOrigin,selectCountries)}
+                                                            style={{zIndex: 100}}
+                                                            closeMenuOnSelect={true}
+                                                            menuPlacement="auto"
+                                                            menuPosition="fixed"
+                                />: <Select label="select country born"
+                                            onChange={e => {
+                                                console.log(e.value)
+                                                this.setState({countryOrigin: e.value})
+                                            }}
 
-                                    value={findArrayData(this.state.countryOrigin,selectCountries)}
-                                    style={{zIndex: 100}}
-                                    closeMenuOnSelect={true}
+                                            value={findArrayData(this.state.countryOrigin,selectCountries)}
+                                            style={{zIndex: 100}}
+                                            closeMenuOnSelect={true}
 
-                                    options={selectCountries}//start, end-> today year
-                                    menuPlacement="auto"
-                                    menuPosition="fixed"
-                            />
+                                            options={selectCountries}//start, end-> today year
+                                            menuPlacement="auto"
+                                            menuPosition="fixed"
+                                />
+                            }
+
 
                         </div>
                         <span className="focus-input100"></span>
@@ -561,82 +665,121 @@ export default class EditUsers extends Component {
                         <span className="label-input100">Country where you lived at ages 10-25</span>
                         <div>
 
-                            <Select label="select Country"
-                                    onChange={e => {
-                                        this.setState({countryAtTwenty: e.value})
-                                        console.log(e)
-                                    }}
-                                    style={{zIndex: 100}}
-                                    closeMenuOnSelect={true}
-                                    value={findArrayData(this.state.countryAtTwenty, selectCountries)}
-                                    options={selectCountries}//start, end-> today year
-                                    menuPlacement="auto"
-                                    menuPosition="fixed"
-                            />
+                            {
+                                !this.state.editor? <Select label="select Country"
+                                                            style={{zIndex: 100}}
+                                                            closeMenuOnSelect={true}
+                                                            value={findArrayData(this.state.countryAtTwenty, selectCountries)}
+                                                            menuPlacement="auto"
+                                                            menuPosition="fixed"
+                                />: <Select label="select Country"
+                                            onChange={e => {
+                                                this.setState({countryAtTwenty: e.value})
+                                                console.log(e)
+                                            }}
+                                            style={{zIndex: 100}}
+                                            closeMenuOnSelect={true}
+                                            value={findArrayData(this.state.countryAtTwenty, selectCountries)}
+                                            options={selectCountries}//start, end-> today year
+                                            menuPlacement="auto"
+                                            menuPosition="fixed"
+                                />
+                            }
+
                         </div>
                         <span className="focus-input100"></span>
                     </div>
                     <div className="wrap-input100 input100-select">
                         <span className="label-input100">Language spoken since birth</span>
                         <div>
-                            <Select label="select year"
-                                    onChange={e => {
-                                        this.setState({languageOrigin: e.value})
-                                        console.log(e)
-                                    }}
-                                    style={{zIndex: 100}}
-                                    value={findArrayData(this.state.languageOrigin, selectLanguage)}
-                                    closeMenuOnSelect={true}
-                                    options={selectLanguage}//start, end-> today year
-                                    menuPlacement="auto"
-                                    menuPosition="fixed"
-                            />
+                            {
+                                !this.state.editor? <Select label="select year"
+                                                            style={{zIndex: 100}}
+                                                            value={findArrayData(this.state.languageOrigin, selectLanguage)}
+                                                            closeMenuOnSelect={true}
+                                                            menuPlacement="auto"
+                                                            menuPosition="fixed"
+                                />: <Select label="select year"
+                                            onChange={e => {
+                                                this.setState({languageOrigin: e.value})
+                                                console.log(e)
+                                            }}
+                                            style={{zIndex: 100}}
+                                            value={findArrayData(this.state.languageOrigin, selectLanguage)}
+                                            closeMenuOnSelect={true}
+                                            options={selectLanguage}//start, end-> today year
+                                            menuPlacement="auto"
+                                            menuPosition="fixed"
+                                />
+                            }
+
                         </div>
                         <span className="focus-input100"></span>
                     </div>
                     <div className="wrap-input100 input100-select">
                         <span className="label-input100">Languages spoken at Youth (ages 10-25)</span>
                         <div>
-
-                            <Select label="select year"
-                                    style={{zIndex: 100}}
-                                    isMulti
-                                    className="basic-multi-select"
-                                    closeMenuOnSelect={true}
+                            {
+                                !this.state.editor ? <Select label="select year"
+                                                             style={{zIndex: 100}}
+                                                             isMulti
+                                                             className="basic-multi-select"
+                                                             closeMenuOnSelect={true}
                                     // defaultValue={findArrayData(this.state.LanguageAtTwenty, selectLanguage)}
-                                    value={findArrayData(this.state.LanguageAtTwenty, selectLanguage)}
-                                    options={(this.state.LanguageAtTwenty && this.state.LanguageAtTwenty.length >= maxSelectLanguage) ?
-                                        [] : selectLanguage}//start, end-> today year
+                                                             value={findArrayData(this.state.LanguageAtTwenty, selectLanguage)}
+                                                             menuPlacement="auto"
+                                                             menuPosition="fixed"
+                                />: <Select label="select year"
+                                            style={{zIndex: 100}}
+                                            isMulti
+                                            className="basic-multi-select"
+                                            closeMenuOnSelect={true}
+                                    // defaultValue={findArrayData(this.state.LanguageAtTwenty, selectLanguage)}
+                                            value={findArrayData(this.state.LanguageAtTwenty, selectLanguage)}
+                                            options={(this.state.LanguageAtTwenty && this.state.LanguageAtTwenty.length >= maxSelectLanguage) ?
+                                                [] : selectLanguage}//start, end-> today year
 
-                                    menuPlacement="auto"
-                                    menuPosition="fixed"
-                                    onChange={(e) => {
+                                            menuPlacement="auto"
+                                            menuPosition="fixed"
+                                            onChange={(e) => {
 
-                                        let languageAtTwenty = []
-                                        for (let i = 0; i < e.length; i++)
-                                            languageAtTwenty.push(e[i].value)
-                                        this.setState({
-                                            LanguageAtTwenty: languageAtTwenty
-                                        })
-                                    }}
-                            />
+                                                let languageAtTwenty = []
+                                                for (let i = 0; i < e.length; i++)
+                                                    languageAtTwenty.push(e[i].value)
+                                                this.setState({
+                                                    LanguageAtTwenty: languageAtTwenty
+                                                })
+                                            }}
+                                />
+                            }
+
                         </div>
                         <span className="focus-input100"></span>
                     </div>
                     <div className="wrap-input100 input100-select">
                         <span className="label-input100">Year of immigration to Israel</span>
                         <div>
-                            <Select label="select year"
-                                    onChange={e => {
-                                        this.setState({yearOfImmigration: e.label})
-                                    }}
-                                    value={findArrayData(this.state.yearOfImmigration, getOpt(1925))}
-                                    style={{zIndex: 100}}
-                                    closeMenuOnSelect={true}
-                                    options={getOpt(1925)}//start, end-> today year
-                                    menuPlacement="auto"
-                                    menuPosition="fixed"
-                            />
+                            {
+                                !this.state.editor ?  <Select label="select year"
+
+                                                              value={findArrayData(this.state.yearOfImmigration, getOpt(1925))}
+                                                              style={{zIndex: 100}}
+                                                              closeMenuOnSelect={true}
+                                                              menuPlacement="auto"
+                                                              menuPosition="fixed"
+                                />:  <Select label="select year"
+                                             onChange={e => {
+                                                 this.setState({yearOfImmigration: e.label})
+                                             }}
+                                             value={findArrayData(this.state.yearOfImmigration, getOpt(1925))}
+                                             style={{zIndex: 100}}
+                                             closeMenuOnSelect={true}
+                                             options={getOpt(1925)}//start, end-> today year
+                                             menuPlacement="auto"
+                                             menuPosition="fixed"
+                                />
+                            }
+
                         </div>
                         <span className="focus-input100"></span>
                     </div>
@@ -663,144 +806,227 @@ export default class EditUsers extends Component {
                     </div>
                 </div>
             )
+        else if (page === 3)
+        {
+            return(
 
-    else
-        return(
-            <div>
+                <div>
+                    <h1>רמת פעילות</h1>
+                    <br />
 
-                <h1>רמת פעילות</h1>
-                <br/>
+                    <div className="wrap-input100 input100-select">
+                        <span className="label-input100">Genre 1</span>
+                        <div>
+                            {
+                                !this.state.editor ? <Select label="select year"
+                                    // onChange={e=>{}}
+                                                             style={{zIndex: 100}}
+                                                             isMulti
+                                                             className="basic-multi-select"
+                                                             closeMenuOnSelect={true}
+                                                             menuPlacement="auto"
+                                                             menuPosition="fixed"
+                                                             value={findArrayData(this.state.Geners, getGenre())}
+                                />: <Select label="select year"
+                                    // onChange={e=>{}}
+                                            style={{zIndex: 100}}
+                                            isMulti
+                                            className="basic-multi-select"
+                                            closeMenuOnSelect={true}
+                                            options={(this.state.Geners && this.state.Geners.length >= maxSelectGenere) ?
+                                                [] : getGenre()}//start, end-> today year
+                                            menuPlacement="auto"
+                                            menuPosition="fixed"
 
+                                            value={findArrayData(this.state.Geners, getGenre())}
+                                            onChange={(e) => {
+                                                let gener = []
+                                                for (let i = 0; i < e.length; i++) {
+                                                    gener.push(e[i].value)
+                                                }
+                                                this.setState({Geners: gener})
+                                            }}
+                                />
+                            }
 
-
-                <div className="wrap-input100 input100-select">
-                    <span className="label-input100">Genre 1</span>
-                    <div>
-
-                        <Select label="select year"
-                            // onChange={e=>{}}
-                                style={{zIndex: 100}}
-                                isMulti
-                                className="basic-multi-select"
-                                closeMenuOnSelect={true}
-                                options={(this.state.Geners && this.state.Geners.length >= maxSelectGenere) ?
-                                    [] : getGenre()}//start, end-> today year
-                                menuPlacement="auto"
-                                menuPosition="fixed"
-
-                                value={findArrayData(this.state.Geners, getGenre())}
-                                onChange={(e) => {
-                                    let gener = []
-                                    for (let i = 0; i < e.length; i++) {
-                                        gener.push(e[i].value)
-                                    }
-                                    this.setState({Geners: gener})
-                                }}
-                        />
+                        </div>
+                        <span className="focus-input100"></span>
                     </div>
-                    <span className="focus-input100"></span>
-                </div>
-                <div className="wrap-input100 input100-select">
-                    <span className="label-input100">sessions number per week*</span>
-                    <div>
 
-                        <Select label="select_sessions_number"
-                            // onChange={e=>{}}
-                                style={{zIndex:100}}
-                                className="basic-multi-select"
-                                closeMenuOnSelect={true}
-
-                                value={findArrayData(this.state.maxSession, getOpt(1,7))}
-                                options={getOpt(1,7)}//start, end-> today year
-                                menuPlacement="auto"
-                                menuPosition="fixed"
-                                onChange={(e)=>{
-                                    console.log("in1")
-                                    this.setState({maxSession: e.value})
+                    <div className="wrap-input100 input100-select">
+                        <span className="label-input100">Good Cognitive</span>
+                        <div>
+                            <Switch disabled={!this.state.editor}
+                                onChange={(check) => {
+                                    check
+                                        ? this.setState({
+                                            checked: check,
+                                            Cognitive: Config.HIGH_COGNITIVE,
+                                        })
+                                        : this.setState({
+                                            checked: check,
+                                            Cognitive: Config.LOW_COGNITIVE,
+                                        });
                                 }}
-                        />
+                                checked={this.state.checked}
+                            />
+                        </div>
+                        <span className="focus-input100"></span>
                     </div>
-                    <span className="focus-input100"></span>
-                </div>
-                <div className="wrap-input100 input100-select">
-                    <span className="label-input100">Cognitive level*</span>
-                    <div>
 
-                        <Select label="select sessions number"
-                            // onChange={e=>{}}
-                                style={{zIndex:100}}
-                                className="basic-multi-select"
-                                closeMenuOnSelect={true}
+                    <div className="wrap-contact100-back-btn">
+                        <div className="contact100-back-bgbtn"></div>
 
-                                value={findArrayData(this.state.Cognitive, Cognitive)}
-                                options={Cognitive}//start, end-> today year
-                                menuPlacement="auto"
-                                menuPosition="fixed"
-                                onChange={(e)=>{
-                                    this.setState({Cognitive: e.value})
-                                }}
-                        />
-                    </div>
-                    <span className="focus-input100"></span>
-                </div>
-                <div className="wrap-input100 input100-select">
-                    <span className="label-input100">Algorythem*</span>
-                    <div>
-
-                        <Select label="select year"
-                            // onChange={e=>{}}
-
-                                style={{zIndex:100}}
-                                className="basic-multi-select"
-                                closeMenuOnSelect={true}
-
-                                value={findArrayData(this.state.currentAlgorithm, algo)}
-                                options={algo}//start, end-> today year
-                                menuPlacement="auto"
-                                menuPosition="fixed"
-                                onChange={(e)=>{
-                                    this.setState({currentAlgorithm: e.value})
-                                }}
-
-                        />
-                    </div>
-                    <span className="focus-input100"></span>
-                </div>
-
-
-                <div className="wrap-contact100-back-btn">
-                    <div className="contact100-back-bgbtn"></div>
-
-                    <button hidden={this.state.type !== 'user'} id='submit' type='button'
+                        <button
+                            hidden={!this.state.editor}
+                            id="submit"
+                            type="button"
                             className="contact100-back-btn"
                             onClick={async () => {
-                                console.log(this.state.Oid)
-                                let userData = this.newElderData(this.state.Oid)
-                                console.log(userData)
-                                let userPlaylist = this.newElderSessions(this.state.Oid)
-                                console.log(userPlaylist)
-                                let userInfoId = await axios.post(url+"/admin/update/UserInfo/"+this.state.Oid, userData)
-                                console.log(userInfoId)
-                                let userPlaylistId = await axios.post(url+"/admin/update/UserSessions/"+this.state.Oid, userPlaylist)
-                                console.log(userPlaylistId)
-                                loadPage(this.props, "admin", this.state.user)
-                                alert("the user " + this.state.first_name + " update")
+                                let user = this.newUserAuthentication();
 
-                            }}>submit
-                        <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
-                        {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
+                                let userId = await axios.post(
+                                    url + "/admin/create/Authentication",
+                                    user
+                                );
 
-                    </button>
-                    <div className="contact100-back-bgbtn"></div>
-                    <button id='back3' type='button' className="contact100-back-btn"
-                            onClick={() => {
-                                // console.log(this.state.roles?this.state.roles:[])
-                                this.setState({page: page - 1})
-                            }}>back
-                        <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
-                    </button>
+                                let userData = this.newElderData(userId.data.insertedId);
+
+                                let userInfoId = await axios.post(
+                                    url + "/admin/create/UserInfo",
+                                    userData
+                                );
+
+                                let userPlaylist = this.newElderSessions(
+                                    userId.data.insertedId
+                                );
+
+                                let userPlaylistId = await axios.post(
+                                    url + "/admin/create/UserSessions",
+                                    userPlaylist
+                                );
+                                await axios.get(
+                                    url +
+                                    "/user/Create/session/" +
+                                    userId.data.insertedId +
+                                    "/personal"
+                                );
+
+                                // CreateSession(userId.data.insertedId)
+                                // userPlaylist.session.push()
+
+                                alert("the user " + this.state.first_name + " add to system");
+                                loadPage(this.props, "admin/ViewUsers", this.state.user,this.state.user);
+                            }}
+                        >
+                            submit
+                            <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
+                            {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
+                        </button>
+
+                        <div className="contact100-back-bgbtn"></div>
+                        <button  hidden={this.state.editor} id='next3' type='button' className="contact100-back-btn"
+                                onClick={() => {
+                                    this.setState({page: page + 1})
+                                }}>next
+                            <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
+                            {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
+
+                        </button>
+                        <div className="contact100-back-bgbtn"></div>
+                        <button id='back2' type='button' className="contact100-back-btn"
+                                onClick={() => {
+                                    // console.log(this.state.roles?this.state.roles:[])
+                                    this.setState({page: page - 1})
+                                }}>back
+                            <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </div>
+
+            )
+        }
+    else
+        return(
+
+        <div>
+            <h1>צפיה בסשנים</h1>
+            <br />
+            <span className="label-input100">type*</span>
+            <Select label="select year"
+                    style={{zIndex: 100}}
+                    closeMenuOnSelect={true}
+                    options={sessionOpt}
+                    value={{
+                        value: this.state.session,
+                        label: this.state.session,
+                    }}
+                    defaultValue={sessionOpt[0]}
+                    onChange={async e => {
+                        // console.log(e.value)
+                        // console.log(currentUser)
+                        // await this.setState({session:e.value})
+                        // console.log(currentUser._id)
+                        let videos = await this.getSession(this.state.Oid, e.value)
+                        // console.log(videos)
+                        this.setState({
+                            videos: videos,
+                            session: e.value
+                        })
+                        let currentSession = {currentSession:e.value}
+
+
+                        // alert(status)
+                    }}
+                    menuPlacement="auto"
+                    menuPosition="fixed"
+            />
+            <div className="wrap-input100 input100-select">
+                {
+                    this.state.sessionView?
+                        this.state.sessionView.map((item,index)=>{
+                            return(
+                                    <div>
+                                        <span className="label-input100">session {index+1}</span>
+                                        <CarouselApp session={item}></CarouselApp>
+                                    </div>
+                                )
+
+                        }):""
+
+
+                }
+
+                {/*<span className="label-input100">session 1</span>*/}
+                {/*<div>*/}
+                {/*    <CarouselApp></CarouselApp>*/}
+                {/*</div>*/}
+                {/*<span className="label-input100">session 2</span>*/}
+                {/*<div>*/}
+                {/*    <CarouselApp></CarouselApp>*/}
+                {/*</div>*/}
+
             </div>
+
+
+
+            <div className="wrap-contact100-back-btn">
+                <div className="contact100-back-bgbtn"></div>
+                <button
+                    id="back"
+                    type="button"
+                    className="contact100-back-btn"
+                    onClick={() => {
+                        // console.log(this.state.roles?this.state.roles:[])
+                        this.setState({ page: page - 1 });
+                    }}
+                >
+                    back
+                    <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
         )
 
     }
@@ -813,7 +1039,11 @@ export default class EditUsers extends Component {
                 <div className="wrap-contact1100" style={{zIndex: 0}}>
                     <form className="contact100-form validate-form" style={{zIndex: -1}}>
 				<span className="contact100-form-title" translate="yes" lang="he">
-					User Edit
+                    {
+                        this.state.editor?"User Edit":"User View"
+                    }
+
+
 				</span>
 
 
@@ -821,56 +1051,8 @@ export default class EditUsers extends Component {
                             {/*User name, First name, Last name, ID, Password*/}
                             <div style={{width: '100%'}} className="container-section-space">
                                 <div className="container-section">
-                                    <div hidden={this.state.page > 0} className="wrap-input100 validate-input"
-                                         data-validate="Name is required">
-                                        <div>
-
-                                            <h1>
-                                                Identification information for the {this.state.type} system
-                                                <br/>
-                                            </h1>
-                                            <br/>
-                                        </div>
-                                        <span className="label-input100">type*</span>
-                                        <Select label="select year"
-                                                style={{zIndex: 100}}
-                                                closeMenuOnSelect={true}
-                                                options={roles}//start, end-> today year
-                                                onChange={async e => {
-                                                    console.log(e.value)
-                                                    var users = await this.getAllUsers(e.value)
-                                                    console.log(users)
-                                                    this.setState({type:e.value,users:users})
-                                                }}
-                                                menuPlacement="auto"
-                                                menuPosition="fixed"
-                                        />
-                                    </div>
 
 
-                                    <div hidden={this.state.page > 0 && (this.state.type === '' || this.state.users.length <= 0)}>
-                                        <span className="label-input100">select user*</span>
-                                        <Select label="select year"
-                                                style={{zIndex: 100}}
-                                                closeMenuOnSelect={true}
-                                                options={this.state.users}//start, end-> today year
-                                                onChange={async e => {
-                                                    console.log(e.value)
-                                                    console.log(e.value._id)
-                                                   this.setUserAuth(e.value)
-                                                    let info = await this.getUserById(e.value._id)
-                                                    console.log(info.data)
-                                                   await this.setUserInfo(info.data)
-                                                    console.log(this.state)
-
-
-
-                                                }}
-                                                menuPlacement="auto"
-                                                menuPosition="fixed"
-                                        />
-                                        <hr/>
-                                    </div>
                                     <div hidden={!this.state.userSelect}>
                                         {this.registerUser(this.state.page)}
                                     </div>
@@ -880,44 +1062,9 @@ export default class EditUsers extends Component {
                                         <button id='back' type='button' className="contact100-back-btn"
                                                 onClick={() => {
                                                     // console.log(this.state.roles?this.state.roles:[])
-                                                    loadPage(this.props, "admin", this.state.user)
+                                                    loadPage(this.props, "admin/ViewUsers", this.state.user,this.state.user)
                                                 }}>back
                                             <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                    <div hidden={this.state.page > 0} className="wrap-contact100-back-btn">
-                                        <div className="contact100-back-bgbtn"></div>
-                                        <button id='back' type='button' className="contact100-back-btn"
-                                                onClick={() => {
-                                                    // console.log(this.state.roles?this.state.roles:[])
-                                                  let user = {
-                                                        "_id": "61bfa29b9a31bb0f05142047",
-                                                        "Oid": "61bfa29b9a31bb0f05142046",
-                                                        "Geners": [
-                                                        "cla",
-                                                        "mid"
-                                                    ],
-                                                        "LanguageAtTwenty": [
-                                                        "he",
-                                                        "en"
-                                                    ],
-                                                        "birthYear": 1991,
-                                                        "countryAtTwenty": "IL",
-                                                        "countryOrigin": "IL",
-                                                        "department": "11",
-                                                        "entrance": 0,
-                                                        "first_name": "11",
-                                                        "languageOrigin": "he",
-                                                        "last_name": "11",
-                                                        "medicalProfile": "11",
-                                                        "nursingHome": "11",
-                                                        "userName": "11",
-                                                        "yearAtTwenty": 2011,
-                                                        "yearOfImmigration": 1991
-                                                    }
-                                                    this.setUserInfo(user)
-                                                    }}>load data
-
                                         </button>
                                     </div>
 
@@ -958,7 +1105,7 @@ export default class EditUsers extends Component {
         })
         console.log(users)
         return users
-        // loadPage(this.props,"",this.state)
+        // loadPage(this.props,"",this.state,this.state.user)
     }
 
     setUserAuth(auth) {
@@ -994,7 +1141,7 @@ export default class EditUsers extends Component {
             OidInfo:user._id,
             maxSession:user.maxSession,
             Cognitive:user.Cognitive,
-            currentAlgorithm:user.currentAlgorithm
+            currentSession:user.currentSession
 
         })
     }

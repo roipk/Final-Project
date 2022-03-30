@@ -40,8 +40,10 @@ export default class ViewUsers extends Component {
     }
 
     async componentDidMount() {
+        console.log("in")
         let currentUser = await verifyUser("admin")
         if (currentUser) {
+            console.log("in")
             this.setState({user: currentUser})
         } else {
             this.setState({notfound: true})
@@ -82,12 +84,12 @@ export default class ViewUsers extends Component {
                                                     <Box sx={{flexGrow: 1}}>
                                                         <Grid container spacing={1} columns={16}>
                                                             <Grid item xs={8}>
-                                                                <MediaCard user={user[0]} key={user[0]._id}/>
+                                                                <MediaCard props = {this.props} user = {this.state.user} userView={user[0]} key={user[0]._id}/>
                                                             </Grid>
                                                             {
                                                                 user.length > 1 ?
                                                                     <Grid item xs={8}>
-                                                                        <MediaCard user={user[1]} key={user[1]._id}/>
+                                                                        <MediaCard props = {this.props} user = {this.state.user} userView={user[1]} key={user[1]._id}/>
                                                                     </Grid> : ""
                                                             }
                                                         </Grid>
@@ -104,9 +106,16 @@ export default class ViewUsers extends Component {
                                         <button id='back' type='button' className="contact100-back-btn"
                                                 onClick={() => {
                                                     // console.log(this.state.roles?this.state.roles:[])
-                                                    loadPage(this.props, "admin", this.state.user)
+                                                    loadPage(this.props, "admin", this.state.user,this.state.user)
                                                 }}>back
                                             <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
+                                        </button>
+                                        <button id='back' type='button' className="contact100-back-btn"
+                                                onClick={() => {
+                                                    // console.log(this.state.roles?this.state.roles:[])
+                                                    loadPage(this.props, "register", this.state.user,null)
+                                                }}>Add User
+                                            <i className="fa fa-blind fa-2x" aria-hidden="true"></i>
                                         </button>
                                     </div>
                                 </form>

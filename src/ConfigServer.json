@@ -1,6 +1,7 @@
 {
   "MONGOURL": "mongodb://localhost:27017",
   "JWT_KEY":"secret",
-  "HOST":"http://localhost:5000",
+  "HOST":"http://tamaringa.jce.ac.il:5000",
+  "HOST1":"http://localhost:5000",
   "Port": 5000
 }

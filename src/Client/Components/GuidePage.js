@@ -108,7 +108,7 @@ render() {
                       <div className="wrap-contact100-back-btn">
                           <div className="contact100-back-bgbtn"></div>
                           <button id='main' type='button' className="contact100-back-btn" onClick={() => {
-                              loadPage(this.props, "register", this.state)
+                              loadPage(this.props, "register",this.state.user,this.state.user)
                           }}>
                               <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
                           </button>

@@ -43,7 +43,7 @@ export default class EditResearch extends Component {
       sessionDuration: { hours: 0, minutes: 0 },
       participantsElders: [],
       participantsResearchers: [],
-      currentAlgorithm: "",
+      currentSession: "",
     };
   }
 
@@ -105,7 +105,7 @@ export default class EditResearch extends Component {
       participantsEldersOld: res.data[0].participantsElders,
       participantsResearchers: res.data[0].participantsResearchers,
       participantsResearchersOld: res.data[0].participantsResearchers,
-      currentAlgorithm: res.data[0].algorithm,
+      currentSession: res.data[0].algorithm,
     });
   }
 
@@ -228,7 +228,7 @@ export default class EditResearch extends Component {
       sessionDuration: this.state.sessionDuration,
       participantsElders: this.state.participantsElders,
       participantsResearchers: this.state.participantsResearchers,
-      algorithm: this.state.currentAlgorithm,
+      currentSession: this.state.currentSession,
     };
 
     let oldElders = this.state.participantsEldersOld;
@@ -304,7 +304,7 @@ export default class EditResearch extends Component {
             "Updated"
         );
 
-        loadPage(this.props, "researcher", this.state.user);
+        loadPage(this.props, "researcher", this.state.user,this.state.user);
       });
   };
 
@@ -482,7 +482,7 @@ export default class EditResearch extends Component {
                     type="text"
                     name="algorithm"
                     required
-                    defaultValue={this.state.currentAlgorithm}
+                    defaultValue={this.state.currentSession}
                     readOnly
                   />
 
@@ -551,7 +551,7 @@ export default class EditResearch extends Component {
                   type="button"
                   className="contact100-back-btn"
                   onClick={() => {
-                    loadPage(this.props, "researcher", this.state.user);
+                    loadPage(this.props, "researcher", this.state.user,this.state.user);
                   }}
                 >
                   <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>

@@ -3,11 +3,14 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import {loadPage} from "./ManagerComponents";
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {languagesAll} from "countries-list";
 import {experimentalStyled as styled} from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
+import axios from "axios";
+import {url} from "./AllPages";
 const languages = Object.entries(languagesAll);
 
 var options =
@@ -41,7 +44,13 @@ function getSring(user,type)
 }
 
 export default function MediaCard(user) {
-   user = user.user
+
+    var props = user.props
+    var currentUser = user.user
+    user = user.userView
+    console.log(props)
+    console.log(user)
+
 
     return (
         <Card sx={{ maxWidth: 500,margin:'3%'}}>
@@ -61,7 +70,7 @@ export default function MediaCard(user) {
                     {
 
                         !user? <p>  Age : Age <br/> Languages : Lang1, lang2<br/>generes : genere1, genere2</p>:
-                        user.type ?<p>
+                        user.type!=="user" ?<p>
                                 Email :{" "+user.email}<br/>
                                 Type :{" "+user.type}<br/>
                             </p> :
@@ -75,15 +84,43 @@ export default function MediaCard(user) {
                     }
                 </Typography>
                 <CardActions>
-                    <Button size="small">
+                    <Button size="small" onClick={(e)=> {
+                        user.editor=false
+                        loadPage(props, "edit", currentUser, user)
+                    }}>
                         <i className="fa fa-address-card fa-2x" aria-hidden="true"
                            style={{padding_right: '10px'}}></i>
                         &nbsp;View</Button>
-                    <Button size="small">
+
+
+                    <Button size="small" onClick={(e)=>{
+                        user.editor=true
+                        loadPage(props,"edit",currentUser,user)
+                    }
+                    }>
                         <i className="fa fa-pencil fa-2x" aria-hidden="true"
                            style={{padding_right: '10px'}}></i>
                         &nbsp;Edit</Button>
-                    <Button  size="small">
+
+
+                    <Button  size="small"
+                             onClick={() => {
+                                 alert("do you want remove this user?")
+
+                                 axios.get(url+"/admin/DeleteUser/"+user.Oid)
+                                     .then(res => {
+                                         console.log("the user removed")
+                                         alert("the user removed")
+                                         loadPage(this.props, "ViewUsers", this.state.user,this.state.user)
+
+
+                                         // alert("successful\n the user " + this.state.first_name + "\n" +
+                                         //     "add to system with id -  " + res.data.insertedId + "\n" +
+                                         //     "type " + this.state.type)
+                                         // loadPage(this.props, "admin", this.state.user,this.state.user)
+                                         // loadPage(this.props,"",this.state,this.state.user)
+                                     })
+                             }}>
                         <i className="fa fa-trash fa-2x" aria-hidden="true"
                            style={{padding_right: '10px'}}></i>
                         &nbsp;  Delete</Button>

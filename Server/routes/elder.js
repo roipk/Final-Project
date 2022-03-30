@@ -16,7 +16,7 @@ routerElder
   .post(async function (req, res) {
     let id = req.params.id;
     let session = await getData("UserSessions", id);
-    session.currentAlgorithm = req.body.currentSession;
+    session.currentSession = req.body.currentSession;
     await updateData("UserSessions", id, session);
     return res.status(200);
   });
@@ -69,7 +69,7 @@ routerElder.route("/session/:id/:algorithm?").get(async function (req, res) {
     Object.entries(session.sessions).forEach(([key, value]) => {
       if (value.isActive) keys.push(key);
     });
-    let data = { keys: keys, currentAlgorithm: session.currentAlgorithm };
+    let data = { keys: keys, currentSession: session.currentSession };
     return res.status(200).json(data);
   } else if (
     algorithm &&
@@ -87,7 +87,7 @@ routerElder.route("/session/:id/:algorithm?").get(async function (req, res) {
       list: songs.songsView,
     };
     return res.status(200).json(songs);
-  } else if (session.sessions[algorithm].sessions.length === 0) {
+  } else if (session.sessions[algorithm].sessions && session.sessions[algorithm].sessions.length === 0) {
     songs = {
       sessionNumber: session.sessions[algorithm].sessions.length,
       list: songs.songsView,
@@ -96,6 +96,24 @@ routerElder.route("/session/:id/:algorithm?").get(async function (req, res) {
   }
 
   return res.status(404);
+});
+
+routerElder.route("/allSession/:id/:algorithm").get(async function (req, res) {
+  let id = req.params.id;
+  let algorithm = req.params.algorithm;
+  let session = await getData("UserSessions", id);
+  var songs = {
+    songsView: [],
+    songsBlock: [],
+  };
+  songs.songsView =
+      session.sessions[algorithm].sessions
+
+  songs = {
+    sessionNumber: session.sessions[algorithm].sessions.length,
+    list: songs.songsView,
+  };
+  return res.status(200).json(songs);
 });
 
 routerElder
@@ -112,7 +130,6 @@ routerElder
         await setSessionIsActive(session, algorithm);
       }
     }
-
     var songs = await CreateSession(session, algorithm);
     return res.status(200).json(songs.songsView);
   });
@@ -174,7 +191,6 @@ async function CreateSession(session, algorithm) {
     });
   });
   session.sessions[algorithm].sessions.push(songSession);
-  // console.log(session)
   await updateData("UserSessions", session.Oid, session);
   return songs;
 }
@@ -207,11 +223,11 @@ async function getSongs(session, songs) {
   };
   songs = await createFilter(songs, filters, 1);
 
-  // if(!session.playList[session.currentAlgorithm.toString()])
-  //     session.playList.push({[session.currentAlgorithm.toString()]:[]})
+  // if(!session.playList[session.currentSession.toString()])
+  //     session.playList.push({[session.currentSession.toString()]:[]})
 
   // console.log(session.playList)
-  // session.playList[session.currentAlgorithm]=songs.songsBlock
+  // session.playList[session.currentSession]=songs.songsBlock
   // await updateData("UserSessions",session.Oid,session)
   // songs.songsView =songs.songsView.sort((a, b) => 0.5 - Math.random());
   return songs;
@@ -237,6 +253,7 @@ async function createFilter(songs = {}, filters, sort) {
     ],
   };
 
+  // var allSong = await getAllDataFilter("Playlists", filter, sort);//college pc
   var allSong = await getAllDataFilter("NewPlaylists", filter, sort);
   // allSong.slice(0,filters.Cognitive)
   var randomized = [];
@@ -418,14 +435,14 @@ module.exports = routerElder;
 //         var p = keys.pop()
 //         delete filters[p]
 //     }
-//     console.log(session.currentAlgorithm)
+//     console.log(session.currentSession)
 //
-//     // if(!session.playList[session.currentAlgorithm.toString()])
-//     //     session.playList.push({[session.currentAlgorithm.toString()]:[]})
+//     // if(!session.playList[session.currentSession.toString()])
+//     //     session.playList.push({[session.currentSession.toString()]:[]})
 //
 //
 //     // console.log(session.playList)
-//     // session.playList[session.currentAlgorithm]=songs.songsBlock
+//     // session.playList[session.currentSession]=songs.songsBlock
 //     // await updateData("UserSessions",session.Oid,session)
 //     songs.songsView =songs.songsView.sort((a, b) => 0.5 - Math.random());
 //     return songs

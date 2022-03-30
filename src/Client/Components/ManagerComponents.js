@@ -1,13 +1,14 @@
 import axios from "axios";
 import { url } from "./AllPages";
 
-export const loadPage = (props, page, data) => {
+export const loadPage = (props, page, currentUser,data) => {
   // localStorage.setItem("token",data.token)
-  verifyUser(data.type);
+  verifyUser(currentUser.type);
 
   props.history.push({
     pathname: `/${page}`,
     data: data, // your data array of objects
+    currentUser:currentUser
   });
 };
 
