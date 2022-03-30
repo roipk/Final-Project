@@ -100,7 +100,7 @@ export default class Login extends Component{
                                                 getServer(page,config).then(res=>{
                                                     console.log(res)
                                                     localStorage.setItem("token",res.data.token)
-                                                    loadPage(this.props,`${res.data.user.type}`,res.data.user)
+                                                    loadPage(this.props,`${res.data.user.type}`,res.data.user,this.state.user)
                                                 }).catch(e=> {
                                                     console.log(e)
                                                     alert("user name or password not correct")

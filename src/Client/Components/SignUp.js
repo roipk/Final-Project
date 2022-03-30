@@ -49,14 +49,14 @@ const roles = [
   { value: "guide", label: "Create Guide" },
   { value: "user", label: "Create User" },
 ];
-const Cognitive = [
-  // { value: '', label: 'Admin' },
-  { value: 5, label: "Very Low Cognitive" },
-  { value: 8, label: "Low Cognitive" },
-  { value: 11, label: "Normal Cognitive" },
-  { value: 12, label: "Good Cognitive" },
-  { value: 15, label: "Excellent Cognitive" },
-];
+// const Cognitive = [
+//   // { value: '', label: 'Admin' },
+//   { value: 5, label: "Very Low Cognitive" },
+//   { value: 8, label: "Low Cognitive" },
+//   { value: 11, label: "Normal Cognitive" },
+//   { value: 12, label: "Good Cognitive" },
+//   { value: 15, label: "Excellent Cognitive" },
+// ];
 
 function timefomat(timestamp) {
   let unix_timestamp = timestamp;
@@ -104,7 +104,7 @@ export default class SignUp extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: props.location.data,
+      user: props.location.currentUser,
       language: null,
       page: 0,
 
@@ -167,6 +167,7 @@ export default class SignUp extends Component {
   newElderData(id) {
     let elderData = {
       Oid: id,
+        type:this.state.type,
       first_name: this.state.first_name,
       last_name: this.state.last_name,
       userName: this.state.user_name,
@@ -528,9 +529,9 @@ export default class SignUp extends Component {
                         .then((res) => {
                           alert("Added also to researcherInfo:" + res.data);
                         });
-                      loadPage(this.props, "admin", this.state.user);
+                      loadPage(this.props, "ViewUsers", this.state.user,this.state.user);
                     }
-                    loadPage(this.props, "admin", this.state.user);
+                    loadPage(this.props, "ViewUsers", this.state.user,this.state.user);
                     // loadPage(this.props, "admin", this.state.user)
                     // loadPage(this.props,"",this.state)
                   });
@@ -1007,7 +1008,7 @@ export default class SignUp extends Component {
                 // userPlaylist.session.push()
 
                 alert("the user " + this.state.first_name + " add to system");
-                loadPage(this.props, "admin", this.state.user);
+                loadPage(this.props, "admin", this.state.user,this.state.user);
               }}
             >
               submit
@@ -1095,7 +1096,7 @@ export default class SignUp extends Component {
                       className="contact100-back-btn"
                       onClick={() => {
                         // console.log(this.state.roles?this.state.roles:[])
-                        loadPage(this.props, "admin", this.state.user);
+                        loadPage(this.props, "admin", this.state.user,this.state.user);
                       }}
                     >
                       back

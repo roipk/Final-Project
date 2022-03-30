@@ -53,7 +53,7 @@ export default class Home extends Component {
                     {/*                        // console.log(this.userData)*/}
                     {/*                        if (!this.userData) {*/}
                     {/*                            localStorage.removeItem("user");*/}
-                    {/*                            return loadPage(this.props, "login",)*/}
+                    {/*                            return loadPage(this.props, "login",this.state.user,this.state.user)*/}
                     {/*                        }*/}
                     {/*                        ;*/}
                     {/*                        // console.log("userData")*/}

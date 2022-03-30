@@ -87,7 +87,7 @@ routerElder.route("/session/:id/:algorithm?").get(async function (req, res) {
       list: songs.songsView,
     };
     return res.status(200).json(songs);
-  } else if (session.sessions[algorithm].sessions.length === 0) {
+  } else if (session.sessions[algorithm].sessions && session.sessions[algorithm].sessions.length === 0) {
     songs = {
       sessionNumber: session.sessions[algorithm].sessions.length,
       list: songs.songsView,
@@ -96,6 +96,24 @@ routerElder.route("/session/:id/:algorithm?").get(async function (req, res) {
   }
 
   return res.status(404);
+});
+
+routerElder.route("/allSession/:id/:algorithm").get(async function (req, res) {
+  let id = req.params.id;
+  let algorithm = req.params.algorithm;
+  let session = await getData("UserSessions", id);
+  var songs = {
+    songsView: [],
+    songsBlock: [],
+  };
+  songs.songsView =
+      session.sessions[algorithm].sessions
+
+  songs = {
+    sessionNumber: session.sessions[algorithm].sessions.length,
+    list: songs.songsView,
+  };
+  return res.status(200).json(songs);
 });
 
 routerElder
@@ -235,7 +253,8 @@ async function createFilter(songs = {}, filters, sort) {
     ],
   };
 
-  var allSong = await getAllDataFilter("Playlists", filter, sort);
+  // var allSong = await getAllDataFilter("Playlists", filter, sort);//college pc
+  var allSong = await getAllDataFilter("NewPlaylists", filter, sort);
   // allSong.slice(0,filters.Cognitive)
   var randomized = [];
 

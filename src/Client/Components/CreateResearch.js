@@ -273,7 +273,7 @@ export default class CreateResearch extends Component {
               newResearch.researchName
             );
 
-            loadPage(this.props, "researcher", this.state.user);
+            loadPage(this.props, "researcher", this.state.user,this.state.user);
           });
       } else {
         alert("Research already exist");
@@ -505,7 +505,7 @@ export default class CreateResearch extends Component {
                         type="button"
                         className="contact100-back-btn"
                         onClick={() => {
-                          loadPage(this.props, "researcher", this.state.user);
+                          loadPage(this.props, "researcher", this.state.user,this.state.user);
                         }}
                       >
                         <i

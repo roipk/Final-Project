@@ -318,7 +318,7 @@ export default function CreateOldMan(){
                                 <div className="contact100-back-bgbtn"></div>
                                 <button id='main' type='button' className="contact100-back-btn"
                                         onClick={()=>{
-                                            loadPage(this.props,"",this.state)
+                                            loadPage(this.props,"",this.state,this.state.user)
                                         }}>send
                                     {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
                                 </button>
@@ -357,7 +357,7 @@ export default function CreateOldMan(){
                             <div className="contact100-back-bgbtn"></div>
                             <button id='main' type='button' className="contact100-back-btn"
                                     onClick={()=>{
-                                        loadPage(this.props,"",this.state)
+                                        loadPage(this.props,"",this.state,this.state.user)
                                     }}>send
                                 {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
                             </button>

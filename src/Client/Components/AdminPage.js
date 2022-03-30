@@ -46,7 +46,7 @@ export default class AdminPage extends Component {
                                                         <button type="button" id='createUser'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "admin/ViewUsers", this.state.user)
+                                                                    loadPage(this.props, "admin/ViewUsers", this.state.user,this.state.user)
                                                                 }}>
                                 <span>
                                     <i className="fa fa-blind fa-2x" aria-hidden="true"
@@ -57,56 +57,56 @@ export default class AdminPage extends Component {
                                                     </div>
                                                 </div>
 
-                                                <div className="container-contact100-form-btn">
-                                                    <div className="wrap-contact100-form-btn">
-                                                        <div className="user contact100-form-bgbtn"></div>
-                                                        <button type="button" id='createUser'
-                                                                className="contact100-form-btn"
-                                                                onClick={() => {
-                                                                    loadPage(this.props, "register", this.state.user)
-                                                                }}>
-                                <span>
-                                    <i className="fa fa-blind fa-2x" aria-hidden="true"
-                                       style={{padding_right: '10px'}}></i>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;Create User
-                                </span>
-                                                        </button>
-                                                    </div>
-                                                </div>
+                                {/*                <div className="container-contact100-form-btn">*/}
+                                {/*                    <div className="wrap-contact100-form-btn">*/}
+                                {/*                        <div className="user contact100-form-bgbtn"></div>*/}
+                                {/*                        <button type="button" id='createUser'*/}
+                                {/*                                className="contact100-form-btn"*/}
+                                {/*                                onClick={() => {*/}
+                                {/*                                    loadPage(this.props, "register", this.state.user,this.state.user)*/}
+                                {/*                                }}>*/}
+                                {/*<span>*/}
+                                {/*    <i className="fa fa-blind fa-2x" aria-hidden="true"*/}
+                                {/*       style={{padding_right: '10px'}}></i>*/}
+                                {/*    &nbsp;&nbsp;&nbsp;&nbsp;Create User*/}
+                                {/*</span>*/}
+                                {/*                        </button>*/}
+                                {/*                    </div>*/}
+                                {/*                </div>*/}
 
-                                                <div className="container-contact100-form-btn">
-                                                    <div className="wrap-contact100-form-btn">
-                                                        <div className="user contact100-form-bgbtn"></div>
-                                                        <button id='editUser' type='button'
-                                                                className="contact100-form-btn"
-                                                                onClick={() => {
-                                                                    loadPage(this.props, "edit", this.state.user)
-                                                                }}>
-                                                            <i className="fa fa-pencil fa-lg" aria-hidden="true"
-                                                               style={{padding_right: '10px'}}></i>
-                                                            <span>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;Edit User
-                                    </span>
-                                                        </button>
-                                                    </div>
-                                                </div>
+                                    {/*            <div className="container-contact100-form-btn">*/}
+                                    {/*                <div className="wrap-contact100-form-btn">*/}
+                                    {/*                    <div className="user contact100-form-bgbtn"></div>*/}
+                                    {/*                    <button id='editUser' type='button'*/}
+                                    {/*                            className="contact100-form-btn"*/}
+                                    {/*                            onClick={() => {*/}
+                                    {/*                                loadPage(this.props, "edit", this.state.user,this.state.user)*/}
+                                    {/*                            }}>*/}
+                                    {/*                        <i className="fa fa-pencil fa-lg" aria-hidden="true"*/}
+                                    {/*                           style={{padding_right: '10px'}}></i>*/}
+                                    {/*                        <span>*/}
+                                    {/*    &nbsp;&nbsp;&nbsp;&nbsp;Edit User*/}
+                                    {/*</span>*/}
+                                    {/*                    </button>*/}
+                                    {/*                </div>*/}
+                                    {/*            </div>*/}
 
-                                                <div className="container-contact100-form-btn">
-                                                    <div className="wrap-contact100-form-btn">
-                                                        <div className="user contact100-form-bgbtn"></div>
-                                                        <button id='editUser' type='button'
-                                                                className="contact100-form-btn"
-                                                                onClick={() => {
-                                                                    loadPage(this.props, "remove", this.state.user)
-                                                                }}>
-                                                            <i className="fa fa-times fa-lg" aria-hidden="true"
-                                                               style={{padding_right: '10px'}}></i>
-                                                            <span>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;Delete User
-                                    </span>
-                                                        </button>
-                                                    </div>
-                                                </div>
+                                    {/*            <div className="container-contact100-form-btn">*/}
+                                    {/*                <div className="wrap-contact100-form-btn">*/}
+                                    {/*                    <div className="user contact100-form-bgbtn"></div>*/}
+                                    {/*                    <button id='editUser' type='button'*/}
+                                    {/*                            className="contact100-form-btn"*/}
+                                    {/*                            onClick={() => {*/}
+                                    {/*                                loadPage(this.props, "remove", this.state.user,this.state.user)*/}
+                                    {/*                            }}>*/}
+                                    {/*                        <i className="fa fa-times fa-lg" aria-hidden="true"*/}
+                                    {/*                           style={{padding_right: '10px'}}></i>*/}
+                                    {/*                        <span>*/}
+                                    {/*    &nbsp;&nbsp;&nbsp;&nbsp;Delete User*/}
+                                    {/*</span>*/}
+                                    {/*                    </button>*/}
+                                    {/*                </div>*/}
+                                    {/*            </div>*/}
                                             </div>
                                         </div>
 
@@ -120,7 +120,7 @@ export default class AdminPage extends Component {
                                                         <button id='createGuide' type='button'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state.user)
+                                                                    loadPage(this.props, "register", this.state.user,this.state.user)
                                                                 }}>
                                 <span>
                                     <i className="fa fa-users fa-lg fa-fw" aria-hidden="true"
@@ -137,7 +137,7 @@ export default class AdminPage extends Component {
                                                         <button id='createResearcher' type='button'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state.user)
+                                                                    loadPage(this.props, "register", this.state.user,this.state.user)
                                                                 }}>
                                 <span>
                                     <i className="fa fa-users fa-lg fa-fw" aria-hidden="true"
@@ -154,7 +154,7 @@ export default class AdminPage extends Component {
                                                         <button id='createResearchGroup' type='button'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state.user)
+                                                                    loadPage(this.props, "register", this.state.user,this.state.user)
                                                                 }}>
                                 <span>
                                     <i className="fa fa-users fa-lg fa-fw" aria-hidden="true"
@@ -177,7 +177,7 @@ export default class AdminPage extends Component {
                                                         <button type="button" id='createPlaylist'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state.user)
+                                                                    loadPage(this.props, "register", this.state.user,this.state.user)
                                                                 }}>
                                     <span>
                                         <i className="fa fa-list-ol fa-lg fa-fw" aria-hidden="true"
@@ -193,7 +193,7 @@ export default class AdminPage extends Component {
                                                         <button type="button" id='editPlaylist'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state.user)
+                                                                    loadPage(this.props, "register", this.state.user,this.state.user)
                                                                 }}>
                                     <span>
                                         <i className="fa fa-list-ol fa-lg fa-fw" aria-hidden="true"
@@ -209,7 +209,7 @@ export default class AdminPage extends Component {
                                                         <button type="button" id='addMedia'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "register", this.state.user)
+                                                                    loadPage(this.props, "register", this.state.user,this.state.user)
                                                                 }}>
                                     <span>
                                         <i className="fa fa-music fa-lg fa-fw" aria-hidden="true"
@@ -232,7 +232,7 @@ export default class AdminPage extends Component {
                                                         <button type="button" id='addMedia'
                                                                 className="contact100-form-btn"
                                                                 onClick={() => {
-                                                                    loadPage(this.props, "youtube", this.state.user)
+                                                                    loadPage(this.props, "youtube", this.state.user,this.state.user)
                                                                 }}>
                                     <span>
                                         <i className="fa fa-music fa-lg fa-fw" aria-hidden="true"
@@ -268,7 +268,7 @@ export default class AdminPage extends Component {
                                                 <div className="contact100-back-bgbtn"></div>
                                                 <button id='main' type='button' className="contact100-back-btn"
                                                         onClick={() => {
-                                                            loadPage(this.props, "", this.state.user)
+                                                            loadPage(this.props, "", this.state.user,this.state.user)
                                                         }}>
                                                     <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
                                                 </button>

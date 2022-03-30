@@ -357,14 +357,14 @@ export default class DeleteUsers extends Component {
                                     axios.get(url+"/admin/DeleteUser/"+this.state.Oid)
                                         .then(res => {
                                             console.log("the user removed")
-                                            loadPage(this.props, "admin", this.state.user)
+                                            loadPage(this.props, "admin", this.state.user,this.state.user)
 
 
                                             // alert("successful\n the user " + this.state.first_name + "\n" +
                                             //     "add to system with id -  " + res.data.insertedId + "\n" +
                                             //     "type " + this.state.type)
-                                            // loadPage(this.props, "admin", this.state.user)
-                                            // loadPage(this.props,"",this.state)
+                                            // loadPage(this.props, "admin", this.state.user,this.state.user)
+                                            // loadPage(this.props,"",this.state,this.state.user)
                                         })
                                 }}>Delete User
                             {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
@@ -648,7 +648,7 @@ export default class DeleteUsers extends Component {
                                     //
                                     //
                                     // alert("the user " + this.state.first_name + " add to system")
-                                    // loadPage(this.props, "admin", this.state.user)
+                                    // loadPage(this.props, "admin", this.state.user,this.state.user)
 
                                 }}>submit
                             <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
@@ -746,7 +746,7 @@ export default class DeleteUsers extends Component {
                                         <button id='back' type='button' className="contact100-back-btn"
                                                 onClick={() => {
                                                     // console.log(this.state.roles?this.state.roles:[])
-                                                    loadPage(this.props, "admin", this.state.user)
+                                                    loadPage(this.props, "admin", this.state.user,this.state.user)
                                                 }}>back
                                             <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
                                         </button>
@@ -793,7 +793,7 @@ export default class DeleteUsers extends Component {
         })
         console.log(users)
         return users
-        // loadPage(this.props,"",this.state)
+        // loadPage(this.props,"",this.state,this.state.user)
     }
 
     setUserAuth(auth) {

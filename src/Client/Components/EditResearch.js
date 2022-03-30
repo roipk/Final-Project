@@ -304,7 +304,7 @@ export default class EditResearch extends Component {
             "Updated"
         );
 
-        loadPage(this.props, "researcher", this.state.user);
+        loadPage(this.props, "researcher", this.state.user,this.state.user);
       });
   };
 
@@ -551,7 +551,7 @@ export default class EditResearch extends Component {
                   type="button"
                   className="contact100-back-btn"
                   onClick={() => {
-                    loadPage(this.props, "researcher", this.state.user);
+                    loadPage(this.props, "researcher", this.state.user,this.state.user);
                   }}
                 >
                   <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>

@@ -128,7 +128,7 @@ export default class CreateAdmin extends Component{
                                 <button id='main' type='button' className="contact100-back-btn"
                                         onClick={()=>{
                                             // console.log(this.state.roles?this.state.roles:[])
-                                            loadPage(this.props,"",this.state)
+                                            loadPage(this.props,"",this.state.user,this.state.user)
                                         }}>
                                     <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
                                 </button>

@@ -46,8 +46,7 @@ export default class ElderPage extends Component {
 
 
     async getSession(id, session) {
-        console.log(this.state.session)
-        console.log(url + "/user/session/" + id + "/" + session)
+
         let songs = await axios.get(url + "/user/session/" + id + "/" + session)
         console.log(songs)
         this.setState({session:session,sessionNumber: songs.data.sessionNumber})
@@ -57,7 +56,10 @@ export default class ElderPage extends Component {
     }
 
     async getSessionsKey(id) {
+        console.log("in1")
+        console.log(id)
         let songs = await axios.get(url + "/user/session/" + id)
+        console.log("in2")
         console.log(songs.data)
         sessionOpt=[]
         await songs.data.keys.forEach(key => {
@@ -281,7 +283,7 @@ export default class ElderPage extends Component {
                                                 <div className="contact100-back-bgbtn"></div>
                                                 <button id='main' type='button' className="contact100-back-btn"
                                                         onClick={() => {
-                                                            loadPage(this.props, "", this.state.user)
+                                                            loadPage(this.props, "", this.state.user,this.state.user)
                                                         }}>
                                                     <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
                                                 </button>
