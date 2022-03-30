@@ -92,7 +92,7 @@ export default class CreateResearch extends Component {
       participantsElders: [],
       researchersOptions: [],
       participantsResearchers: [],
-      currentAlgorithm: "",
+      currentSession: "",
     };
   }
 
@@ -243,7 +243,7 @@ export default class CreateResearch extends Component {
       sessionDuration: this.state.sessionDuration,
       participantsElders: this.state.participantsElders,
       participantsResearchers: this.state.participantsResearchers,
-      algorithm: this.state.currentAlgorithm,
+      currentSession: this.state.currentSession,
     };
 
     // this.validateForm(newResearch);
@@ -457,15 +457,15 @@ export default class CreateResearch extends Component {
                         className="basic-multi-select"
                         closeMenuOnSelect={true}
                         value={
-                          this.state.currentAlgorithm
-                            ? findArrayData(this.state.currentAlgorithm, algo)
+                          this.state.currentSession
+                            ? findArrayData(this.state.currentSession, algo)
                             : null
                         }
                         options={algo}
                         menuPlacement="auto"
                         menuPosition="fixed"
                         onChange={(e) => {
-                          this.setState({ currentAlgorithm: e.value });
+                          this.setState({ currentSession: e.value });
                         }}
                       />
                     </div>

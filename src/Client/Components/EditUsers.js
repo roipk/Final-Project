@@ -155,7 +155,7 @@ export default class EditUsers extends Component {
             yearOfImmigration: "",
             maxSession:null,
             Cognitive:null,
-            currentAlgorithm:'personal',
+            currentSession:'personal',
 
         };
         if(props.location.data && props.location.data.Cognitive)
@@ -199,7 +199,7 @@ export default class EditUsers extends Component {
                     OidInfo:user._id,
                     maxSession:user.maxSession,
                     Cognitive:user.Cognitive,
-                    currentAlgorithm:user.currentAlgorithm
+                    currentSession:user.currentSession
                 }
 
 
@@ -248,7 +248,7 @@ export default class EditUsers extends Component {
             maxSession: this.state.maxSession,
             Cognitive:this.state.Cognitive, // 5, 8, 11, 12, 15
             maxSongs:this.state.Cognitive * this.state.maxSession,//max session*Cognitive
-            currentAlgorithm:this.state.currentAlgorithm
+            currentSession:this.state.currentSession
 
 
 
@@ -290,7 +290,7 @@ export default class EditUsers extends Component {
             maxSession: this.state.maxSession,
             Cognitive:this.state.Cognitive, // 5, 8, 11, 12, 15
             maxSongs:this.state.Cognitive * this.state.maxSession,//max session*Cognitive
-            currentAlgorithm:this.state.currentAlgorithm
+            currentSession:this.state.currentSession
 
 
         };
@@ -309,9 +309,9 @@ export default class EditUsers extends Component {
         if(this.state.userSelect)
         {
             console.log("in")
-            let currentAlgorithm =  await this.getSessionsKey(this.state.Oid)
+            let currentSession =  await this.getSessionsKey(this.state.Oid)
             console.log(this.state.Oid)
-            let videos = await this.getSession(this.state.Oid, currentAlgorithm)
+            let videos = await this.getSession(this.state.Oid, currentSession)
             this.setState({userSelect: this.state.userSelect, videos: videos})
         }
 
@@ -343,7 +343,7 @@ export default class EditUsers extends Component {
             sessionOpt.push({value: key, label: key})
         })
         console.log(sessionOpt)
-        return songs.data.currentAlgorithm
+        return songs.data.currentSession
 
     }
 
@@ -1141,7 +1141,7 @@ export default class EditUsers extends Component {
             OidInfo:user._id,
             maxSession:user.maxSession,
             Cognitive:user.Cognitive,
-            currentAlgorithm:user.currentAlgorithm
+            currentSession:user.currentSession
 
         })
     }

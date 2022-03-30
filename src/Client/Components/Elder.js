@@ -34,8 +34,8 @@ export default class ElderPage extends Component {
         currentUser = await verifyUser("user")
         if (currentUser) {
             console.log("in")
-           let currentAlgorithm =  await this.getSessionsKey(currentUser._id)
-            let videos = await this.getSession(currentUser._id, currentAlgorithm)
+           let currentSession =  await this.getSessionsKey(currentUser._id)
+            let videos = await this.getSession(currentUser._id, currentSession)
 
 
             this.setState({user: currentUser, videos: videos})
@@ -65,7 +65,7 @@ export default class ElderPage extends Component {
         await songs.data.keys.forEach(key => {
             sessionOpt.push({value: key, label: key})
         })
-        return songs.data.currentAlgorithm
+        return songs.data.currentSession
 
     }
 

@@ -16,7 +16,7 @@ routerElder
   .post(async function (req, res) {
     let id = req.params.id;
     let session = await getData("UserSessions", id);
-    session.currentAlgorithm = req.body.currentSession;
+    session.currentSession = req.body.currentSession;
     await updateData("UserSessions", id, session);
     return res.status(200);
   });
@@ -69,7 +69,7 @@ routerElder.route("/session/:id/:algorithm?").get(async function (req, res) {
     Object.entries(session.sessions).forEach(([key, value]) => {
       if (value.isActive) keys.push(key);
     });
-    let data = { keys: keys, currentAlgorithm: session.currentAlgorithm };
+    let data = { keys: keys, currentSession: session.currentSession };
     return res.status(200).json(data);
   } else if (
     algorithm &&
@@ -223,11 +223,11 @@ async function getSongs(session, songs) {
   };
   songs = await createFilter(songs, filters, 1);
 
-  // if(!session.playList[session.currentAlgorithm.toString()])
-  //     session.playList.push({[session.currentAlgorithm.toString()]:[]})
+  // if(!session.playList[session.currentSession.toString()])
+  //     session.playList.push({[session.currentSession.toString()]:[]})
 
   // console.log(session.playList)
-  // session.playList[session.currentAlgorithm]=songs.songsBlock
+  // session.playList[session.currentSession]=songs.songsBlock
   // await updateData("UserSessions",session.Oid,session)
   // songs.songsView =songs.songsView.sort((a, b) => 0.5 - Math.random());
   return songs;
@@ -435,14 +435,14 @@ module.exports = routerElder;
 //         var p = keys.pop()
 //         delete filters[p]
 //     }
-//     console.log(session.currentAlgorithm)
+//     console.log(session.currentSession)
 //
-//     // if(!session.playList[session.currentAlgorithm.toString()])
-//     //     session.playList.push({[session.currentAlgorithm.toString()]:[]})
+//     // if(!session.playList[session.currentSession.toString()])
+//     //     session.playList.push({[session.currentSession.toString()]:[]})
 //
 //
 //     // console.log(session.playList)
-//     // session.playList[session.currentAlgorithm]=songs.songsBlock
+//     // session.playList[session.currentSession]=songs.songsBlock
 //     // await updateData("UserSessions",session.Oid,session)
 //     songs.songsView =songs.songsView.sort((a, b) => 0.5 - Math.random());
 //     return songs

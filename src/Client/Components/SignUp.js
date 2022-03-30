@@ -136,7 +136,7 @@ export default class SignUp extends Component {
       yearOfImmigration: "",
       maxSession: 7,
       Cognitive: Config.HIGH_COGNITIVE,
-      currentAlgorithm: "personal",
+        currentSession: "personal",
       checked: true,
     };
   }
@@ -193,7 +193,7 @@ export default class SignUp extends Component {
       maxSession: this.state.maxSession,
       Cognitive: this.state.Cognitive, // 5, 8, 11, 12, 15
       maxSongs: this.state.Cognitive * this.state.maxSession, //max session*Cognitive
-      currentAlgorithm: this.state.currentAlgorithm,
+        currentSession: this.state.currentAlgorithm,
     };
     return elderData;
   }
@@ -239,7 +239,7 @@ export default class SignUp extends Component {
       maxSession: 7,
       Cognitive: this.state.Cognitive, // 5, 8, 11, 12, 15
       maxSongs: this.state.Cognitive * this.state.maxSession, //max session*Cognitive
-      currentAlgorithm: this.state.currentAlgorithm,
+        currentSession: this.state.currentAlgorithm,
     };
     return userSessionData;
   }
@@ -947,12 +947,12 @@ export default class SignUp extends Component {
           {/*                style={{zIndex:100}}*/}
           {/*                className="basic-multi-select"*/}
           {/*                closeMenuOnSelect={true}*/}
-          {/*                value={this.state.currentAlgorithm?findArrayData(this.state.currentAlgorithm, algo):null}*/}
+          {/*                value={this.state.currentSession?findArrayData(this.state.currentAlgorithm, algo):null}*/}
           {/*                options={algo}//start, end-> today year*/}
           {/*                menuPlacement="auto"*/}
           {/*                menuPosition="fixed"*/}
           {/*                onChange={(e)=>{*/}
-          {/*                    this.setState({currentAlgorithm: e.value})*/}
+          {/*                    this.setState({currentSession: e.value})*/}
           {/*                }}*/}
 
           {/*        />*/}
