@@ -92,7 +92,7 @@ export function YoutubeView (userID,algorithm,videos,sessionNumber){
                                          onReady(e.target)
                                      }}
                                      onPlay={(e) => {
-                                         onPlay(e.target)
+                                         onPlay(e.target,item,index,sessionNumber)
                                      }}
                                      onPause={(e) => {
                                          onPause(e.target)
@@ -222,7 +222,7 @@ export default  React.memo(YoutubeData)
         console.log("onReady")
     }
 
-function onPlay(player) {
+function onPlay(player,item, index, sessionNumber) {
 
         // console.log(e)
 
@@ -233,6 +233,16 @@ function onPlay(player) {
                 video.pauseVideo();
         })
         console.log("onPlay")
+        if(item.score<0)
+        {
+            var rate = {
+                sesionNumber: sessionNumber,
+                songNumber: index,
+                score:0
+            }
+            axios.post(url + "/user/RateSession/" + _user+"/"+_algorithm, rate)
+        }
+
     }
 
 function  onPause(player) {

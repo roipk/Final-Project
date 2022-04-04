@@ -193,7 +193,7 @@ export default class SignUp extends Component {
       maxSession: this.state.maxSession,
       Cognitive: this.state.Cognitive, // 5, 8, 11, 12, 15
       maxSongs: this.state.Cognitive * this.state.maxSession, //max session*Cognitive
-        currentSession: this.state.currentAlgorithm,
+        currentSession: this.state.currentSession,
     };
     return elderData;
   }
@@ -239,7 +239,7 @@ export default class SignUp extends Component {
       maxSession: 7,
       Cognitive: this.state.Cognitive, // 5, 8, 11, 12, 15
       maxSongs: this.state.Cognitive * this.state.maxSession, //max session*Cognitive
-        currentSession: this.state.currentAlgorithm,
+        currentSession: this.state.currentSession,
     };
     return userSessionData;
   }
