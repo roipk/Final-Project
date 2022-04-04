@@ -248,6 +248,10 @@ export default class SignUp extends Component {
     genres.forEach((genre) => {
       playlist.push(genre);
     });
+      LanguageAtTwenty.forEach((Language) => {
+          playlist.push(Language);
+      });
+      playlist = [...new Set(playlist)];
     return playlist;
   }
 
@@ -1160,6 +1164,8 @@ function getGenre() {
     { value: "cla", label: "Classical/Traditional" },
     { value: "yid", label: "Yiddish" },
     { value: "ara", label: "Arabic" },
+    { value: "arana", label: "ArabicNA" },
+    { value: "arame", label: "ArabicME" },
     { value: "lad", label: "Ladino" },
     { value: "pra", label: "Prayer Songs (Piyutim)" },
     { value: "mid", label: "Middle Eastern music" },

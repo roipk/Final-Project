@@ -11,7 +11,7 @@ export default class Login extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            first_name:'',
+            user_name:'',
             password:'',
         };
         // user = props.location
@@ -59,11 +59,11 @@ export default class Login extends Component{
 				</span>
 
                         <div className="wrap-input100 validate-input" data-validate="Name is required">
-                            <span className="label-input100">First name</span>
-                            <input id='userName' className="input100" type="text" name='firstName'
-                                   placeholder="Enter First Name"
-                                   value={this.state.first_name}
-                                   onChange={(e)=>{this.setState({first_name:e.target.value})}}
+                            <span className="label-input100">User name</span>
+                            <input id='userName' className="input100" type="text" name='userName'
+                                   placeholder="Enter User Name"
+                                   value={this.state.user_name}
+                                   onChange={(e)=>{this.setState({user_name:e.target.value})}}
                             />
                             <span className="focus-input100"></span>
                         </div>
@@ -85,15 +85,15 @@ export default class Login extends Component{
                                 <div className="contact100-form-bgbtn"></div>
                                 <button type="button" id='login' className="contact100-form-btn"
                                         onClick={()=>{
-                                            // console.log(this.state.first_name)
-                                            if(!(this.state.first_name || this.state.password))
+                                            // console.log(this.state.user_name)
+                                            if(!(this.state.user_name || this.state.password))
                                             {
                                                 alert("first name and password required")
                                             }
                                             else{
                                                 let page =url+'/login'
                                                 let config = {headers:{
-                                                        first_name:this.state.first_name,
+                                                        user_name:this.state.user_name,
                                                         password:this.state.password,
                                                     }}
 
@@ -110,12 +110,12 @@ export default class Login extends Component{
 
 
                                             // let user = {
-                                            //     first_name:this.state.first_name,
+                                            //     user_name:this.state.user_name,
                                             //     password:this.state.password,
                                             // }
                                             //
                                             // axios.post('http://localhost:5000/login', {
-                                            //     first_name: this.state.first_name,
+                                            //     user_name: this.state.user_name,
                                             //     password: this.state.password,
                                             //     // Authorization: 'Bearer ' + token //the token is a variable which holds the token
                                             // }).then(res=>{

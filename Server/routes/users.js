@@ -15,15 +15,15 @@ const CreateToken = require("../middleware/user").CreateToken
 router.route('/login').get(async  function (req, res) {
 
     const token = req.body.token || req.query.token || req.headers["x-access-token"];
-    const {first_name,password} =  req.headers;
+    const {user_name,password} =  req.headers;
 
 
     if(token) {
         VerifyToken(req,res,token)
     }
 
-    else if(first_name && password) {
-        const user = await db.collection("Authentication").findOne({first_name: first_name})
+    else if(user_name && password) {
+        const user = await db.collection("Authentication").findOne({user_name: user_name})
         // console.log(user)
         if(!user)
             return res.status(400).send("USER_NOT_FOUND");

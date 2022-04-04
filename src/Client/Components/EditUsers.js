@@ -546,11 +546,11 @@ export default class EditUsers extends Component {
                     <div className="wrap-input100 validate-input" data-validate="Nursing Home is required" required>
                         <span className="label-input100">Nursing Home*</span>
                         <input  disabled={!this.state.editor} value={this.state.nursingHome} id='nursingHome' className="input100" type="text"
-                               name='nursingHome'
-                               onChange={(e) => {
-                                   this.setState({nursingHome: e.target.value})
-                               }}
-                               placeholder="Enter Nursing Home"/>
+                                name='nursingHome'
+                                onChange={(e) => {
+                                    this.setState({nursingHome: e.target.value})
+                                }}
+                                placeholder="Enter Nursing Home"/>
                         <span className="focus-input100"></span>
                     </div>
                     <div className="wrap-input100 validate-input" data-validate="Department is required">
@@ -857,18 +857,18 @@ export default class EditUsers extends Component {
                         <span className="label-input100">Good Cognitive</span>
                         <div>
                             <Switch disabled={!this.state.editor}
-                                onChange={(check) => {
-                                    check
-                                        ? this.setState({
-                                            checked: check,
-                                            Cognitive: Config.HIGH_COGNITIVE,
-                                        })
-                                        : this.setState({
-                                            checked: check,
-                                            Cognitive: Config.LOW_COGNITIVE,
-                                        });
-                                }}
-                                checked={this.state.checked}
+                                    onChange={(check) => {
+                                        check
+                                            ? this.setState({
+                                                checked: check,
+                                                Cognitive: Config.HIGH_COGNITIVE,
+                                            })
+                                            : this.setState({
+                                                checked: check,
+                                                Cognitive: Config.LOW_COGNITIVE,
+                                            });
+                                    }}
+                                    checked={this.state.checked}
                             />
                         </div>
                         <span className="focus-input100"></span>
@@ -926,9 +926,9 @@ export default class EditUsers extends Component {
 
                         <div className="contact100-back-bgbtn"></div>
                         <button  hidden={this.state.editor} id='next3' type='button' className="contact100-back-btn"
-                                onClick={() => {
-                                    this.setState({page: page + 1})
-                                }}>next
+                                 onClick={() => {
+                                     this.setState({page: page + 1})
+                                 }}>next
                             <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
                             {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
 
@@ -946,88 +946,88 @@ export default class EditUsers extends Component {
 
             )
         }
-    else
-        return(
+        else
+            return(
 
-        <div>
-            <h1>צפיה בסשנים</h1>
-            <br />
-            <span className="label-input100">type*</span>
-            <Select label="select year"
-                    style={{zIndex: 100}}
-                    closeMenuOnSelect={true}
-                    options={sessionOpt}
-                    value={{
-                        value: this.state.session,
-                        label: this.state.session,
-                    }}
-                    defaultValue={sessionOpt[0]}
-                    onChange={async e => {
-                        // console.log(e.value)
-                        // console.log(currentUser)
-                        // await this.setState({session:e.value})
-                        // console.log(currentUser._id)
-                        let videos = await this.getSession(this.state.Oid, e.value)
-                        // console.log(videos)
-                        this.setState({
-                            videos: videos,
-                            session: e.value
-                        })
-                        let currentSession = {currentSession:e.value}
-
-
-                        // alert(status)
-                    }}
-                    menuPlacement="auto"
-                    menuPosition="fixed"
-            />
-            <div className="wrap-input100 input100-select">
-                {
-                    this.state.sessionView?
-                        this.state.sessionView.map((item,index)=>{
-                            return(
-                                    <div>
-                                        <span className="label-input100">session {index+1}</span>
-                                        <CarouselApp session={item}></CarouselApp>
-                                    </div>
-                                )
-
-                        }):""
+                <div>
+                    <h1>צפייה בסשנים</h1>
+                    <br />
+                    <span className="label-input100">type*</span>
+                    <Select label="select year"
+                            style={{zIndex: 100}}
+                            closeMenuOnSelect={true}
+                            options={sessionOpt}
+                            value={{
+                                value: this.state.session,
+                                label: this.state.session,
+                            }}
+                            defaultValue={sessionOpt[0]}
+                            onChange={async e => {
+                                // console.log(e.value)
+                                // console.log(currentUser)
+                                // await this.setState({session:e.value})
+                                // console.log(currentUser._id)
+                                let videos = await this.getSession(this.state.Oid, e.value)
+                                // console.log(videos)
+                                this.setState({
+                                    videos: videos,
+                                    session: e.value
+                                })
+                                let currentSession = {currentSession:e.value}
 
 
-                }
+                                // alert(status)
+                            }}
+                            menuPlacement="auto"
+                            menuPosition="fixed"
+                    />
+                    <div className="wrap-input100 input100-select">
+                        {
+                            this.state.sessionView?
+                                this.state.sessionView.map((item,index)=>{
+                                    return(
+                                        <div>
+                                            <span className="label-input100">session {index+1}</span>
+                                            <CarouselApp session={item}></CarouselApp>
+                                        </div>
+                                    )
 
-                {/*<span className="label-input100">session 1</span>*/}
-                {/*<div>*/}
-                {/*    <CarouselApp></CarouselApp>*/}
-                {/*</div>*/}
-                {/*<span className="label-input100">session 2</span>*/}
-                {/*<div>*/}
-                {/*    <CarouselApp></CarouselApp>*/}
-                {/*</div>*/}
-
-            </div>
+                                }):""
 
 
+                        }
 
-            <div className="wrap-contact100-back-btn">
-                <div className="contact100-back-bgbtn"></div>
-                <button
-                    id="back"
-                    type="button"
-                    className="contact100-back-btn"
-                    onClick={() => {
-                        // console.log(this.state.roles?this.state.roles:[])
-                        this.setState({ page: page - 1 });
-                    }}
-                >
-                    back
-                    <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
-                </button>
-            </div>
-        </div>
+                        {/*<span className="label-input100">session 1</span>*/}
+                        {/*<div>*/}
+                        {/*    <CarouselApp></CarouselApp>*/}
+                        {/*</div>*/}
+                        {/*<span className="label-input100">session 2</span>*/}
+                        {/*<div>*/}
+                        {/*    <CarouselApp></CarouselApp>*/}
+                        {/*</div>*/}
 
-        )
+                    </div>
+
+
+
+                    <div className="wrap-contact100-back-btn">
+                        <div className="contact100-back-bgbtn"></div>
+                        <button
+                            id="back"
+                            type="button"
+                            className="contact100-back-btn"
+                            onClick={() => {
+                                // console.log(this.state.roles?this.state.roles:[])
+                                this.setState({ page: page - 1 });
+                            }}
+                        >
+                            back
+                            <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+
+            )
 
     }
 
