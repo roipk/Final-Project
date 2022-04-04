@@ -533,9 +533,9 @@ export default class SignUp extends Component {
                         .then((res) => {
                           alert("Added also to researcherInfo:" + res.data);
                         });
-                      loadPage(this.props, "ViewUsers", this.state.user,this.state.user);
+                        loadPage(this.props, "admin", this.state.user,this.state.user);
                     }
-                    loadPage(this.props, "ViewUsers", this.state.user,this.state.user);
+                      loadPage(this.props, "admin", this.state.user,this.state.user);
                     // loadPage(this.props, "admin", this.state.user)
                     // loadPage(this.props,"",this.state)
                   });

@@ -124,15 +124,15 @@ export default class CreateResearch extends Component {
   async addResearchToResearchers(researchers, researchName, researchOid) {
     let resarchersOid = [];
     researchers.forEach((researcher) => resarchersOid.push(researcher.value));
-    console.log(resarchersOid);
     var res = await axios.get(
       url +
-        "/researcher/addResearchToResearches/" +
+        "/researcher/updateResearchersInfo/" +
         resarchersOid +
         "/" +
         researchName +
         "/" +
-        researchOid
+        researchOid+
+        "/"+"Add"
     );
   }
 

@@ -53,6 +53,7 @@ export default class ViewResearches extends Component {
     var res = await axios.get(
       url + "/researcher/getAllResearchesByResearcher/" + currentUser._id
     );
+    console.log(res.data)
     let researches = [];
     res.data[0].forEach((research) => {
       // { value: 'user', label: 'Elder' }
