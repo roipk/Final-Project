@@ -1012,9 +1012,9 @@ textarea.input100 {
 
 .song-card-btn{
 display: grid;
-grid-template-columns: 50% 50%;
-justify-items: baseline;
-gap: 24em;
+grid-template-columns: 10% 60% 20%;
+justify-items: center;
+gap: 4.5em;
 }
 
 .song-card-btn-container{

@@ -1,49 +1,39 @@
+import axios from "axios";
 import React, { Component } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import YoutubeData, { YoutubeView } from "./YoutubeView";
+import { url } from "./AllPages";
+import { loadPage, verifyUser } from "./ManagerComponents";
+
+let currentUser = {};
 
 export default class SongDebugCard extends Component {
   constructor(props) {
     super(props);
     console.log(props);
     this.state = {
-      //   user: props.location.data,
-      comments: "",
-      isBrokenLink: false,
-      isNoVideo: false,
-      isLowQualityVideo: false,
-      isNoSound: false,
-      isLowQualitySound: false,
-      songs: props.songs,
-      songsReview: [],
+      user: props.user,
       currentSong: props.songs[0],
       currentIndex: 0,
+      comments: props.songs[0].comments,
+      isBrokenLink: props.songs[0].isBrokenLink,
+      isNoVideo: props.songs[0].isNoVideo,
+      isLowQualityVideo: props.songs[0].isLowQualityVideo,
+      isNoSound: props.songs[0].isNoSound,
+      isLowQualitySound: props.songs[0].isLowQualitySound,
+      songs: props.songs,
+      songsReview: [],
     };
-
-    console.log(this.state.songs);
   }
 
-  componentDidMount() {
-    let len = this.state.songs.length;
-    let temp = [];
-    for (var i = 0; i < len; i++) {
-      temp.push({
-        comments: "",
-        isBrokenLink: false,
-        isNoVideo: false,
-        isLowQualityVideo: false,
-        isNoSound: false,
-        isLowQualitySound: false,
-        youtube: this.state.songs[i].youtube,
-        title: this.state.songs[i].title,
-        artistName: this.state.songs[i].artistName,
-      });
+  async componentDidMount() {
+    currentUser = await verifyUser("musicGuide");
+    if (currentUser) {
+      this.setState({ user: currentUser });
+    } else {
+      this.setState({ notfound: true });
+      return;
     }
-    this.setState({
-      songsReview: temp,
-    });
-
-    console.log("Mount")
   }
 
   setComments(event) {
@@ -83,64 +73,121 @@ export default class SongDebugCard extends Component {
   }
 
   async showNextSong(currentIndex, currentSong) {
-    //   console.log(currentSong)
     let index = currentIndex + 1;
+    console.log(this.state);
+    const document = {
+      _id: this.state.currentSong._id,
+      Oid: this.state.currentSong.Oid,
+      title: this.state.currentSong.title,
+      artistName: this.state.currentSong.artistName,
+      year: this.state.currentSong.year,
+      playlist: this.state.currentSong.playlist,
+      youtube: this.state.currentSong.youtube,
+      comments: this.state.comments,
+      isBrokenLink: this.state.isBrokenLink,
+      isNoVideo: this.state.isNoVideo,
+      isLowQualityVideo: this.state.isLowQualityVideo,
+      isNoSound: this.state.isNoSound,
+      isLowQualitySound: this.state.isLowQualitySound,
+    };
 
-    if (index == this.state.songs.length) index = 0;
-    this.setState((prevState) => {
-      console.log(prevState);
-      let temp = prevState.songsReview[currentIndex];
-      temp.isBrokenLink = this.state.isBrokenLink;
-      temp.isNoVideo = this.state.isNoVideo;
-      temp.isNoSound = this.state.isNoSound;
-      temp.isLowQualitySound = this.state.isLowQualitySound;
-      temp.isLowQualityVideo = this.state.isLowQualityVideo;
-      temp.comments = this.state.comments;
-      prevState.songsReview[currentIndex] = temp;
-      return {
-        currentIndex: index,
-        currentSong: this.state.songs[index],
-        songsReview: [...prevState.songsReview],
-        isBrokenLink: this.state.songsReview[index].isBrokenLink,
-        isNoVideo: this.state.songsReview[index].isNoVideo,
-        isNoSound: this.state.songsReview[index].isNoSound,
-        isLowQualitySound: this.state.songsReview[index].isLowQualitySound,
-        isLowQualityVideo: this.state.songsReview[index].isLowQualityVideo,
-        comments: this.state.songsReview[index].comments,
-      };
+    let updatedSongs = [...this.state.songs];
+    let updatedSong = document;
+    updatedSongs[currentIndex] = updatedSong;
+
+    this.setState({
+      songs: updatedSongs,
+      currentIndex: index,
+      currentSong: this.state.songs[index],
+      comments: this.state.songs[index].comments,
+      isBrokenLink: this.state.songs[index].isBrokenLink,
+      isNoVideo: this.state.songs[index].isNoVideo,
+      isLowQualityVideo: this.state.songs[index].isLowQualityVideo,
+      isNoSound: this.state.songs[index].isNoSound,
+      isLowQualitySound: this.state.songs[index].isLowQualitySound,
     });
   }
 
-  async showPrevSong(currentIndex, currentSong) {
+  async showPrevSong(currentIndex) {
     let index = currentIndex - 1;
-    console.log(this.state.isBrokenLink);
+    const document = {
+      _id: this.state.currentSong._id,
+      Oid: this.state.currentSong.Oid,
+      title: this.state.currentSong.title,
+      artistName: this.state.currentSong.artistName,
+      year: this.state.currentSong.year,
+      playlist: this.state.currentSong.playlist,
+      youtube: this.state.currentSong.youtube,
+      comments: this.state.comments,
+      isBrokenLink: this.state.isBrokenLink,
+      isNoVideo: this.state.isNoVideo,
+      isLowQualityVideo: this.state.isLowQualityVideo,
+      isNoSound: this.state.isNoSound,
+      isLowQualitySound: this.state.isLowQualitySound,
+    };
 
-    this.setState((prevState) => {
-      console.log(prevState);
-      let temp = prevState.songsReview[currentIndex];
-      temp.isBrokenLink = this.state.isBrokenLink;
-      temp.isNoVideo = this.state.isNoVideo;
-      temp.isNoSound = this.state.isNoSound;
-      temp.isLowQualitySound = this.state.isLowQualitySound;
-      temp.isLowQualityVideo = this.state.isLowQualityVideo;
-      temp.comments = this.state.comments;
-      prevState.songsReview[currentIndex] = temp;
-      return {
-        currentIndex: index,
-        currentSong: this.state.songs[index],
-        songsReview: [...prevState.songsReview],
-        isBrokenLink: this.state.songsReview[index].isBrokenLink,
-        isNoVideo: this.state.songsReview[index].isNoVideo,
-        isNoSound: this.state.songsReview[index].isNoSound,
-        isLowQualitySound: this.state.songsReview[index].isLowQualitySound,
-        isLowQualityVideo: this.state.songsReview[index].isLowQualityVideo,
-        comments: this.state.songsReview[index].comments,
-      };
+    let updatedSongs = [...this.state.songs];
+    let updatedSong = document;
+    updatedSongs[currentIndex] = updatedSong;
+
+    this.setState({
+      songs: updatedSongs,
+      currentIndex: index,
+      currentSong: this.state.songs[index],
+      comments: this.state.songs[index].comments,
+      isBrokenLink: this.state.songs[index].isBrokenLink,
+      isNoVideo: this.state.songs[index].isNoVideo,
+      isLowQualityVideo: this.state.songs[index].isLowQualityVideo,
+      isNoSound: this.state.songs[index].isNoSound,
+      isLowQualitySound: this.state.songs[index].isLowQualitySound,
     });
+  }
+
+  saveSongsToDebug(currentIndex) {
+    const document = {
+      _id: this.state.currentSong._id,
+      Oid: this.state.currentSong.Oid,
+      title: this.state.currentSong.title,
+      artistName: this.state.currentSong.artistName,
+      year: this.state.currentSong.year,
+      playlist: this.state.currentSong.playlist,
+      youtube: this.state.currentSong.youtube,
+      comments: this.state.comments,
+      isBrokenLink: this.state.isBrokenLink,
+      isNoVideo: this.state.isNoVideo,
+      isLowQualityVideo: this.state.isLowQualityVideo,
+      isNoSound: this.state.isNoSound,
+      isLowQualitySound: this.state.isLowQualitySound,
+    };
+
+    let updatedSongs = [...this.state.songs];
+    let updatedSong = document;
+    updatedSongs[currentIndex] = updatedSong;
+
+    this.setState({
+      songs: updatedSongs,
+    });
+
+    this.state.songs.map((song) => {
+      if (this.state.songs[currentIndex].Oid === song.Oid) {
+        this.updateSongForDebug(updatedSong);
+      } else this.updateSongForDebug(song);
+    });
+    console.log(this.state.user);
+    loadPage(this.props, "ֵ", this.state.user);
+  }
+
+  async updateSongForDebug(document) {
+    axios.post(url + "/MusicGuide/updateSongDebug/SongsDebug", document);
+  }
+
+  async getSongsForDebug(playlist) {
+    var res = await axios.get(url + "/MusicGuide/getSongsForDebug/" + playlist);
+
+    return res.data;
   }
 
   render() {
-    
     return (
       <div key={this.state.currentSong.title}>
         <div className="song-grid-container">
@@ -190,28 +237,15 @@ export default class SongDebugCard extends Component {
             <YoutubeData
               key={this.state.currentSong.title}
               url={this.state.currentSong.youtube.videoId}
-              //   onReady={(e) => {
-              //     this.setState({ video: e.target.getVideoData() });
-              //     console.log(e.target);
-              //     console.log(e.target.getVideoData());
-              //     console.log(e.target.getApiInterface());
-              //     // console.log(e.target.showVideoInfo())
-              //     console.log(e.target.getAvailableQualityLevels());
-              //     console.log(e.target.getDuration());
-              //     console.log(e.target.getSize());
-              //     console.log(e.target.logImaAdEvent());
-              //   }}
             />
           </div>
           <div className="song-grid-item item3">
             <label htmlFor="comments">הערות:</label>
-            <br></br>
-            {/* <textarea id="comments" name="comments" rows="3"></textarea> */}
+            <br></br>ֵֵ
             <TextareaAutosize
               cacheMeasurements
-              //   value={this.state.songsReview[this.state.currentIndex].comments}
               minRows={3}
-              value={this.state.comments}
+              value={this.state.cֵmments}
               onChange={(e) => this.setComments(e)}
             />
             <div>
@@ -238,6 +272,21 @@ export default class SongDebugCard extends Component {
                     </i>
                   </button>
                 </div>
+
+                <div className="song-card-btn-container" style={{ zIndex: 0 }}>
+                  <div className="contact100-back-bgbtn"></div>
+                  <button
+                    type="button"
+                    className="contact100-back-btn"
+                    id="save"
+                    onClick={() =>
+                      this.saveSongsToDebug(this.state.currentIndex)
+                    }
+                  >
+                    <i aria-hidden="true"> Save Changes</i>
+                  </button>
+                </div>
+
                 <div className="song-card-btn-container" style={{ zIndex: 0 }}>
                   <div className="contact100-back-bgbtn"></div>
                   <button
@@ -267,5 +316,3 @@ export default class SongDebugCard extends Component {
     );
   }
 }
-
-// export default SongDebugCard;

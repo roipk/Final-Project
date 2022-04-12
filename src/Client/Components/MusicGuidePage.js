@@ -39,7 +39,33 @@ export default class MusicGuidePage extends Component {
     // console.log(currentUser)
     var res = await axios.get(url + "/MusicGuide/getAllPlaylists");
     // var playlistsCollection = collect(res.data)
-    // console.log(typeof res.data)
+    // res.data.forEach((playlist) => {
+    //   let records = playlist.records;
+    //   records.forEach(async (song) => {
+    //     const document = {
+    //       Oid: song._id,
+    //       title: song.title,
+    //       artistName: song.artistName,
+    //       year: song.year,
+    //       playlist: playlist.name,
+    //       youtube: song.youtube,
+    //       comments: "",
+    //       isBrokenLink: false,
+    //       isNoVideo: false,
+    //       isLowQualityVideo: false,
+    //       isNoSound: false,
+    //       isLowQualitySound: false,
+    //     };
+       
+    //      axios.post(
+    //       url + "/researcher/create/SongsDebug", document
+    //     );
+    //   });
+    // });
+
+   
+
+
     let playlists = [];
     res.data.forEach((playlist) => {
       // { value: 'user', label: 'Elder' }
@@ -51,6 +77,10 @@ export default class MusicGuidePage extends Component {
     return playlists;
   }
 
+  async addSongsDebugToDB() {
+    console.log("test");
+  }
+
   setPlaylist = (selectedPlaylist) => {
     console.log(selectedPlaylist);
     // this.setState({
@@ -59,8 +89,10 @@ export default class MusicGuidePage extends Component {
     //     label: selectedPlaylist.label,
     //   },
     // });
-    console.log(this.state.playlistToView.label);
-    this.getSongsByPlaylist(selectedPlaylist.label).then((result) => {
+    // console.log(this.state.playlistToView.label);
+    
+
+    this.getSongsForDebug(selectedPlaylist.label).then((result) => {
       // console.log(result);
       this.setState({
         playlistToView: {
@@ -71,6 +103,7 @@ export default class MusicGuidePage extends Component {
       });
     });
     // this.viewSongs(this.state.songs.length != 0 ? true : false)
+    // console.log(this.state.songs)
   };
 
   async getSongsByPlaylist(playlist) {
@@ -82,27 +115,25 @@ export default class MusicGuidePage extends Component {
     return res.data;
   }
 
+  async getSongsForDebug(playlist) {
+    //   console.log(playlist)
+    var res = await axios.get(
+      url + "/MusicGuide/getSongsForDebug/" + playlist
+    );
+
+    console.log(res.data)
+    return res.data;
+  }
+
   viewSongs(isInit) {
     if (isInit) {
-      // this.getSongsByPlaylist(playlist).then((result) => {
-      //   // console.log(result);
-      //   this.setState({
-      //     songs: result,
-      //   });
-      // });
+     
       if (this.state.songs) {
-        console.log(this.state.playlistToView.label);
-        // var songDetails = {
-        //   _id: this.state.songs[0]._id,
-        //   title: this.state.songs[0].title,
-        //   artistName: this.state.songs[0].artistName,
-        //   videoId: this.state.songs[0].youtube.videoId,
-        // };
-        console.log(this.state.songs);
         return (
           <SongDebugCard
             key={this.state.playlistToView.label}
             songs={this.state.songs}
+            user={this.state.user}
           ></SongDebugCard>
         );
       } else {

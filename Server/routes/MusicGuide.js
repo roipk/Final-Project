@@ -24,6 +24,22 @@ router.route("/getSongsByPlaylist/:playlist").get(async function (req, res) {
   res.status(200).json(songs);
 });
 
+router.route("/getSongsForDebug/:playlist").get(async function (req, res) {
+  let playlist = req.params.playlist;
+  // console.log(playlist);
+  let songs = await getSongsForDebug("SongsDebug", playlist);
+  res.status(200).json(songs);
+});
+
+router
+  .route("/updateSongDebug/:nameCollection")
+  .post(async function (req, res) {
+    let updatedSong = await updateSongDebug(req.params.nameCollection, req.body);
+    console.log(updatedSong);
+    // let updated = updateResearch("ResearchersInfo", updatedResearch);
+    res.status(200).json(updatedSong);
+  });
+
 module.exports = router;
 
 async function getAllPlaylists(nameCollection) {
@@ -42,4 +58,34 @@ async function getSongsByPlaylist(nameCollection, playlist) {
     songs.push(song);
   });
   return songs[0].records;
+}
+
+async function getSongsForDebug(nameCollection, playlist) {
+  var newData = db.collection(nameCollection).find({ playlist: playlist });
+  let songs = [];
+  await newData.forEach((song) => {
+    songs.push(song);
+  });
+  return songs;
+}
+
+async function updateSongDebug(nameCollection, updatedSong) {
+  db.collection(nameCollection).updateOne(
+    { Oid: updatedSong.Oid },
+    {
+      $set: {
+        title: updatedSong.title,
+        artistName: updatedSong.artistName,
+        year: updatedSong.year,
+        playlist: updatedSong.playlist,
+        youtube: updatedSong.youtube,
+        comments: updatedSong.comments,
+        isBrokenLink: updatedSong.isBrokenLink,
+        isNoVideo: updatedSong.isNoVideo,
+        isLowQualityVideo: updatedSong.isLowQualityVideo,
+        isNoSound: updatedSong.isNoSound,
+        isLowQualitySound: updatedSong.isLowQualitySound,
+      },
+    }
+  );
 }
