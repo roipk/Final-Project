@@ -53,7 +53,6 @@ export default class ViewResearches extends Component {
     var res = await axios.get(
       url + "/researcher/getAllResearchesByResearcher/" + currentUser._id
     );
-    console.log(res.data)
     let researches = [];
     res.data[0].forEach((research) => {
       // { value: 'user', label: 'Elder' }
@@ -89,7 +88,7 @@ export default class ViewResearches extends Component {
       },
       participantsElders: research.participantsElders,
       participantsResearchers: [],
-      algorithm: research.algorithm,
+      algorithm: research.currentSession,
     };
 
     research.participantsResearchers.forEach((researcher) => {
@@ -115,18 +114,26 @@ export default class ViewResearches extends Component {
       let eldersCollection = collect(details.participantsElders);
       let userData = [];
       let temp = {};
-      eldersCollection.each((elder) => {
-        this.getElderDetails(elder.value).then((result) => {
+      let ID = 1;
+      let playlists = [];
+      
+      eldersCollection.each(async(elder) => {
+        await this.getElderDetails(elder.value).then((result) => {
+          playlists = result.playlists.slice(0,result.playlists.length-2)
           temp = {
+            ID: ID,
             ResearchName: researchName,
             FirstName: result.firstName,
             LastName: result.lastName,
-            YearAtTwenty: result.yearAtTwenty,
+            BirthYear: (parseInt(result.yearAtTwenty) - 20),
+            Playlists: playlists,
             Sessions: result.sessions,
           };
+          ID ++;
           userData.push(temp);
         });
       });
+      ID = 1;
       return (
         <ResearchCard
           key={researchName}

@@ -111,8 +111,16 @@ export default class CreateResearch extends Component {
       });
     });
     await this.getAllUsers("researcher").then((result) => {
+      const currentResearcher =
+        currentUser.first_name + " " + currentUser.last_name;
+      let options = [];
+      result.forEach((researcher) => {
+        if (researcher.label != currentResearcher) options.push(researcher);
+      });
+      console.log(currentUser);
+      console.log(result);
       this.setState({
-        researchersOptions: result,
+        researchersOptions: options,
       });
     });
   }
@@ -123,7 +131,9 @@ export default class CreateResearch extends Component {
 
   async addResearchToResearchers(researchers, researchName, researchOid) {
     let resarchersOid = [];
+    resarchersOid.push(currentUser._id);
     researchers.forEach((researcher) => resarchersOid.push(researcher.value));
+
     var res = await axios.get(
       url +
         "/researcher/updateResearchersInfo/" +
@@ -131,8 +141,9 @@ export default class CreateResearch extends Component {
         "/" +
         researchName +
         "/" +
-        researchOid+
-        "/"+"Add"
+        researchOid +
+        "/" +
+        "Add"
     );
   }
 
@@ -245,6 +256,11 @@ export default class CreateResearch extends Component {
       participantsResearchers: this.state.participantsResearchers,
       currentSession: this.state.currentSession,
     };
+    const currentResearcher = {
+      value: currentUser._id,
+      label: currentUser.first_name + " " + currentUser.last_name,
+    };
+    newResearch.participantsResearchers.push(currentResearcher);
 
     // this.validateForm(newResearch);
 
@@ -273,13 +289,18 @@ export default class CreateResearch extends Component {
               newResearch.researchName
             );
 
-            loadPage(this.props, "researcher", this.state.user,this.state.user);
+            loadPage(
+              this.props,
+              "researcher",
+              this.state.user,
+              this.state.user
+            );
           });
       } else {
         alert("Research already exist");
       }
     });
-    // console.log(newResearch);
+    console.log(newResearch);
   };
 
   render() {
@@ -427,7 +448,7 @@ export default class CreateResearch extends Component {
                     data-validate="Name is required"
                   >
                     <span className="label-input100">
-                    Participants Researchers
+                      Participants Researchers
                     </span>
 
                     <MultiSelect
@@ -505,7 +526,12 @@ export default class CreateResearch extends Component {
                         type="button"
                         className="contact100-back-btn"
                         onClick={() => {
-                          loadPage(this.props, "researcher", this.state.user,this.state.user);
+                          loadPage(
+                            this.props,
+                            "researcher",
+                            this.state.user,
+                            this.state.user
+                          );
                         }}
                       >
                         <i

@@ -9,6 +9,9 @@ import { Workbook } from "exceljs";
 import { saveAs } from "file-saver";
 import { exportDataGrid } from "devextreme/excel_exporter";
 
+let test = [];
+
+
 const sessionDetailsGrid = (props) => {
   var songs = props.data.data.SessionSongs;
   var data = [];
@@ -91,10 +94,12 @@ export default class ResearchCard extends Component {
       userData: props.userdata,
     };
   }
-  componentDidMount() {
-    this.setState({
-      userData: this.props.userdata,
-    });
+  async componentDidMount() {
+    
+   test = this.props.userdata
+   this.setState({
+    userData: test,
+  });
   }
 
   onExporting(e) {
@@ -102,7 +107,7 @@ export default class ResearchCard extends Component {
     const worksheet = workbook.addWorksheet("Main sheet");
 
     exportDataGrid({
-      component: <DataGrid></DataGrid>,
+      // component: this,
       //   component: sessionDetailsGrid,
       worksheet,
       autoFilterEnabled: true,
@@ -118,29 +123,38 @@ export default class ResearchCard extends Component {
   }
 
   render() {
+    // {console.log( this.state.userData)}
+    // {console.log( employees)}
+    // {console.log("render")}
+    
     return (
       <DataGrid
         id="grid-container"
-        dataSource={this.state.userData}
-        keyExpr="FirstName"
+        dataSource={test}
+        keyExpr="ID"
         showBorders={true}
+        remoteOperations={true}
+        wordWrapEnabled={true}
         onExporting={this.onExporting}
       >
-        <Column dataField="FirstName" caption="First Name" />
-        <Column dataField="LastName" caption="Last Name" />
+        <Column dataField="FirstName" caption="First Name" width={100} />
+        <Column dataField="LastName" caption="Last Name" width={100}/>
         <Column
-          dataField="YearAtTwenty"
-          width={125}
+          dataField="BirthYear"
+          caption="Birth Year"
+          width={80}
           dataType="number"
           cssClass="grid-col-right"
         />
+        <Column dataField="Playlists" caption="Playlists" />
+
 
         <MasterDetail
           enabled={true}
           component={sessionsGrid}
           data={this.state.userData.Sessions + this.state.researchName}
         />
-        {/* <Export enabled={true} allowExportSelectedData={true} /> */}
+        {/* <Export enabled={true} allowExportSelectedData={false} /> */}
       </DataGrid>
     );
   }

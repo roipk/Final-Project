@@ -105,7 +105,7 @@ export default class EditResearch extends Component {
       participantsEldersOld: res.data[0].participantsElders,
       participantsResearchers: res.data[0].participantsResearchers,
       participantsResearchersOld: res.data[0].participantsResearchers,
-      currentSession: res.data[0].algorithm,
+      currentSession: res.data[0].currentSession,
     });
   }
 
@@ -295,8 +295,6 @@ export default class EditResearch extends Component {
     axios
       .post(url + "/researcher/updateResearch/Researches", updatedResearch)
       .then((res) => {
-        // console.log(res);
-        // console.log(res.data);
         alert(
           "successful\n the research " +
             this.state.researchName +
@@ -323,12 +321,10 @@ export default class EditResearch extends Component {
                   <input
                     id="researchName"
                     className="input100"
-                    // onChange={this.setResearchNameHandler}
                     type="text"
                     name="researchName"
                     placeholder="Enter Research Name"
                     required
-                    // defaultValue={this.state.researchName}
                     value={this.state.researchName}
                     readOnly
                   />
@@ -350,7 +346,6 @@ export default class EditResearch extends Component {
                         onSelect={(Date) => this.setStartDateHandler(Date)}
                         dateFormat="dd/MM/yyyy"
                         locale={he}
-                        // showTimeSelect
                       ></DatePicker>
                     </div>
 
@@ -364,7 +359,6 @@ export default class EditResearch extends Component {
                             defaultValue="0"
                             data={hoursData}
                             filter={false}
-                            // ref={comboRef}
                             autoSelectMatches
                             onSelect={(val) => {
                               this.setNumberOfSessionsHandler(val);
@@ -393,7 +387,6 @@ export default class EditResearch extends Component {
                             defaultValue="0"
                             data={hoursData}
                             filter={false}
-                            // ref={comboRef}
                             autoSelectMatches
                             onSelect={(val) => {
                               this.setDurationHandler(val, "hours");
@@ -408,7 +401,6 @@ export default class EditResearch extends Component {
                             data={minutesData}
                             filter={false}
                             autoSelectMatches
-                            //  ref={comboRef}
                             onSelect={(val) => {
                               this.setDurationHandler(val, "minutes");
                             }}
@@ -440,7 +432,6 @@ export default class EditResearch extends Component {
                     onChange={this.setParticipantsElders}
                     allowSelectAll={true}
                     value={this.state.participantsElders}
-                    // styles={colourStyles}
                   />
                 </div>
 
