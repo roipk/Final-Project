@@ -36,39 +36,10 @@ export default class MusicGuidePage extends Component {
   }
 
   async getAllPlaylists() {
-    // console.log(currentUser)
     var res = await axios.get(url + "/MusicGuide/getAllPlaylists");
-    // var playlistsCollection = collect(res.data)
-    // res.data.forEach((playlist) => {
-    //   let records = playlist.records;
-    //   records.forEach(async (song) => {
-    //     const document = {
-    //       Oid: song._id,
-    //       title: song.title,
-    //       artistName: song.artistName,
-    //       year: song.year,
-    //       playlist: playlist.name,
-    //       youtube: song.youtube,
-    //       comments: "",
-    //       isBrokenLink: false,
-    //       isNoVideo: false,
-    //       isLowQualityVideo: false,
-    //       isNoSound: false,
-    //       isLowQualitySound: false,
-    //     };
-       
-    //      axios.post(
-    //       url + "/researcher/create/SongsDebug", document
-    //     );
-    //   });
-    // });
-
-   
-
 
     let playlists = [];
     res.data.forEach((playlist) => {
-      // { value: 'user', label: 'Elder' }
       playlists.push({
         value: playlist._id,
         label: playlist.name,
@@ -77,37 +48,40 @@ export default class MusicGuidePage extends Component {
     return playlists;
   }
 
-  async addSongsDebugToDB() {
-    console.log("test");
-  }
-
   setPlaylist = (selectedPlaylist) => {
-    console.log(selectedPlaylist);
-    // this.setState({
-    //   playlistToView: {
-    //     value: selectedPlaylist.value,
-    //     label: selectedPlaylist.label,
-    //   },
-    // });
-    // console.log(this.state.playlistToView.label);
-    
-
-    this.getSongsForDebug(selectedPlaylist.label).then((result) => {
-      // console.log(result);
-      this.setState({
-        playlistToView: {
-          value: selectedPlaylist.value,
-          label: selectedPlaylist.label,
-        },
-        songs: result,
+    // console.log(this.state.playlistToView.label.length)
+    if (this.state.playlistToView.label.length != 0) {
+      if (
+        confirm(
+          "Are you sure you want to switch playlist? Please make sure you saved your changes, otherwise changes will not take effect"
+        )
+      ) {
+        this.getSongsForDebug(selectedPlaylist.label).then((result) => {
+          this.setState({
+            playlistToView: {
+              value: selectedPlaylist.value,
+              label: selectedPlaylist.label,
+            },
+            songs: result,
+          });
+        });
+      } else {
+        return;
+      }
+    } else {
+      this.getSongsForDebug(selectedPlaylist.label).then((result) => {
+        this.setState({
+          playlistToView: {
+            value: selectedPlaylist.value,
+            label: selectedPlaylist.label,
+          },
+          songs: result,
+        });
       });
-    });
-    // this.viewSongs(this.state.songs.length != 0 ? true : false)
-    // console.log(this.state.songs)
+    }
   };
 
   async getSongsByPlaylist(playlist) {
-    //   console.log(playlist)
     var res = await axios.get(
       url + "/MusicGuide/getSongsByPlaylist/" + playlist
     );
@@ -116,18 +90,12 @@ export default class MusicGuidePage extends Component {
   }
 
   async getSongsForDebug(playlist) {
-    //   console.log(playlist)
-    var res = await axios.get(
-      url + "/MusicGuide/getSongsForDebug/" + playlist
-    );
-
-    console.log(res.data)
+    var res = await axios.get(url + "/MusicGuide/getSongsForDebug/" + playlist);
     return res.data;
   }
 
   viewSongs(isInit) {
     if (isInit) {
-     
       if (this.state.songs) {
         return (
           <SongDebugCard

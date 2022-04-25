@@ -87,7 +87,10 @@ routerElder.route("/session/:id/:algorithm?").get(async function (req, res) {
       list: songs.songsView,
     };
     return res.status(200).json(songs);
-  } else if (session.sessions[algorithm].sessions && session.sessions[algorithm].sessions.length === 0) {
+  } else if (
+    session.sessions[algorithm].sessions &&
+    session.sessions[algorithm].sessions.length === 0
+  ) {
     songs = {
       sessionNumber: session.sessions[algorithm].sessions.length,
       list: songs.songsView,
@@ -106,8 +109,7 @@ routerElder.route("/allSession/:id/:algorithm").get(async function (req, res) {
     songsView: [],
     songsBlock: [],
   };
-  songs.songsView =
-      session.sessions[algorithm].sessions
+  songs.songsView = session.sessions[algorithm].sessions;
 
   songs = {
     sessionNumber: session.sessions[algorithm].sessions.length,
@@ -130,7 +132,10 @@ routerElder
         await setSessionIsActive(session, algorithm);
       }
     }
+
     var songs = await CreateSession(session, algorithm);
+    await setUserCurrentSession(id, algorithm)
+
     return res.status(200).json(songs.songsView);
   });
 
@@ -195,6 +200,27 @@ async function CreateSession(session, algorithm) {
   return songs;
 }
 
+routerElder.route("/getUserSessions/:id").get(async function (req, res) {
+  let sessions = await getData("UserSessions", req.params.id);
+  res.status(200).json(sessions);
+});
+
+routerElder
+  .route("/setUserCurrentSession/:id/:sessionName")
+  .post(async function (req, res) {
+    db.collection("UserSessions").updateOne(
+      { Oid: req.params.id },
+      {
+        $set: {
+          currentSession: req.params.sessionName,
+        },
+      }
+    );
+    // let sessions = await getData("UserSessions", req.params.id);
+    console.log(req.params);
+    // res.status(200).json(sessions);
+  });
+
 routerElder
   .route("/RateSession/:id/:algorithm")
   .post(async function (req, res) {
@@ -215,6 +241,17 @@ routerElder
       return res.status(400);
     }
   });
+
+async function setUserCurrentSession(id, sessionName){
+  db.collection("UserSessions").updateOne(
+    { Oid: id },
+    {
+      $set: {
+        currentSession: sessionName,
+      },
+    }
+  );
+}
 
 async function getSongs(session, songs) {
   var filters = {

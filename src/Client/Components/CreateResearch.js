@@ -42,11 +42,11 @@ export const algo = [
 
 const hours = [];
 const minutes = [];
-for (var i = 0; i < 60; i++) {
-  if (i < 24) {
-    hours.push(i);
-  }
-  minutes.push(i);
+const numOfSessions = [];
+for (var i = 0; i <= 99; i++) {
+  if (i <= 24) hours.push(i);
+  if (i < 60) minutes.push(i);
+  numOfSessions.push(i);
 }
 
 var currentUser = {};
@@ -357,7 +357,7 @@ export default class CreateResearch extends Component {
                           <span className="combobox">
                             <Combobox
                               defaultValue="0"
-                              data={hours}
+                              data={numOfSessions}
                               filter={false}
                               // ref={comboRef}
                               autoSelectMatches

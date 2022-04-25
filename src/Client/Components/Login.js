@@ -74,7 +74,7 @@ export default class Login extends Component{
                                    value={this.state.password}
                                    placeholder="Enter Password"
                                    onChange={(e)=>{this.setState({password:e.target.value})}}
-                                   autoComplete="off"
+                                //    autoComplete="off"
 
                             />
                             <span className="focus-input100"></span>
