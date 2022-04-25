@@ -173,8 +173,9 @@ export default class SongDebugCard extends Component {
         this.updateSongForDebug(updatedSong);
       } else this.updateSongForDebug(song);
     });
-    console.log(this.state.user);
-    loadPage(this.props, "ֵ", this.state.user);
+    // console.log(this.state.user);
+    // loadPage(this.props, "ֵmusicGuide", this.state.user,this.state.user);
+    alert("Saved!");
   }
 
   async updateSongForDebug(document) {
@@ -245,7 +246,7 @@ export default class SongDebugCard extends Component {
             <TextareaAutosize
               cacheMeasurements
               minRows={3}
-              value={this.state.cֵmments}
+              value={this.state.comments}
               onChange={(e) => this.setComments(e)}
             />
             <div>

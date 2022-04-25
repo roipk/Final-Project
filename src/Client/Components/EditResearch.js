@@ -44,6 +44,7 @@ export default class EditResearch extends Component {
       participantsElders: [],
       participantsResearchers: [],
       currentSession: "",
+      creatorResearcher: {},
     };
   }
 
@@ -68,8 +69,16 @@ export default class EditResearch extends Component {
     });
 
     await this.getAllUsers("researcher").then((result) => {
+      // console.log(result);
+      const currentResearcher =
+        currentUser.first_name + " " + currentUser.last_name;
+      let options = [];
+      result.forEach((researcher) => {
+        if (researcher.label != currentResearcher) options.push(researcher);
+      });
+
       this.setState({
-        researchersOptions: result,
+        researchersOptions: options,
       });
     });
   }
@@ -94,7 +103,17 @@ export default class EditResearch extends Component {
     var res = await axios.get(
       url + "/researcher/getResearchByName/" + researchName
     );
+    // console.log(res.data[0].participantsResearchers)
+    let creatorResearcher = {};
+    const currentResearcher =
+      currentUser.first_name + " " + currentUser.last_name;
+    let researchers = [];
+    res.data[0].participantsResearchers.forEach((researcher) => {
+      if (researcher.label != currentResearcher) researchers.push(researcher);
+      else creatorResearcher = researcher;
+    });
 
+    console.log(creatorResearcher);
     this.setState({
       researchName: res.data[0].researchName,
       startDate: res.data[0].startDate,
@@ -103,9 +122,10 @@ export default class EditResearch extends Component {
       sessionDuration: res.data[0].sessionDuration,
       participantsElders: res.data[0].participantsElders,
       participantsEldersOld: res.data[0].participantsElders,
-      participantsResearchers: res.data[0].participantsResearchers,
-      participantsResearchersOld: res.data[0].participantsResearchers,
+      participantsResearchers: res.data[0].researchers,
+      participantsResearchersOld: res.data[0].researchers,
       currentSession: res.data[0].currentSession,
+      creatorResearcher: creatorResearcher,
     });
   }
 
@@ -213,11 +233,13 @@ export default class EditResearch extends Component {
       eldersParticipants.splice(0, 1);
     }
     let researchersParticipants = this.state.participantsResearchers;
-    if (
-      researchersParticipants.length > 0 &&
-      researchersParticipants[0].label === "Select all"
-    ) {
-      researchersParticipants.splice(0, 1);
+    if (typeof researchersParticipants != "undefined") {
+      if (
+        researchersParticipants.length > 0 &&
+        researchersParticipants[0].label === "Select all"
+      ) {
+        researchersParticipants.splice(0, 1);
+      }
     }
 
     const updatedResearch = {
@@ -231,11 +253,18 @@ export default class EditResearch extends Component {
       currentSession: this.state.currentSession,
     };
 
+    if (typeof updatedResearch.participantsResearchers === "undefined")
+      updatedResearch.participantsResearchers = [];
+    updatedResearch.participantsResearchers.push(this.state.creatorResearcher);
+    console.log(updatedResearch);
+
     let oldElders = this.state.participantsEldersOld;
     let newElders = this.state.participantsElders;
 
     let oldResearchers = this.state.participantsResearchersOld;
     let newResearchers = this.state.participantsResearchers;
+    if (typeof newResearchers === "undefined") newResearchers = [];
+    newResearchers.push(this.state.creatorResearcher);
 
     let oldEldersCollection = collect(oldElders);
     let newEldersCollection = collect(newElders);
@@ -245,16 +274,16 @@ export default class EditResearch extends Component {
 
     oldEldersCollection.each((item) => {
       if (newEldersCollection.contains("label", item.label)) {
-        console.log("do nothing with elder " + item.label);
+        // console.log("do nothing with elder " + item.label);
       } else {
-        console.log("need to set isActive to false for elder " + item.label);
+        // console.log("need to set isActive to false for elder " + item.label);
         this.setIsActive(item.value, updatedResearch.researchName);
       }
     });
 
     newEldersCollection.each((item) => {
       if (oldEldersCollection.doesntContain("label", item.label)) {
-        console.log("need to create session for elder " + item.label);
+        // console.log("need to create session for elder " + item.label);
         this.addSessionToElder(item.value, updatedResearch.researchName);
       }
     });
@@ -262,12 +291,12 @@ export default class EditResearch extends Component {
     oldResearchersCollection.each((item) => {
       let researchersToUpdate = [];
       if (newResearchersCollection.contains("label", item.label)) {
-        console.log("do nothing with researcher " + item.label);
+        // console.log("do nothing with researcher " + item.label);
       } else {
-        console.log(
-          "need to remove research from ResearcherInfo for researcher " +
-            item.label
-        );
+        // console.log(
+        //   "need to remove research from ResearcherInfo for researcher " +
+        //     item.label
+        // );
         researchersToUpdate.push(item);
         this.updateResearchersInfo(
           researchersToUpdate,
@@ -281,7 +310,7 @@ export default class EditResearch extends Component {
     newResearchersCollection.each((item) => {
       let researchersToUpdate = [];
       if (oldResearchersCollection.doesntContain("label", item.label)) {
-        console.log("need to add research to researcher " + item.label);
+        // console.log("need to add research to researcher " + item.label);
         researchersToUpdate.push(item);
         this.updateResearchersInfo(
           researchersToUpdate,
@@ -302,7 +331,7 @@ export default class EditResearch extends Component {
             "Updated"
         );
 
-        loadPage(this.props, "researcher", this.state.user,this.state.user);
+        loadPage(this.props, "researcher", this.state.user, this.state.user);
       });
   };
 
@@ -542,7 +571,12 @@ export default class EditResearch extends Component {
                   type="button"
                   className="contact100-back-btn"
                   onClick={() => {
-                    loadPage(this.props, "researcher", this.state.user,this.state.user);
+                    loadPage(
+                      this.props,
+                      "researcher",
+                      this.state.user,
+                      this.state.user
+                    );
                   }}
                 >
                   <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
