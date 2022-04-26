@@ -7,6 +7,8 @@ import ResearchCard from "./ResearchCard";
 // import { Select } from "@mui/material";
 import Select from "react-select";
 import collect from "collect.js";
+const ExcelJS = require("exceljs");
+import { saveAs } from "file-saver";
 
 var currentUser = {};
 
@@ -116,30 +118,40 @@ export default class ViewResearches extends Component {
       let temp = {};
       let ID = 1;
       let playlists = [];
-      
-      eldersCollection.each(async(elder) => {
+
+      eldersCollection.each(async (elder) => {
         await this.getElderDetails(elder.value).then((result) => {
-          playlists = result.playlists.slice(0,result.playlists.length-2)
+          playlists = result.playlists.slice(0, result.playlists.length - 2);
           temp = {
             ID: ID,
             ResearchName: researchName,
             FirstName: result.firstName,
             LastName: result.lastName,
-            BirthYear: (parseInt(result.yearAtTwenty) - 20),
+            BirthYear: parseInt(result.yearAtTwenty) - 20,
             Playlists: playlists,
             Sessions: result.sessions,
           };
-          ID ++;
+          ID++;
           userData.push(temp);
         });
       });
       ID = 1;
       return (
-        <ResearchCard
-          key={researchName}
-          data={researchDetails}
-          userdata={userData}
-        ></ResearchCard>
+        <div>
+          <ResearchCard
+            key={researchName}
+            data={researchDetails}
+            userdata={userData}
+          ></ResearchCard>
+          <div className="export-btn-container" style={{ zIndex: 0 }}>
+            <button
+              className="export-btn"
+              onClick={(e) => this.createExcelWorkbook(e)}
+            >
+              Export <i className="fa fa-file-excel-o"></i>
+            </button>
+          </div>
+        </div>
       );
     }
   }
@@ -193,6 +205,227 @@ export default class ViewResearches extends Component {
     }
   }
 
+  async createExcelWorkbook(event) {
+    event.preventDefault();
+    console.log(this.state.researchDetails);
+
+    let participantsElders = this.state.researchDetails.participantsElders;
+    let researchName = this.state.researchDetails.researchName;
+    let userData = [];
+    let temp = {};
+    Promise.all(
+      participantsElders.map(async (elder) => {
+        await new Promise((resolve) => {
+          this.getElderDetails(elder.value).then((result) => {
+            temp = {
+              // ResearchName: researchName,
+              FirstName: result.firstName,
+              LastName: result.lastName,
+              YearAtTwenty: result.yearAtTwenty,
+              Sessions: result.sessions,
+            };
+            resolve(temp);
+          });
+        }).then((res) => userData.push(res));
+      })
+    ).then(() => {
+      console.log(userData);
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet(
+        researchName + " participants details"
+      );
+      sheet.columns = [
+        { header: "FirstName", key: "FirstName", width: 15 },
+        { header: "LastName", key: "LastName", width: 15 },
+        {
+          header: "YearAtTwenty",
+          key: "YearAtTwenty",
+          width: 15,
+          outlineLevel: 1,
+        },
+        // { header: "Sessions", key: "Sessions", width: 10 },
+        { header: "", key: "nothing" },
+        { header: "", key: "nothing", width: 50 },
+        { header: "", key: "nothing", width: 50 },
+        { header: "", key: "nothing" },
+      ];
+      sheet.getRow(1).eachCell((cell) => {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "87CEFA" },
+          bgColor: { argb: "87CEFA" },
+        };
+      });
+      userData.forEach((user) => {
+        sheet
+          .addRow([
+            user.FirstName,
+            user.LastName,
+            user.YearAtTwenty,
+            "",
+            "",
+            "",
+            "",
+          ])
+          .eachCell((cell) => {
+            cell.fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "E6E6FA" },
+              bgColor: { argb: "E6E6FA" },
+            };
+            cell.border = {
+              top: { style: "thin" },
+            };
+          });
+        sheet.addRow(["", "", "", "Session", "", "", ""]).eachCell((cell) => {
+          if (cell.col > 3)
+            cell.fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "ADD8E6" },
+              bgColor: { argb: "ADD8E6" },
+            };
+        });
+
+        user.Sessions[researchName].sessions.forEach((s, i) => {
+          sheet
+            .addRow(["", "", "", "   " + (i + 1) + ":", "", "", ""])
+            .eachCell((cell) => {
+              if (cell.col > 3)
+                cell.fill = {
+                  type: "pattern",
+                  pattern: "solid",
+                  fgColor: { argb: "ADD8E6" },
+                  bgColor: { argb: "ADD8E6" },
+                };
+            });
+          sheet
+            .addRow([
+              "",
+              "",
+              "",
+              "",
+              "Origin Title",
+              "Origin Artist Name",
+              "Score",
+            ])
+            .eachCell((cell) => {
+              if (cell.col > 4) {
+                cell.fill = {
+                  type: "pattern",
+                  pattern: "solid",
+                  fgColor: { argb: "4682B4" },
+                  bgColor: { argb: "4682B4" },
+                };
+              }
+            });
+          s.map((se) => {
+            // console.log(se)
+            sheet.addRow([
+              "",
+              "",
+              "",
+              "",
+              se.originTitle,
+              se.originArtistName,
+              se.score,
+            ]);
+          });
+        });
+      });
+
+      const col4 = sheet.getColumn(4);
+      const col5 = sheet.getColumn(5);
+      const col6 = sheet.getColumn(6);
+      const col7 = sheet.getColumn(7);
+
+      col4.eachCell((cell) => {
+        if (
+          cell.value !== "Sessions" &&
+          cell.value !== null &&
+          cell.value.length === 2
+        ) {
+          cell.alignment = { vertical: "middle", horizontal: "left" };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "ADD8E6" },
+            bgColor: { argb: "ADD8E6" },
+          };
+        }
+        if (cell.value === "Origin Title") {
+          cell.alignment = { vertical: "middle", horizontal: "center" };
+        }
+        // else {
+        //   cell.alignment = { vertical: "middle", horizontal: "left" };
+        //   // console.log(sheet.getRow(cell.row).values);
+        //   // if (
+        //   //   cell.value !== "Sessions" &&
+        //   //   sheet.getRow(cell.row).values.length > 4
+        //   // )
+        //   //   cell.border = {
+        //   //     left: { style: "thin" },
+        //   //   };
+        //   // else {
+
+        //   //   sheet.getRow(cell.row + 1).eachCell(function(cell, cellNumber){
+        //   //     console.log(cellNumber)
+        //   //   })
+        //   // }
+        // }
+      });
+
+      col5.eachCell((cell) => {
+        cell.alignment = { vertical: "middle", horizontal: "left" };
+      });
+
+      col6.eachCell((cell) => {
+        cell.alignment = { vertical: "middle", horizontal: "left" };
+      });
+
+      col7.eachCell((cell) => {
+        cell.alignment = { vertical: "middle", horizontal: "left" };
+        if (cell.row > 1) {
+          if (typeof sheet.getRow(cell.row).values[3] === "number") {
+            cell.border = {
+              top: { style: "thin" },
+              right: { style: "thin" },
+            };
+          } else
+            cell.border = {
+              right: { style: "thin" },
+            };
+        }
+      });
+
+      // col7.eachCell((cell) => {
+      //   if (cell.value === "Score") {
+      //     cell.alignment = { vertical: "middle", horizontal: "center" };
+      //     cell.fill = {
+      //       type: "pattern",
+      //       pattern: "solid",
+      //       fgColor: { argb: "ADD8E6" },
+      //       bgColor: { argb: "ADD8E6" },
+      //     };
+      //   } else cell.alignment = { vertical: "middle", horizontal: "left" };
+      // });
+      // sheet.getCell('E3').alignment = { vertical: 'middle', horizontal: 'center' };
+
+      workbook.xlsx.writeBuffer().then((buffer) => {
+        sheet.unprotect();
+
+        saveAs(
+          new Blob([buffer], { type: "application/octet-stream" }),
+          researchName + ".xlsx"
+        );
+      });
+    });
+
+    // this.setResearch("");
+  }
+
   render() {
     return (
       <div>
@@ -226,7 +459,12 @@ export default class ViewResearches extends Component {
                   type="button"
                   className="contact100-back-btn"
                   onClick={() => {
-                    loadPage(this.props, "researcher", this.state.user,this.state.user);
+                    loadPage(
+                      this.props,
+                      "researcher",
+                      this.state.user,
+                      this.state.user
+                    );
                   }}
                 >
                   <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>

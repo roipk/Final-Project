@@ -136,7 +136,7 @@ export default class SignUp extends Component {
       yearOfImmigration: "",
       maxSession: 7,
       Cognitive: Config.HIGH_COGNITIVE,
-        currentSession: "personal",
+      currentSession: "personal",
       checked: true,
     };
   }
@@ -167,7 +167,7 @@ export default class SignUp extends Component {
   newElderData(id) {
     let elderData = {
       Oid: id,
-        type:this.state.type,
+      type: this.state.type,
       first_name: this.state.first_name,
       last_name: this.state.last_name,
       userName: this.state.user_name,
@@ -193,7 +193,7 @@ export default class SignUp extends Component {
       maxSession: this.state.maxSession,
       Cognitive: this.state.Cognitive, // 5, 8, 11, 12, 15
       maxSongs: this.state.Cognitive * this.state.maxSession, //max session*Cognitive
-        currentSession: this.state.currentSession,
+      currentSession: this.state.currentSession,
     };
     return elderData;
   }
@@ -239,7 +239,7 @@ export default class SignUp extends Component {
       maxSession: 7,
       Cognitive: this.state.Cognitive, // 5, 8, 11, 12, 15
       maxSongs: this.state.Cognitive * this.state.maxSession, //max session*Cognitive
-        currentSession: this.state.currentSession,
+      currentSession: this.state.currentSession,
     };
     return userSessionData;
   }
@@ -248,10 +248,10 @@ export default class SignUp extends Component {
     genres.forEach((genre) => {
       playlist.push(genre);
     });
-      LanguageAtTwenty.forEach((Language) => {
-          playlist.push(Language);
-      });
-      playlist = [...new Set(playlist)];
+    LanguageAtTwenty.forEach((Language) => {
+      playlist.push(Language);
+    });
+    playlist = [...new Set(playlist)];
     return playlist;
   }
 
@@ -494,71 +494,6 @@ export default class SignUp extends Component {
             />
             <span className="focus-input100"></span>
           </div>
-
-          <div className="wrap-contact100-back-btn">
-            <div className="contact100-back-bgbtn"></div>
-
-            <button
-              hidden={this.state.type === "user"}
-              id="submit"
-              type="button"
-              className="contact100-back-btn"
-              onClick={() => {
-                let user = this.newUserAuthentication();
-                console.log("done");
-                axios
-                  .post(url + "/admin/create/Authentication", user)
-                  .then((res) => {
-                    let id = res.data.insertedId;
-                    console.log(res);
-                    console.log(res.data);
-                    alert(
-                      "successful\n the user " +
-                        this.state.first_name +
-                        "\n" +
-                        "add to system with id -  " +
-                        res.data.insertedId +
-                        "\n" +
-                        "type " +
-                        this.state.type
-                    );
-                    if (this.state.type === "researcher") {
-                      console.log(id);
-                      let researcherInfo = this.newResearcherData(id);
-                      axios
-                        .post(
-                          url + "/admin/create/ResearchersInfo",
-                          researcherInfo
-                        )
-                        .then((res) => {
-                          alert("Added also to researcherInfo:" + res.data);
-                        });
-                        loadPage(this.props, "admin", this.state.user,this.state.user);
-                    }
-                      loadPage(this.props, "admin", this.state.user,this.state.user);
-                    // loadPage(this.props, "admin", this.state.user)
-                    // loadPage(this.props,"",this.state)
-                  });
-              }}
-            >
-              submit
-              <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
-              {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
-            </button>
-            <button
-              hidden={this.state.type !== "user"}
-              id="next"
-              type="button"
-              className="contact100-back-btn"
-              onClick={() => {
-                this.setState({ page: page + 1 });
-              }}
-            >
-              next
-              <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
-              {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
-            </button>
-          </div>
         </div>
       );
     else if (page === 1)
@@ -620,35 +555,6 @@ export default class SignUp extends Component {
               placeholder="Enter Medical profile"
             />
             <span className="focus-input100"></span>
-          </div>
-
-          <div className="wrap-contact100-back-btn">
-            <div className="contact100-back-bgbtn"></div>
-            <button
-              id="next2"
-              type="button"
-              className="contact100-back-btn"
-              onClick={() => {
-                this.setState({ page: page + 1 });
-              }}
-            >
-              next
-              <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
-              {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
-            </button>
-            <div className="contact100-back-bgbtn"></div>
-            <button
-              id="back1"
-              type="button"
-              className="contact100-back-btn"
-              onClick={() => {
-                // console.log(this.state.roles?this.state.roles:[])
-                this.setState({ page: page - 1 });
-              }}
-            >
-              back
-              <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
-            </button>
           </div>
         </div>
       );
@@ -812,35 +718,6 @@ export default class SignUp extends Component {
             </div>
             <span className="focus-input100"></span>
           </div>
-
-          <div className="wrap-contact100-back-btn">
-            <div className="contact100-back-bgbtn"></div>
-            <button
-              id="next3"
-              type="button"
-              className="contact100-back-btn"
-              onClick={() => {
-                this.setState({ page: page + 1 });
-              }}
-            >
-              next
-              <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
-              {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
-            </button>
-            <div className="contact100-back-bgbtn"></div>
-            <button
-              id="back2"
-              type="button"
-              className="contact100-back-btn"
-              onClick={() => {
-                // console.log(this.state.roles?this.state.roles:[])
-                this.setState({ page: page - 1 });
-              }}
-            >
-              back
-              <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
-            </button>
-          </div>
         </div>
       );
     else
@@ -963,76 +840,6 @@ export default class SignUp extends Component {
           {/*    </div>*/}
           {/*    <span className="focus-input100"></span>*/}
           {/*</div>*/}
-
-          <div className="wrap-contact100-back-btn">
-            <div className="contact100-back-bgbtn"></div>
-            {/* <button hidden={this.state.type!=='user'} id='submit' type='button' className="contact100-back-btn"
-                                onClick={async ()=>{
-                                    let userPlaylist = this.newElderSessions("61a8b86ca4e25312dbdce029")
-                                }
-                                }>
-                            click me
-                        </button> */}
-            <button
-              hidden={this.state.type !== "user"}
-              id="submit"
-              type="button"
-              className="contact100-back-btn"
-              onClick={async () => {
-                let user = this.newUserAuthentication();
-
-                let userId = await axios.post(
-                  url + "/admin/create/Authentication",
-                  user
-                );
-
-                let userData = this.newElderData(userId.data.insertedId);
-
-                let userInfoId = await axios.post(
-                  url + "/admin/create/UserInfo",
-                  userData
-                );
-
-                let userPlaylist = this.newElderSessions(
-                  userId.data.insertedId
-                );
-
-                let userPlaylistId = await axios.post(
-                  url + "/admin/create/UserSessions",
-                  userPlaylist
-                );
-                await axios.get(
-                  url +
-                    "/user/Create/session/" +
-                    userId.data.insertedId +
-                    "/personal"
-                );
-
-                // CreateSession(userId.data.insertedId)
-                // userPlaylist.session.push()
-
-                alert("the user " + this.state.first_name + " add to system");
-                loadPage(this.props, "admin", this.state.user,this.state.user);
-              }}
-            >
-              submit
-              <i className="fa fa-arrow-right m-l-7" aria-hidden="true"></i>
-              {/*<i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>*/}
-            </button>
-            <div className="contact100-back-bgbtn"></div>
-            <button
-              id="back"
-              type="button"
-              className="contact100-back-btn"
-              onClick={() => {
-                // console.log(this.state.roles?this.state.roles:[])
-                this.setState({ page: page - 1 });
-              }}
-            >
-              back
-              <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
-            </button>
-          </div>
         </div>
       );
   }
@@ -1089,7 +896,184 @@ export default class SignUp extends Component {
                     {this.registerUser(this.state.page)}
                   </div>
 
-                  <div
+                  <div className="register-btn" hidden={this.state.type === ""}>
+                    <div
+                      className="song-card-btn-container"
+                      style={{ zIndex: 0 }}
+                    >
+                      <div className="contact100-back-bgbtn"></div>
+                      <button
+                        type="button"
+                        className="contact100-back-btn"
+                        id="prev"
+                        onClick={() => {
+                          this.setState({ page: this.state.page - 1 });
+                        }}
+                        hidden={
+                          this.state.type !== "user" || this.state.page === 0
+                        }
+                      >
+                        <i
+                          className="fa fa-arrow-left m-l-7"
+                          aria-hidden="true"
+                        >
+                          {" "}
+                          Back
+                        </i>
+                      </button>
+                    </div>
+
+                    {this.state.type !== "user" || this.state.page === 3 ? (
+                      <div
+                        className="song-card-btn-container"
+                        style={{ zIndex: 0 }}
+                      >
+                        <div className="contact100-back-bgbtn"></div>
+                        <button
+                          id="submit"
+                          type="button"
+                          className="contact100-back-btn"
+                          onClick={async () => {
+                            if (this.state.type === "user") {
+                              let user = this.newUserAuthentication();
+
+                              let userId = await axios.post(
+                                url + "/admin/create/Authentication",
+                                user
+                              );
+
+                              let userData = this.newElderData(
+                                userId.data.insertedId
+                              );
+
+                              let userInfoId = await axios.post(
+                                url + "/admin/create/UserInfo",
+                                userData
+                              );
+
+                              let userPlaylist = this.newElderSessions(
+                                userId.data.insertedId
+                              );
+
+                              let userPlaylistId = await axios.post(
+                                url + "/admin/create/UserSessions",
+                                userPlaylist
+                              );
+                              await axios.get(
+                                url +
+                                  "/user/Create/session/" +
+                                  userId.data.insertedId +
+                                  "/personal"
+                              );
+
+                              // CreateSession(userId.data.insertedId)
+                              // userPlaylist.session.push()
+
+                              alert(
+                                "the user " +
+                                  this.state.first_name +
+                                  " add to system"
+                              );
+                              loadPage(
+                                this.props,
+                                "admin",
+                                this.state.user,
+                                this.state.user
+                              );
+                            }
+
+                            if (this.state.type !== "user") {
+                              let user = this.newUserAuthentication();
+                              console.log("done");
+                              axios
+                                .post(
+                                  url + "/admin/create/Authentication",
+                                  user
+                                )
+                                .then((res) => {
+                                  let id = res.data.insertedId;
+                                  console.log(res);
+                                  console.log(res.data);
+                                  alert(
+                                    "successful\n the user " +
+                                      this.state.first_name +
+                                      "\n" +
+                                      "add to system with id -  " +
+                                      res.data.insertedId +
+                                      "\n" +
+                                      "type " +
+                                      this.state.type
+                                  );
+                                  if (this.state.type === "researcher") {
+                                    console.log(id);
+                                    let researcherInfo =
+                                      this.newResearcherData(id);
+                                    axios
+                                      .post(
+                                        url + "/admin/create/ResearchersInfo",
+                                        researcherInfo
+                                      )
+                                      .then((res) => {
+                                        alert(
+                                          "Added also to researcherInfo:" +
+                                            res.data
+                                        );
+                                      });
+                                    loadPage(
+                                      this.props,
+                                      "admin",
+                                      this.state.user,
+                                      this.state.user
+                                    );
+                                  }
+                                  loadPage(
+                                    this.props,
+                                    "admin",
+                                    this.state.user,
+                                    this.state.user
+                                  );
+                                  // loadPage(this.props, "admin", this.state.user)
+                                  // loadPage(this.props,"",this.state)
+                                });
+                            }
+                          }}
+                          // hidden={
+                          //   this.state.type !== "user" || this.state.page === 3
+                          // }
+                        >
+                          <i> Submit</i>
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        className="song-card-btn-container"
+                        style={{ zIndex: 0 }}
+                      >
+                        <div className="contact100-back-bgbtn"></div>
+                        <button
+                          type="button"
+                          className="contact100-back-btn"
+                          onClick={() => {
+                            console.log(this.state.page);
+                            this.setState({ page: this.state.page + 1 });
+                          }}
+                          // hidden={
+                          //   this.state.type !== "user" || this.state.page === 3
+                          // }
+                        >
+                          <i
+                            className="fa fa-arrow-right m-l-7"
+                            aria-hidden="true"
+                          >
+                            {" "}
+                            Next
+                          </i>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* <div
                     hidden={this.state.page > 0}
                     className="wrap-contact100-back-btn"
                   >
@@ -1109,7 +1093,7 @@ export default class SignUp extends Component {
                         aria-hidden="true"
                       ></i>
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -1122,6 +1106,26 @@ export default class SignUp extends Component {
             {/*    this.state.type==="guide"?<CreateResearcher/>:*/}
             {/*    this.state.type==="user"?<CreateUser/>:<div></div>*/}
             {/*}*/}
+            <div className="container-contact100-back-btn">
+              <div className="wrap-contact100-back-btn">
+                <div className="contact100-back-bgbtn"></div>
+                <button
+                  id="main"
+                  type="button"
+                  className="contact100-back-btn"
+                  onClick={() => {
+                    loadPage(
+                      this.props,
+                      "admin",
+                      this.state.user,
+                      this.state.user
+                    );
+                  }}
+                >
+                  <i className="fa fa-arrow-left m-l-7" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
           </form>
         </div>
       </div>

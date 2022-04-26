@@ -155,7 +155,9 @@ export default class ResearchCard extends Component {
           data={this.state.userData.Sessions + this.state.researchName}
         />
         {/* <Export enabled={true} allowExportSelectedData={false} /> */}
+        
       </DataGrid>
+      
     );
   }
 }

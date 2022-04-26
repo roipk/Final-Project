@@ -68,6 +68,34 @@ export default class AdminPage extends Component {
                             </div>
                           </div>
 
+                          <div className="container-contact100-form-btn">
+                            <div className="wrap-contact100-form-btn">
+                              <div className="user contact100-form-bgbtn"></div>
+                              <button
+                                type="button"
+                                id="createUser"
+                                className="contact100-form-btn"
+                                onClick={() => {
+                                  loadPage(
+                                    this.props,
+                                    "register",
+                                    this.state.user,
+                                    null
+                                  );
+                                }}
+                              >
+                                <span>
+                                  <i
+                                    className="fa fa-plus"
+                                    aria-hidden="true"
+                                    style={{ padding_right: "10px" }}
+                                  ></i>
+                                  &nbsp;&nbsp;&nbsp;&nbsp;Add Users
+                                </span>
+                              </button>
+                            </div>
+                          </div>
+
                           {/*                <div className="container-contact100-form-btn">*/}
                           {/*                    <div className="wrap-contact100-form-btn">*/}
                           {/*                        <div className="user contact100-form-bgbtn"></div>*/}
@@ -271,7 +299,7 @@ export default class AdminPage extends Component {
                         <div className="wrap-contact100-form-btn">
                           <div className="research contact100-form-bgbtn"></div>
                           <button
-                            id="createGuide"
+                            id="logOut"
                             type="button"
                             className="contact100-form-btn"
                             onClick={() => {
@@ -289,30 +317,6 @@ export default class AdminPage extends Component {
                           </button>
                         </div>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="container-contact100-back-btn">
-                    <div className="wrap-contact100-back-btn">
-                      <div className="contact100-back-bgbtn"></div>
-                      <button
-                        id="main"
-                        type="button"
-                        className="contact100-back-btn"
-                        onClick={() => {
-                          loadPage(
-                            this.props,
-                            "",
-                            this.state.user,
-                            this.state.user
-                          );
-                        }}
-                      >
-                        <i
-                          className="fa fa-arrow-left m-l-7"
-                          aria-hidden="true"
-                        ></i>
-                      </button>
                     </div>
                   </div>
                 </form>

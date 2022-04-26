@@ -962,6 +962,34 @@ textarea.input100 {
   font-size: 30px;
 }
 
+.music-guide-wrap-btn{
+  width: 100%;
+  display: block;
+  position: relative;
+  z-index: 1;
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.export-btn-container{
+  text-align: right;
+  padding-right: 5px;
+  padding-top: 10px;
+  display: block;
+  position: relative;
+  z-index: 1;
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.export-btn{
+  font-weight: bold;
+}
+
+.export-btn:hover{
+  color: darkgreen;
+}
+
 .item1 {
   text-align: left;
   margin-left: 3em;
@@ -1025,6 +1053,13 @@ gap: 4.5em;
   border-radius: 25px;
   overflow: hidden;
 }
+
+.register-btn{
+  display: grid;
+  grid-template-columns: 10% 60% 20%;
+  justify-items: center;
+  gap: 35.5em;
+  }
 
 .item4 #prev{
   text-align: left;

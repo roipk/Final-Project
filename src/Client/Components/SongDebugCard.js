@@ -10,7 +10,6 @@ let currentUser = {};
 export default class SongDebugCard extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       user: props.user,
       currentSong: props.songs[0],
@@ -74,7 +73,6 @@ export default class SongDebugCard extends Component {
 
   async showNextSong(currentIndex, currentSong) {
     let index = currentIndex + 1;
-    console.log(this.state);
     const document = {
       _id: this.state.currentSong._id,
       Oid: this.state.currentSong.Oid,
@@ -311,7 +309,6 @@ export default class SongDebugCard extends Component {
               </div>
             </div>
           </div>
-          ֵ
         </div>
       </div>
     );

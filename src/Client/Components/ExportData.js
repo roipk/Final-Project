@@ -79,7 +79,6 @@ export default class ExportData extends Component {
     event.preventDefault();
 
     let participantsElders = this.state.researchToExport.participantsElders;
-    let eldersCollection = collect(participantsElders);
     console.log(this.state.researchToExport);
     let researchName = this.state.researchToExport.researchName;
     let userData = [];
@@ -115,39 +114,137 @@ export default class ExportData extends Component {
         { header: "Sessions", key: "Sessions", width: 10 },
         { header: "", key: "nothing", width: 50 },
         { header: "", key: "nothing", width: 50 },
-
+        { header: "", key: "nothing" },
       ];
+      sheet.getRow(1).eachCell((cell) => {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "87CEFA" },
+          bgColor: { argb: "87CEFA" },
+        };
+      });
       userData.forEach((user) => {
-        sheet.addRow([user.FirstName, user.LastName, user.YearAtTwenty]);
+        sheet
+          .addRow([
+            user.FirstName,
+            user.LastName,
+            user.YearAtTwenty,
+            "",
+            "",
+            "",
+            "",
+          ])
+          .eachCell((cell) => {
+            cell.fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "E6E6FA" },
+              bgColor: { argb: "E6E6FA" },
+            };
+          });
         user.Sessions[researchName].sessions.forEach((s, i) => {
-          sheet.addRow(["", "", "", i + 1 +":", "Origin Title", "Origin Artist Name"] );
+          sheet.addRow([
+            "",
+            "",
+            "",
+            i + 1 + ":",
+            "Origin Title",
+            "Origin Artist Name",
+            "Score",
+          ]);
           s.map((se) => {
-            sheet.addRow(["", "", "", "", se.originTitle, se.originArtistName]);
+            // console.log(se)
+            sheet.addRow([
+              "",
+              "",
+              "",
+              "",
+              se.originTitle,
+              se.originArtistName,
+              se.score,
+            ]);
           });
         });
       });
 
+      const col4 = sheet.getColumn(4);
       const col5 = sheet.getColumn(5);
       const col6 = sheet.getColumn(6);
+      const col7 = sheet.getColumn(7);
 
-      col5.eachCell(cell =>{
-        if(cell.value === "Origin Title")
-          cell.alignment = { vertical: 'middle', horizontal: 'center' };
-          else
-          cell.alignment = { vertical: 'middle', horizontal: 'left' };
-      })
+      col4.eachCell((cell) => {
+        if (
+          cell.value !== "Sessions" &&
+          cell.value !== null &&
+          cell.value.length !== 0
+        ) {
+          cell.alignment = { vertical: "middle", horizontal: "center" };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "ADD8E6" },
+            bgColor: { argb: "ADD8E6" },
+          };
+        } else {
+          cell.alignment = { vertical: "middle", horizontal: "left" };
+          // console.log(sheet.getRow(cell.row).values);
+          // if (
+          //   cell.value !== "Sessions" &&
+          //   sheet.getRow(cell.row).values.length > 4
+          // )
+          //   cell.border = {
+          //     left: { style: "thin" },
+          //   };
+          // else {
 
-      col6.eachCell(cell =>{
-        if(cell.value === "Origin Artist Name")
-          cell.alignment = { vertical: 'middle', horizontal: 'center' };
-          else
-          cell.alignment = { vertical: 'middle', horizontal: 'left' };
-      })
+          //   sheet.getRow(cell.row + 1).eachCell(function(cell, cellNumber){
+          //     console.log(cellNumber)
+          //   })
+          // }
+        }
+      });
+
+      col5.eachCell((cell) => {
+        if (cell.value === "Origin Title") {
+          cell.alignment = { vertical: "middle", horizontal: "center" };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "ADD8E6" },
+            bgColor: { argb: "ADD8E6" },
+          };
+        } else cell.alignment = { vertical: "middle", horizontal: "left" };
+      });
+
+      col6.eachCell((cell) => {
+        if (cell.value === "Origin Artist Name") {
+          cell.alignment = { vertical: "middle", horizontal: "center" };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "ADD8E6" },
+            bgColor: { argb: "ADD8E6" },
+          };
+        } else cell.alignment = { vertical: "middle", horizontal: "left" };
+      });
+
+      col7.eachCell((cell) => {
+        if (cell.value === "Score") {
+          cell.alignment = { vertical: "middle", horizontal: "center" };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "ADD8E6" },
+            bgColor: { argb: "ADD8E6" },
+          };
+        } else cell.alignment = { vertical: "middle", horizontal: "left" };
+      });
       // sheet.getCell('E3').alignment = { vertical: 'middle', horizontal: 'center' };
 
-     
-
       workbook.xlsx.writeBuffer().then((buffer) => {
+        sheet.unprotect();
+
         saveAs(
           new Blob([buffer], { type: "application/octet-stream" }),
           "Test.xlsx"

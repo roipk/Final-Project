@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { loadPage, verifyUser, url } from "./ManagerComponents";
+import { logOut, loadPage, verifyUser, url } from "./ManagerComponents";
 import { Link } from "react-router-dom";
 import NotFound from "./404";
 
@@ -78,7 +78,8 @@ export default class ResearcherPage extends Component {
                               loadPage(
                                 this.props,
                                 "researcher/edit-research/",
-                                this.state.user,this.state.user
+                                this.state.user,
+                                this.state.user
                               );
                             }}
                           >
@@ -100,11 +101,16 @@ export default class ResearcherPage extends Component {
                             type="button"
                             className="contact100-form-btn"
                             onClick={() => {
-                              loadPage(this.props, "researcher/view-researches/", this.state.user,this.state.user)
+                              loadPage(
+                                this.props,
+                                "researcher/view-researches/",
+                                this.state.user,
+                                this.state.user
+                              );
                             }}
                           >
                             <i
-                              className="fa fa-pencil fa-lg"
+                              className="fa fa-search"
                               aria-hidden="true"
                               style={{ padding_right: "10px" }}
                             ></i>
@@ -112,25 +118,28 @@ export default class ResearcherPage extends Component {
                           </button>
                         </div>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="container-contact100-back-btn">
-                    <div className="wrap-contact100-back-btn">
-                      <div className="contact100-back-bgbtn"></div>
-                      <button
-                        id="main"
-                        type="button"
-                        className="contact100-back-btn"
-                        onClick={() => {
-                          loadPage(this.props, "", this.state.user,this.state.user);
-                        }}
-                      >
-                        <i
-                          className="fa fa-arrow-left m-l-7"
-                          aria-hidden="true"
-                        ></i>
-                      </button>
+                      <div className="container-contact100-form-btn">
+                        <div className="wrap-contact100-form-btn">
+                          <div className="research contact100-form-bgbtn"></div>
+                          <button
+                            id="logOut"
+                            type="button"
+                            className="contact100-form-btn"
+                            onClick={() => {
+                              logOut(this.props);
+                            }}
+                          >
+                            <span>
+                              <i
+                                className="fa fa-sign-out fa-lg fa-fw"
+                                aria-hidden="true"
+                                style={{ padding_right: "10px" }}
+                              ></i>
+                              &nbsp;&nbsp;&nbsp;&nbsp; LOG OUT
+                            </span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </form>
