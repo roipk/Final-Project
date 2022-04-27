@@ -11,7 +11,6 @@ import { exportDataGrid } from "devextreme/excel_exporter";
 
 let test = [];
 
-
 const sessionDetailsGrid = (props) => {
   var songs = props.data.data.SessionSongs;
   var data = [];
@@ -61,7 +60,7 @@ const sessionsGrid = (props) => {
   for (var i = 0; i < sessions.length; i++) {
     temp = {
       ID: i,
-      Session: i+1,
+      Session: i + 1,
       SessionSongs: sessions[i],
     };
 
@@ -84,61 +83,41 @@ const sessionsGrid = (props) => {
 export default class ResearchCard extends Component {
   constructor(props) {
     super(props);
-    this.onExporting = this.onExporting.bind(this);
+    // console.log(this.props.userdata.length)
+
     this.state = {
       //   user: props.location.data,
-      researchName: props.researchName,
-      researchDetails: props.data,
-      participantsElders: props.data.participantsElders,
+      researchName: this.props.data.researchName,
+      researchDetails: this.props.data,
+      participantsElders: this.props.data.participantsElders,
       eldersDetails: [],
-      userData: props.userdata,
+      userData: [],
     };
   }
   async componentDidMount() {
-    
-   test = this.props.userdata
-   this.setState({
-    userData: test,
-  });
-  }
-
-  onExporting(e) {
-    const workbook = new Workbook();
-    const worksheet = workbook.addWorksheet("Main sheet");
-
-    exportDataGrid({
-      // component: this,
-      //   component: sessionDetailsGrid,
-      worksheet,
-      autoFilterEnabled: true,
-    }).then(() => {
-      workbook.xlsx.writeBuffer().then((buffer) => {
-        saveAs(
-          new Blob([buffer], { type: "application/octet-stream" }),
-          "DataGrid.xlsx"
-        );
+    this.props.userdata.then((value) => {
+      console.log(value.length);
+      this.setState({
+        userData: value,
       });
     });
-    e.cancel = true;
   }
 
   render() {
-    // {console.log( this.state.userData)}
     // {console.log( employees)}
     // {console.log("render")}
-    
+
     return (
       <DataGrid
         id="grid-container"
-        dataSource={test}
+        dataSource={this.state.userData}
         keyExpr="ID"
         showBorders={true}
         remoteOperations={true}
         wordWrapEnabled={true}
-        onExporting={this.onExporting}
       >
         <Column dataField="FirstName" caption="First Name" width={100} />
-        <Column dataField="LastName" caption="Last Name" width={100}/>
+        <Column dataField="LastName" caption="Last Name" width={100} />
         <Column
           dataField="BirthYear"
           caption="Birth Year"
@@ -148,16 +127,12 @@ export default class ResearchCard extends Component {
         />
         <Column dataField="Playlists" caption="Playlists" />
 
-
         <MasterDetail
           enabled={true}
           component={sessionsGrid}
           data={this.state.userData.Sessions + this.state.researchName}
         />
-        {/* <Export enabled={true} allowExportSelectedData={false} /> */}
-        
       </DataGrid>
-      
     );
   }
 }

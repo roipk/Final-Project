@@ -118,28 +118,34 @@ export default class ViewResearches extends Component {
       let temp = {};
       let ID = 1;
       let playlists = [];
-
-      eldersCollection.each(async (elder) => {
-        await this.getElderDetails(elder.value).then((result) => {
-          playlists = result.playlists.slice(0, result.playlists.length - 2);
-          temp = {
-            ID: ID,
-            ResearchName: researchName,
-            FirstName: result.firstName,
-            LastName: result.lastName,
-            BirthYear: parseInt(result.yearAtTwenty) - 20,
-            Playlists: playlists,
-            Sessions: result.sessions,
-          };
-          ID++;
-          userData.push(temp);
+      userData = new Promise((resolve, reject) => {
+        let arra = [];
+        eldersCollection.each(async (elder, index, arr) => {
+          await this.getElderDetails(elder.value).then((result) => {
+            playlists = result.playlists.slice(0, result.playlists.length - 2);
+            temp = {
+              ID: ID,
+              ResearchName: this.state.researchName,
+              FirstName: result.firstName,
+              LastName: result.lastName,
+              BirthYear: parseInt(result.yearAtTwenty) - 20,
+              Playlists: playlists,
+              Sessions: result.sessions,
+            };
+            ID++;
+            arra.push(temp);
+          });
+          if (arr.length - 1 === index) {
+            resolve(arra);
+          }
         });
       });
+
       ID = 1;
       return (
         <div>
           <ResearchCard
-            key={researchName}
+            // key={this.state.researchName}
             data={researchDetails}
             userdata={userData}
           ></ResearchCard>
