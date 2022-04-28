@@ -5,6 +5,8 @@ import axios from "axios";
 import NotFound from "./404";
 import MediaCard from "./MediaCard";
 import Select from "react-select";
+import "react-toggle/style.css"
+import Toggle from 'react-toggle'
 
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -34,8 +36,10 @@ export default class ViewUsers extends Component {
       page: 0,
       users: null,
       type: "Admin",
+      view: false,
     };
   }
+
 
   async componentDidMount() {
     console.log("in");
@@ -85,35 +89,60 @@ export default class ViewUsers extends Component {
                       menuPosition="fixed"
                     />
 
-                    {this.state.users ? (
-                      this.state.users.map((user) => {
-                        return (
-                          <Box sx={{ flexGrow: 1 }}>
-                            <Grid container spacing={1} columns={16}>
-                              <Grid item xs={8}>
-                                <MediaCard
-                                  props={this.props}
-                                  user={this.state.user}
-                                  userView={user[0]}
-                                  key={user[0]._id}
-                                />
-                              </Grid>
-                              {user.length > 1 ? (
-                                <Grid item xs={8}>
-                                  <MediaCard
-                                    props={this.props}
-                                    user={this.state.user}
-                                    userView={user[1]}
-                                    key={user[1]._id}
-                                  />
-                                </Grid>
-                              ) : (
-                                ""
-                              )}
-                            </Grid>
-                          </Box>
-                        );
-                      })
+                    {this.state.users ?
+                        (
+                     <div>
+                       <div>
+                         <br/>
+                         <label>
+                           <span>Cards</span>
+                           &nbsp; &nbsp;
+                           <Toggle
+                               defaultChecked={this.state.view}
+                               icons={false}
+                               onChange={e=>{
+                                 this.setState({view:e.target.checked})
+                               }} />
+                           &nbsp; &nbsp;
+                           <span>Table</span>
+                         </label>
+                       </div>
+                       {/*view(false) ==> card , view(true) ==> table*/}
+                       {
+                         !this.state.view?( this.state.users.map((user) => {
+                           return (
+                               <Box sx={{ flexGrow: 1 }}>
+                                 <Grid container spacing={1} columns={16}>
+                                   <Grid item xs={8}>
+                                     <MediaCard
+                                         props={this.props}
+                                         user={this.state.user}
+                                         userView={user[0]}
+                                         key={user[0]._id}
+                                     />
+                                   </Grid>
+                                   {user.length > 1 ? (
+                                       <Grid item xs={8}>
+                                         <MediaCard
+                                             props={this.props}
+                                             user={this.state.user}
+                                             userView={user[1]}
+                                             key={user[1]._id}
+                                         />
+                                       </Grid>
+                                   ) : (
+                                       ""
+                                   )}
+                                 </Grid>
+                               </Box>
+                           );
+                         })):
+                             (<div>
+                             {/*  table place*/}
+                             show in table
+                             </div>)
+                       }
+                     </div>
                     ) : (
                       <div>no user</div>
                     )}
@@ -179,4 +208,5 @@ export default class ViewUsers extends Component {
     return users;
     // loadPage(this.props,"",this.state)
   }
+
 }
