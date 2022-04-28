@@ -216,10 +216,18 @@ routerElder
         },
       }
     );
-    // let sessions = await getData("UserSessions", req.params.id);
+
+    db.collection("UserInfo").updateOne(
+      { Oid: req.params.id },
+      {
+        $set: {
+          currentSession: req.params.sessionName,
+        },
+      }
+    );
     console.log(req.params);
-    // res.status(200).json(sessions);
   });
+  
 
 routerElder
   .route("/RateSession/:id/:algorithm")
@@ -244,6 +252,14 @@ routerElder
 
 async function setUserCurrentSession(id, sessionName){
   db.collection("UserSessions").updateOne(
+    { Oid: id },
+    {
+      $set: {
+        currentSession: sessionName,
+      },
+    }
+  );
+  db.collection("UserInfo").updateOne(
     { Oid: id },
     {
       $set: {

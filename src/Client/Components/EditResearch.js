@@ -20,11 +20,11 @@ import { MultiValue, ValueContainer, algo, Option } from "./CreateResearch";
 
 const hoursData = [];
 const minutesData = [];
-for (var i = 0; i < 60; i++) {
-  if (i < 24) {
-    hoursData.push(i);
-  }
-  minutesData.push(i);
+const numOfSessions = [];
+for (var i = 0; i <= 99; i++) {
+  if (i <= 24) hoursData.push(i);
+  if (i < 60) minutesData.push(i);
+  numOfSessions.push(i);
 }
 
 var currentUser = {};
@@ -222,6 +222,12 @@ export default class EditResearch extends Component {
     );
   }
 
+  async setUserCurrentSession(id){
+    await axios.post(
+      url + "/user/setUserCurrentSession/" + id + "/personal"
+    );
+  }
+
   updateResearchHandler = (event) => {
     event.preventDefault();
     let eldersParticipants = this.state.participantsElders;
@@ -278,6 +284,7 @@ export default class EditResearch extends Component {
       } else {
         // console.log("need to set isActive to false for elder " + item.label);
         this.setIsActive(item.value, updatedResearch.researchName);
+        this.setUserCurrentSession(item.value)
       }
     });
 
@@ -386,7 +393,7 @@ export default class EditResearch extends Component {
                         <span className="combobox">
                           <Combobox
                             defaultValue="0"
-                            data={hoursData}
+                            data={numOfSessions}
                             filter={false}
                             autoSelectMatches
                             onSelect={(val) => {
