@@ -2,14 +2,11 @@ import React, { Component } from "react";
 
 import DataGrid, {
   Column,
-  MasterDetail,
   Export,
+  MasterDetail,
+  FilterRow,
 } from "devextreme-react/data-grid";
-import { Workbook } from "exceljs";
-import { saveAs } from "file-saver";
-import { exportDataGrid } from "devextreme/excel_exporter";
 
-let test = [];
 
 const sessionDetailsGrid = (props) => {
   var songs = props.data.data.SessionSongs;
@@ -79,12 +76,11 @@ const sessionsGrid = (props) => {
     </DataGrid>
   );
 };
-
 export default class ResearchCard extends Component {
+
   constructor(props) {
     super(props);
     // console.log(this.props.userdata.length)
-
     this.state = {
       //   user: props.location.data,
       researchName: this.props.data.researchName,
@@ -92,6 +88,7 @@ export default class ResearchCard extends Component {
       participantsElders: this.props.data.participantsElders,
       eldersDetails: [],
       userData: [],
+      onExport: this.props.onExport
     };
   }
   async componentDidMount() {
@@ -101,7 +98,11 @@ export default class ResearchCard extends Component {
       });
     });
   }
-
+  export= (e) => {
+    e.cancel = true;
+    let dataToExport = e.component.getVisibleRows();
+    this.props.onExport(dataToExport)
+  }
   render() {
     // {console.log( employees)}
     // {console.log("render")}
@@ -114,7 +115,9 @@ export default class ResearchCard extends Component {
         showBorders={true}
         remoteOperations={true}
         wordWrapEnabled={true}
+        onExporting={this.export}
       >
+        <FilterRow visible={true} />
         <Column dataField="FirstName" caption="First Name" width={100} />
         <Column dataField="LastName" caption="Last Name" width={100} />
         <Column
@@ -131,6 +134,7 @@ export default class ResearchCard extends Component {
           component={sessionsGrid}
           data={this.state.userData.Sessions + this.state.researchName}
         />
+        <Export enabled={true} />
       </DataGrid>
     );
   }
