@@ -213,7 +213,6 @@ export default class ViewResearches extends Component {
 
   async createExcelWorkbook(event) {
     event.preventDefault();
-    console.log(this.state.researchDetails);
 
     let participantsElders = this.state.researchDetails.participantsElders;
     let researchName = this.state.researchDetails.researchName;
@@ -227,7 +226,10 @@ export default class ViewResearches extends Component {
               // ResearchName: researchName,
               FirstName: result.firstName,
               LastName: result.lastName,
-              YearAtTwenty: result.yearAtTwenty,
+              BirthYear: result.yearAtTwenty - 20,
+              Playlists: result.playlists
+                .slice(0, result.playlists.length - 2)
+                .join(","),
               Sessions: result.sessions,
             };
             resolve(temp);
@@ -235,7 +237,6 @@ export default class ViewResearches extends Component {
         }).then((res) => userData.push(res));
       })
     ).then(() => {
-      console.log(userData);
       const workbook = new ExcelJS.Workbook();
       const sheet = workbook.addWorksheet(
         researchName + " participants details"
@@ -244,13 +245,12 @@ export default class ViewResearches extends Component {
         { header: "FirstName", key: "FirstName", width: 15 },
         { header: "LastName", key: "LastName", width: 15 },
         {
-          header: "YearAtTwenty",
-          key: "YearAtTwenty",
+          header: "BirthYear",
+          key: "BirthYear",
           width: 15,
           outlineLevel: 1,
         },
-        // { header: "Sessions", key: "Sessions", width: 10 },
-        { header: "", key: "nothing" },
+        { header: "Playlists", key: "Playlists" },
         { header: "", key: "nothing", width: 50 },
         { header: "", key: "nothing", width: 50 },
         { header: "", key: "nothing" },
@@ -262,14 +262,18 @@ export default class ViewResearches extends Component {
           fgColor: { argb: "87CEFA" },
           bgColor: { argb: "87CEFA" },
         };
+        cell.protection = {
+          locked: false,
+        };
       });
+      sheet.mergeCells("D1:G1");
       userData.forEach((user) => {
         sheet
           .addRow([
             user.FirstName,
             user.LastName,
-            user.YearAtTwenty,
-            "",
+            user.BirthYear,
+            user.Playlists,
             "",
             "",
             "",
@@ -281,24 +285,50 @@ export default class ViewResearches extends Component {
               fgColor: { argb: "E6E6FA" },
               bgColor: { argb: "E6E6FA" },
             };
-            cell.border = {
-              top: { style: "thin" },
+            cell.alignment = {
+              vertical: "middle",
+              horizontal: "center",
             };
           });
-        sheet.addRow(["", "", "", "Session", "", "", ""]).eachCell((cell) => {
-          if (cell.col > 3)
-            cell.fill = {
-              type: "pattern",
-              pattern: "solid",
-              fgColor: { argb: "ADD8E6" },
-              bgColor: { argb: "ADD8E6" },
-            };
-        });
+        sheet.mergeCells(
+          "D" + sheet.lastRow.number + ":" + "G" + sheet.lastRow.number
+        );
+        sheet.getCell("D" + sheet.lastRow.number).alignment = {
+          vertical: "middle",
+          horizontal: "center",
+        };
+        sheet
+          .addRow([user.FirstName, "", "", "Session", "", "", ""])
+          .eachCell((cell) => {
+            if (cell.col === 1) {
+              cell.font = {
+                color: { argb: "FFFFFF" },
+              };
+            }
+            if (cell.col > 3)
+              cell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "ADD8E6" },
+                bgColor: { argb: "ADD8E6" },
+              };
+          });
 
         user.Sessions[researchName].sessions.forEach((s, i) => {
           sheet
-            .addRow(["", "", "", "   " + (i + 1) + ":", "", "", ""])
+            .addRow([user.FirstName, "", "", "   " + (i + 1) + ":", "", "", ""])
             .eachCell((cell) => {
+              if (cell.col === 1) {
+                cell.font = {
+                  color: { argb: "FFFFFF" },
+                };
+                cell.protection = {
+                  locked: true,
+                };
+              } else
+                cell.protection = {
+                  locked: false,
+                };
               if (cell.col > 3)
                 cell.fill = {
                   type: "pattern",
@@ -309,7 +339,7 @@ export default class ViewResearches extends Component {
             });
           sheet
             .addRow([
-              "",
+              user.FirstName,
               "",
               "",
               "",
@@ -318,6 +348,11 @@ export default class ViewResearches extends Component {
               "Score",
             ])
             .eachCell((cell) => {
+              if (cell.col === 1) {
+                cell.font = {
+                  color: { argb: "FFFFFF" },
+                };
+              }
               if (cell.col > 4) {
                 cell.fill = {
                   type: "pattern",
@@ -328,16 +363,30 @@ export default class ViewResearches extends Component {
               }
             });
           s.map((se) => {
-            // console.log(se)
-            sheet.addRow([
-              "",
-              "",
-              "",
-              "",
-              se.originTitle,
-              se.originArtistName,
-              se.score,
-            ]);
+            sheet
+              .addRow([
+                user.FirstName,
+                "",
+                "",
+                "",
+                se.originTitle,
+                se.originArtistName,
+                se.score,
+              ])
+              .eachCell((cell) => {
+                if (cell.col === 1) {
+                  cell.font = {
+                    color: { argb: "FFFFFF" },
+                  };
+                }
+              });
+          });
+          sheet.lastRow.eachCell((cell) => {
+            if (cell.col <= 7) {
+              cell.border = {
+                bottom: { style: "thin" },
+              };
+            }
           });
         });
       });
@@ -364,23 +413,6 @@ export default class ViewResearches extends Component {
         if (cell.value === "Origin Title") {
           cell.alignment = { vertical: "middle", horizontal: "center" };
         }
-        // else {
-        //   cell.alignment = { vertical: "middle", horizontal: "left" };
-        //   // console.log(sheet.getRow(cell.row).values);
-        //   // if (
-        //   //   cell.value !== "Sessions" &&
-        //   //   sheet.getRow(cell.row).values.length > 4
-        //   // )
-        //   //   cell.border = {
-        //   //     left: { style: "thin" },
-        //   //   };
-        //   // else {
-
-        //   //   sheet.getRow(cell.row + 1).eachCell(function(cell, cellNumber){
-        //   //     console.log(cellNumber)
-        //   //   })
-        //   // }
-        // }
       });
 
       col5.eachCell((cell) => {
@@ -393,34 +425,36 @@ export default class ViewResearches extends Component {
 
       col7.eachCell((cell) => {
         cell.alignment = { vertical: "middle", horizontal: "left" };
-        if (cell.row > 1) {
-          if (typeof sheet.getRow(cell.row).values[3] === "number") {
-            cell.border = {
-              top: { style: "thin" },
-              right: { style: "thin" },
-            };
-          } else
-            cell.border = {
-              right: { style: "thin" },
-            };
+        if (cell.border === undefined) {
+          cell.border = {
+            right: { style: "thin" },
+          };
+        } else {
+          cell.border = {
+            right: { style: "thin" },
+            bottom: { style: "thin" },
+          };
         }
       });
 
-      // col7.eachCell((cell) => {
-      //   if (cell.value === "Score") {
-      //     cell.alignment = { vertical: "middle", horizontal: "center" };
-      //     cell.fill = {
-      //       type: "pattern",
-      //       pattern: "solid",
-      //       fgColor: { argb: "ADD8E6" },
-      //       bgColor: { argb: "ADD8E6" },
-      //     };
-      //   } else cell.alignment = { vertical: "middle", horizontal: "left" };
-      // });
-      // sheet.getCell('E3').alignment = { vertical: 'middle', horizontal: 'center' };
+      sheet.autoFilter = {
+        from: {
+          row: 1,
+          column: 1,
+        },
+        to: {
+          row: sheet.lastRow,
+          column: 1,
+        },
+      };
 
+      sheet.protect("", {
+        selectLockedCells: true,
+        selectUnlockedCells: true,
+        formatCells: false,
+        autoFilter: true,
+      });
       workbook.xlsx.writeBuffer().then((buffer) => {
-        sheet.unprotect();
 
         saveAs(
           new Blob([buffer], { type: "application/octet-stream" }),
@@ -429,7 +463,6 @@ export default class ViewResearches extends Component {
       });
     });
 
-    // this.setResearch("");
   }
 
   render() {

@@ -96,7 +96,6 @@ export default class ResearchCard extends Component {
   }
   async componentDidMount() {
     this.props.userdata.then((value) => {
-      console.log(value.length);
       this.setState({
         userData: value,
       });
