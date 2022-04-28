@@ -65,11 +65,11 @@ routerElder.route("/session/:id/:algorithm?").get(async function (req, res) {
   // console.log(session)
 
   if (algorithm === undefined) {
-    let keys = [];
+    let keys = []
     Object.entries(session.sessions).forEach(([key, value]) => {
       if (value.isActive) keys.push(key);
     });
-    let data = { keys: keys, currentSession: session.currentSession };
+    let data = { keys: keys, currentSession: session.currentSession}
     return res.status(200).json(data);
   } else if (
     algorithm &&
@@ -227,7 +227,7 @@ routerElder
     );
     console.log(req.params);
   });
-  
+
 
 routerElder
   .route("/RateSession/:id/:algorithm")

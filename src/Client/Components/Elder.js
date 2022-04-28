@@ -58,22 +58,15 @@ export default class ElderPage extends Component {
     console.log("in2");
     console.log(songs.data);
     sessionOpt = [];
-    await songs.data.keys.forEach((key) => {
-      sessionOpt.push({ value: key, label: key });
-    });
-    if (sessionOpt.length > 2) {
-      // Have research session
-      for (var i = 2; i < sessionOpt.length; i++) {
-        let session = await this.getUserSessions(id, sessionOpt[i]);
-        if (session.isActive) {
-          console.log(sessionOpt[i]);
-          this.setUserCurrentSession(id, sessionOpt[i].value);
 
-          // update current session
-          break;
-        }
-      }
-    }
+      await songs.data.keys.forEach((key) => {
+        if (songs.data.keys.length > 2 && key != "personal" )//&& key != "family")
+          sessionOpt.push({value: key, label: key});
+      });
+
+
+
+
     return songs.data.currentSession;
   }
 
