@@ -946,6 +946,10 @@ textarea.input100 {
   text-align: left !important;
 }
 
+.grid-col-center {
+  text-align: center !important;
+}
+
 .song-grid-container {
   display: grid;
   gap: 10px;

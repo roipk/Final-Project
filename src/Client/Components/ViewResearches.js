@@ -113,11 +113,13 @@ export default class ViewResearches extends Component {
   eldersGrid(isInit, researchName, researchDetails) {
     if (isInit) {
       var details = this.getDetials(researchDetails);
+      let elders = researchDetails.participantsElders;
       let eldersCollection = collect(details.participantsElders);
       let userData = [];
       let temp = {};
       let ID = 1;
       let playlists = [];
+
       userData = new Promise((resolve, reject) => {
         let arra = [];
         eldersCollection.each(async (elder, index, arr) => {
@@ -144,7 +146,7 @@ export default class ViewResearches extends Component {
       ID = 1;
       return (
         <ResearchCard
-          // key={this.state.researchName}
+          key={this.state.researchName}
           data={researchDetails}
           userdata={userData}
           onExport={this.createExcelWorkbook}

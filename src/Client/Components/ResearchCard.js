@@ -7,7 +7,6 @@ import DataGrid, {
   FilterRow,
 } from "devextreme-react/data-grid";
 
-
 const sessionDetailsGrid = (props) => {
   var songs = props.data.data.SessionSongs;
   var data = [];
@@ -28,6 +27,8 @@ const sessionDetailsGrid = (props) => {
       keyExpr="OriginTitle"
       showBorders={true}
     >
+      <FilterRow visible={true} />
+
       <Column
         dataField="OriginTitle"
         caption="Origin Title"
@@ -77,18 +78,15 @@ const sessionsGrid = (props) => {
   );
 };
 export default class ResearchCard extends Component {
-
   constructor(props) {
     super(props);
-    // console.log(this.props.userdata.length)
     this.state = {
-      //   user: props.location.data,
       researchName: this.props.data.researchName,
       researchDetails: this.props.data,
       participantsElders: this.props.data.participantsElders,
       eldersDetails: [],
       userData: [],
-      onExport: this.props.onExport
+      onExport: this.props.onExport,
     };
   }
   async componentDidMount() {
@@ -98,15 +96,13 @@ export default class ResearchCard extends Component {
       });
     });
   }
-  export= (e) => {
+
+  export = (e) => {
     e.cancel = true;
     let dataToExport = e.component.getVisibleRows();
-    this.props.onExport(dataToExport)
-  }
+    this.props.onExport(dataToExport);
+  };
   render() {
-    // {console.log( employees)}
-    // {console.log("render")}
-
     return (
       <DataGrid
         id="grid-container"
