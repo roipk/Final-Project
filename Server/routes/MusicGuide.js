@@ -36,7 +36,6 @@ router
   .post(async function (req, res) {
     let updatedSong = await updateSongDebug(req.params.nameCollection, req.body);
     console.log(updatedSong);
-    // let updated = updateResearch("ResearchersInfo", updatedResearch);
     res.status(200).json(updatedSong);
   });
 
@@ -79,7 +78,8 @@ async function updateSongDebug(nameCollection, updatedSong) {
         year: updatedSong.year,
         playlist: updatedSong.playlist,
         youtube: updatedSong.youtube,
-        comments: updatedSong.comments,
+        songComments: updatedSong.songComments,
+        playlistComments: updatedSong.playlistComments,
         isBrokenLink: updatedSong.isBrokenLink,
         isNoVideo: updatedSong.isNoVideo,
         isLowQualityVideo: updatedSong.isLowQualityVideo,
@@ -89,3 +89,6 @@ async function updateSongDebug(nameCollection, updatedSong) {
     }
   );
 }
+// async function createSongs(nameCollection, updatedSong){
+//   db.collection(nameCollection).insertOne(updatedSong)
+// }

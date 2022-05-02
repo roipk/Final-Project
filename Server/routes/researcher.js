@@ -18,7 +18,6 @@ router.route("/create/:nameCollection").post(async function (req, res) {
   // return res.status(200)
 });
 
-
 router.route("createResearch").post(async function (req, res) {
   let research = await addUser(req, "Researches");
   console.log("create research");
@@ -37,6 +36,14 @@ router.route("/getUserSessions/:userOid").get(async function (req, res) {
   let user = await getData("UserSessions", Oid);
   res.status(200).json(user);
 });
+
+router
+  .route("/getResearcherDetails/:researcherOid")
+  .get(async function (req, res) {
+    let researcherOid = req.params.researcherOid;
+    let users = await getResearcherDetails("ResearchersInfo", researcherOid);
+    res.status(200).json(users);
+  });
 
 router
   .route("/getAllResearchesByResearcher/:researcherOid")
@@ -158,15 +165,20 @@ async function getAllResearchesByResearcher(nameCollection, researcherOid) {
   return researches;
 }
 
+async function getResearcherDetails(nameCollection, researcherOid) {
+  let researcher = await db.collection(nameCollection).findOne({ Oid: researcherOid });
+  return researcher;
+}
+
 async function getAllResearches(nameCollection) {
   var allResearches = await db.collection(nameCollection).find();
-  console.log(allResearches)
+  console.log(allResearches);
   let researches = [];
   await allResearches.forEach((research) => {
     // user.password = "";
     researches.push(research);
   });
-  console.log(researches)
+  console.log(researches);
   return researches;
 }
 

@@ -15,7 +15,7 @@ var currentUser = {};
 export default class ViewResearches extends Component {
   constructor(props) {
     super(props);
-
+    console.log(props);
     this.state = {
       user: props.location.data,
       researchesName: [],
@@ -24,6 +24,7 @@ export default class ViewResearches extends Component {
       researchDetails: {},
       sessions: [],
       researchName: "",
+      currentResearcherDetails: {},
     };
   }
 
@@ -35,6 +36,13 @@ export default class ViewResearches extends Component {
       this.setState({ notfound: true });
       return;
     }
+
+    await axios
+      .get(url + "/researcher/getResearcherDetails/" + currentUser._id)
+      .then((result) => {
+        this.setState({ currentResearcherDetails: result.data });
+      });
+
     await this.getAllResearchesByResearcher().then((result) => {
       this.setState({
         researchesName: result,
@@ -188,6 +196,36 @@ export default class ViewResearches extends Component {
                 <span className="label-input100">
                   Session Duration: {details.sessionDuration.hours} hours,{" "}
                   {details.sessionDuration.minutes} minutes{" "}
+                </span>
+                {console.log(this.state.researchDetails)}
+                {console.log(this.state.currentResearcherDetails)}
+
+                <span
+                  className="edit-research-btn-label"
+                  hidden={
+                    this.state.currentResearcherDetails.isViewerResearcher &&
+                    this.state.currentResearcherDetails.first_name !==
+                      this.state.researchDetails.creator.first_name &&
+                    this.state.currentResearcherDetails.last_name !==
+                      this.state.researchDetails.creator.last_name
+                  }
+                >
+                  Edit Research:{" "}
+                  {
+                    <button
+                      className="edit-research-btn"
+                      onClick={(e) => {
+                        loadPage(
+                          this.props,
+                          "researcher/edit-research/",
+                          this.state.user,
+                          this.state.researchName
+                        );
+                      }}
+                    >
+                      edit
+                    </button>
+                  }{" "}
                 </span>
               </div>
             </div>

@@ -2,6 +2,7 @@ import axios from "axios";
 import { url } from "./AllPages";
 
 export const loadPage = (props, page, currentUser,data) => {
+  // console.log(data)
   // localStorage.setItem("token",data.token)
   verifyUser(currentUser.type);
 

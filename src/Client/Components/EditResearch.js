@@ -32,9 +32,10 @@ var currentUser = {};
 export default class EditResearch extends Component {
   constructor(props) {
     super(props);
+    console.log(props)
     this.state = {
-      user: props.location.data,
-      researchToEdit: [],
+      user: props.history.location.currentUser,
+      researchToEdit: props.history.location.data,
       researchesOptions: [],
       researchName: "",
       startDate: new Date(),
@@ -81,6 +82,7 @@ export default class EditResearch extends Component {
         researchersOptions: options,
       });
     });
+    this.setResearch(this.props.history.location.data)
   }
 
   async getAllResearchesByResearcher() {
@@ -100,6 +102,8 @@ export default class EditResearch extends Component {
   }
 
   async getResearchDetails(researchName) {
+    let researchers = [];
+
     var res = await axios.get(
       url + "/researcher/getResearchByName/" + researchName
     );
@@ -107,13 +111,12 @@ export default class EditResearch extends Component {
     let creatorResearcher = {};
     const currentResearcher =
       currentUser.first_name + " " + currentUser.last_name;
-    let researchers = [];
     res.data[0].participantsResearchers.forEach((researcher) => {
       if (researcher.label != currentResearcher) researchers.push(researcher);
       else creatorResearcher = researcher;
     });
 
-    console.log(creatorResearcher);
+    console.log(researchers);
     this.setState({
       researchName: res.data[0].researchName,
       startDate: res.data[0].startDate,
@@ -122,18 +125,19 @@ export default class EditResearch extends Component {
       sessionDuration: res.data[0].sessionDuration,
       participantsElders: res.data[0].participantsElders,
       participantsEldersOld: res.data[0].participantsElders,
-      participantsResearchers: res.data[0].researchers,
-      participantsResearchersOld: res.data[0].researchers,
+      participantsResearchers: researchers,
+      participantsResearchersOld: researchers,
       currentSession: res.data[0].currentSession,
       creatorResearcher: creatorResearcher,
     });
   }
 
   setResearch = (selectedResearch) => {
+    console.log(selectedResearch)
     this.setState({
       researchToEdit: selectedResearch,
     });
-    this.getResearchDetails(selectedResearch.label);
+    this.getResearchDetails(selectedResearch);
 
     // console.log(this.state.eldersOptions);
   };
@@ -179,6 +183,7 @@ export default class EditResearch extends Component {
   };
 
   setParticipantsResearchers = (selectedResearchersOption) => {
+    console.log(selectedResearchersOption)
     this.setState({
       participantsResearchers: selectedResearchersOption,
     });
@@ -261,7 +266,7 @@ export default class EditResearch extends Component {
 
     if (typeof updatedResearch.participantsResearchers === "undefined")
       updatedResearch.participantsResearchers = [];
-    updatedResearch.participantsResearchers.push(this.state.creatorResearcher);
+    // updatedResearch.participantsResearchers.push(this.state.creatorResearcher);
     console.log(updatedResearch);
 
     let oldElders = this.state.participantsEldersOld;
@@ -553,7 +558,7 @@ export default class EditResearch extends Component {
             <span className="contact100-form-title" translate="yes" lang="he">
               Edit Research
             </span>
-            <div className="wrap-input100 input100-select">
+            {/* <div className="wrap-input100 input100-select">
               <span className="label-input100">Choose research to edit </span>
 
               <div>
@@ -564,7 +569,7 @@ export default class EditResearch extends Component {
                 />
               </div>
               <span className="focus-input100"></span>
-            </div>
+            </div> */}
 
             {this.researchPage(
               this.state.researchName.length != 0 ? true : false,

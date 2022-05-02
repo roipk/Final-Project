@@ -14,6 +14,7 @@ import Allcountries, { languagesAll } from "countries-list";
 // import * as mongoose from "mongoose";
 import { url } from "./AllPages";
 // import {iso6393} from 'iso-639-3'
+import Toggle from "react-toggle";
 
 const animatedComponents = makeAnimated();
 
@@ -117,6 +118,9 @@ export default class SignUp extends Component {
       password: "",
       type: "",
 
+      //researher
+      viewerResearcher: false,
+
       //elder
       Geners: [],
       LanguageAtTwenty: [],
@@ -160,6 +164,7 @@ export default class SignUp extends Component {
       Oid: id,
       ...authData,
       researches: [],
+      isViewerResearcher: this.state.viewerResearcher,
     };
     return researcherData;
   }
@@ -491,6 +496,26 @@ export default class SignUp extends Component {
               }}
               placeholder="Enter Password"
               required
+            />
+            <span className="focus-input100"></span>
+          </div>
+
+          <div
+            hidden={this.state.type !== "researcher"}
+            className="wrap-input100 validate-input"
+            data-validate="Name is required"
+          >
+            <span className="label-input100">Viewer Researcher*</span>
+            <br></br>
+            <br></br>
+
+            <Toggle
+              key={this.state.type}
+              defaultChecked={this.state.viewerResearcher}
+              icons={false}
+              onChange={(e) => {
+                this.setState({ viewerResearcher: e.target.checked });
+              }}
             />
             <span className="focus-input100"></span>
           </div>
@@ -1013,12 +1038,12 @@ export default class SignUp extends Component {
                                         url + "/admin/create/ResearchersInfo",
                                         researcherInfo
                                       )
-                                      .then((res) => {
-                                        alert(
-                                          "Added also to researcherInfo:" +
-                                            res.data
-                                        );
-                                      });
+                                      // .then((res) => {
+                                      //   alert(
+                                      //     "Added also to researcherInfo:" +
+                                      //       res.data
+                                      //   );
+                                      // });
                                     loadPage(
                                       this.props,
                                       "admin",

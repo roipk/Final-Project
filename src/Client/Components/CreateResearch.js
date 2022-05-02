@@ -93,6 +93,7 @@ export default class CreateResearch extends Component {
       researchersOptions: [],
       participantsResearchers: [],
       currentSession: "",
+      creator: "",
     };
   }
 
@@ -121,6 +122,7 @@ export default class CreateResearch extends Component {
       console.log(result);
       this.setState({
         researchersOptions: options,
+        creator: currentUser,
       });
     });
   }
@@ -255,6 +257,7 @@ export default class CreateResearch extends Component {
       participantsElders: this.state.participantsElders,
       participantsResearchers: this.state.participantsResearchers,
       currentSession: this.state.currentSession,
+      creator: this.state.creator,
     };
     const currentResearcher = {
       value: currentUser._id,

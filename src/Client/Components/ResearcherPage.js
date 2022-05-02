@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { logOut, loadPage, verifyUser, url } from "./ManagerComponents";
+import { logOut, loadPage, verifyUser } from "./ManagerComponents";
 import { Link } from "react-router-dom";
 import NotFound from "./404";
+import axios from "axios";
+import { url } from "./AllPages";
 
 export default class ResearcherPage extends Component {
   constructor(props) {
@@ -9,16 +11,23 @@ export default class ResearcherPage extends Component {
     this.state = {
       user: props.location.data,
       notfound: false,
+      currentUserDetails: {},
     };
   }
 
   async componentDidMount() {
     let currentUser = await verifyUser("researcher");
+    console.log(currentUser);
     if (currentUser) {
       this.setState({ user: currentUser });
     } else {
       this.setState({ notfound: true });
     }
+    let res = await axios.get(
+      url + "/researcher/getResearcherDetails/" + currentUser._id
+    );
+    // console.log(res)
+    this.setState({ currentUserDetails: res.data });
   }
 
   render() {
@@ -67,7 +76,11 @@ export default class ResearcherPage extends Component {
                         </div>
                       </div>
 
-                      <div className="container-contact100-form-btn">
+                      {/* <div className="container-contact100-form-btn" hidden={this.state.currentUserDetails.isViewerResearcher}> */}
+                      <div
+                        className="container-contact100-form-btn"
+                        hidden={true}
+                      >
                         <div className="wrap-contact100-form-btn">
                           <div className="research contact100-form-bgbtn"></div>
                           <button

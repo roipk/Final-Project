@@ -10,11 +10,13 @@ let currentUser = {};
 export default class SongDebugCard extends Component {
   constructor(props) {
     super(props);
+    // console.log(props)
     this.state = {
       user: props.user,
       currentSong: props.songs[0],
       currentIndex: 0,
-      comments: props.songs[0].comments,
+      songComments: props.songs[0].songComments,
+      playlistComments: props.songs[0].playlistComments,
       isBrokenLink: props.songs[0].isBrokenLink,
       isNoVideo: props.songs[0].isNoVideo,
       isLowQualityVideo: props.songs[0].isLowQualityVideo,
@@ -35,9 +37,15 @@ export default class SongDebugCard extends Component {
     }
   }
 
-  setComments(event) {
+  setSongComments(event) {
     this.setState({
-      comments: event.target.value,
+      songComments: event.target.value,
+    });
+  }
+
+  setPlaylistComments(event) {
+    this.setState({
+      playlistComments: event.target.value,
     });
   }
 
@@ -82,6 +90,7 @@ export default class SongDebugCard extends Component {
       playlist: this.state.currentSong.playlist,
       youtube: this.state.currentSong.youtube,
       comments: this.state.comments,
+      songComments: this.state.songComments,
       isBrokenLink: this.state.isBrokenLink,
       isNoVideo: this.state.isNoVideo,
       isLowQualityVideo: this.state.isLowQualityVideo,
@@ -98,6 +107,7 @@ export default class SongDebugCard extends Component {
       currentIndex: index,
       currentSong: this.state.songs[index],
       comments: this.state.songs[index].comments,
+      songComments: this.state.songs[index].songComments,
       isBrokenLink: this.state.songs[index].isBrokenLink,
       isNoVideo: this.state.songs[index].isNoVideo,
       isLowQualityVideo: this.state.songs[index].isLowQualityVideo,
@@ -117,6 +127,7 @@ export default class SongDebugCard extends Component {
       playlist: this.state.currentSong.playlist,
       youtube: this.state.currentSong.youtube,
       comments: this.state.comments,
+      songComments: this.state.songComments,
       isBrokenLink: this.state.isBrokenLink,
       isNoVideo: this.state.isNoVideo,
       isLowQualityVideo: this.state.isLowQualityVideo,
@@ -133,6 +144,7 @@ export default class SongDebugCard extends Component {
       currentIndex: index,
       currentSong: this.state.songs[index],
       comments: this.state.songs[index].comments,
+      songComments: this.state.songs[index].songComments,
       isBrokenLink: this.state.songs[index].isBrokenLink,
       isNoVideo: this.state.songs[index].isNoVideo,
       isLowQualityVideo: this.state.songs[index].isLowQualityVideo,
@@ -151,6 +163,8 @@ export default class SongDebugCard extends Component {
       playlist: this.state.currentSong.playlist,
       youtube: this.state.currentSong.youtube,
       comments: this.state.comments,
+      songComments: this.state.songComments,
+      playlistComments: this.state.playlistComments,
       isBrokenLink: this.state.isBrokenLink,
       isNoVideo: this.state.isNoVideo,
       isLowQualityVideo: this.state.isLowQualityVideo,
@@ -162,17 +176,19 @@ export default class SongDebugCard extends Component {
     let updatedSong = document;
     updatedSongs[currentIndex] = updatedSong;
 
+    updatedSongs = updatedSongs.map(
+      (el) => (el = { ...el, playlistComments: updatedSong.playlistComments })
+    );
+
     this.setState({
       songs: updatedSongs,
     });
 
-    this.state.songs.map((song) => {
+    updatedSongs.map((song) => {
       if (this.state.songs[currentIndex].Oid === song.Oid) {
         this.updateSongForDebug(updatedSong);
       } else this.updateSongForDebug(song);
     });
-    // console.log(this.state.user);
-    // loadPage(this.props, "ֵmusicGuide", this.state.user,this.state.user);
     alert("Saved!");
   }
 
@@ -239,13 +255,21 @@ export default class SongDebugCard extends Component {
             />
           </div>
           <div className="song-grid-item item3">
-            <label htmlFor="comments">הערות:</label>
+            <label htmlFor="comments">הערות בנוגע לשיר:</label>
             <br></br>ֵֵ
             <TextareaAutosize
               cacheMeasurements
               minRows={3}
-              value={this.state.comments}
-              onChange={(e) => this.setComments(e)}
+              value={this.state.songComments}
+              onChange={(e) => this.setSongComments(e)}
+            />
+            <label htmlFor="comments">הערות כלליות על הפלייליסט:</label>
+            <br></br>
+            <TextareaAutosize
+              cacheMeasurements
+              minRows={3}
+              value={this.state.playlistComments}
+              onChange={(e) => this.setPlaylistComments(e)}
             />
             <div>
               <br></br>

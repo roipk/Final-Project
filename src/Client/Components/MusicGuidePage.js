@@ -8,6 +8,8 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 var currentUser = {};
 
+const genres = ["cla", "yid", "ara", "lad", "pra", "mid"];
+
 export default class MusicGuidePage extends Component {
   constructor(props) {
     super(props);
@@ -37,19 +39,21 @@ export default class MusicGuidePage extends Component {
 
   async getAllPlaylists() {
     var res = await axios.get(url + "/MusicGuide/getAllPlaylists");
-
     let playlists = [];
     res.data.forEach((playlist) => {
-      playlists.push({
-        value: playlist._id,
-        label: playlist.name,
-      });
+      if (
+        playlist.name.split("-").length === 3 ||
+        genres.includes(playlist.name)
+      )
+        playlists.push({
+          value: playlist._id,
+          label: playlist.name,
+        });
     });
     return playlists;
   }
 
   setPlaylist = (selectedPlaylist) => {
-    // console.log(this.state.playlistToView.label.length)
     if (this.state.playlistToView.label.length != 0) {
       confirmAlert({
         title: "Are you sure you want to switch playlist?",
@@ -91,10 +95,13 @@ export default class MusicGuidePage extends Component {
     }
   };
 
-  async getSongsByPlaylist(playlist) {
-    var res = await axios.get(
-      url + "/MusicGuide/getSongsByPlaylist/" + playlist
-    );
+  getSongsByPlaylist(playlists) {
+    var res;
+    playlists.forEach(async (playlist) => {
+      res = await axios.get(
+        url + "/MusicGuide/getSongsByPlaylist/" + playlist.label
+      );
+    });
 
     return res.data;
   }
@@ -102,22 +109,6 @@ export default class MusicGuidePage extends Component {
   async getSongsForDebug(playlist) {
     var res = await axios.get(url + "/MusicGuide/getSongsForDebug/" + playlist);
     return res.data;
-  }
-
-  viewSongs(isInit) {
-    if (isInit) {
-      if (this.state.songs) {
-        return (
-          <SongDebugCard
-            key={this.state.playlistToView.label}
-            songs={this.state.songs}
-            user={this.state.user}
-          ></SongDebugCard>
-        );
-      } else {
-        return <h1>No Songs Found</h1>;
-      }
-    }
   }
 
   render() {
@@ -150,7 +141,6 @@ export default class MusicGuidePage extends Component {
             ) : (
               "Playlist is empty"
             )}
-            {/* {this.viewSongs(this.state.songs.length != 0)} */}
             <div className="container-contact100-back-btn">
               <div className="music-guide-wrap-btn" style={{ zIndex: 0 }}>
                 <div className="container-contact100-form-btn">
