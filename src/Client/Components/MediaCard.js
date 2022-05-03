@@ -21,6 +21,7 @@ var options = {
   pra: "Prayer Songs (Piyutim)",
   mid: "Middle Eastern music",
 };
+
 // var languageNames  = DisplayNames(navigator.language.split('-')[0],'language');
 var languageNames = DisplayNames("en", "language");
 
@@ -46,7 +47,8 @@ export default function MediaCard(user) {
   var currentUser = user.user;
   user = user.userView;
   // console.log(props)
-  // console.log(user)
+  console.log(currentUser)
+  console.log(user)
 
   return (
     <Card sx={{ maxWidth: 500, margin: "3%" }}>

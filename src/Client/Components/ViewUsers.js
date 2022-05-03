@@ -101,7 +101,7 @@ export default class ViewUsers extends Component {
                     translate="yes"
                     lang="he"
                   >
-                    View User 
+                    View User
                   </span>
 
                   <div>
@@ -177,6 +177,8 @@ export default class ViewUsers extends Component {
                             key={this.state.type}
                             type={this.state.type}
                             users={this.state.users}
+                            currentUser={this.state.user}
+                            props={this.props}
                           ></ViewUsersTable>
                         )}
                       </div>

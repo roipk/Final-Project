@@ -204,6 +204,20 @@ export default class EditUsers extends Component {
 
 
         }
+        else {
+            var user = props.location.data
+            this.state =
+                {
+                    editor: user.editor,
+                    page: 0,
+                    type: user.type,
+                    userSelect: user,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    email: user.email,
+                    user_name: user.user_name,
+                }
+        }
 
 
     }
@@ -306,13 +320,14 @@ export default class EditUsers extends Component {
             this.setState({user: currentUser})
 
         }
-        if(this.state.userSelect)
-        {
+        if(this.state.userSelect) {
             console.log("in")
-            let currentSession =  await this.getSessionsKey(this.state.Oid)
-            console.log(this.state.Oid)
-            let videos = await this.getSession(this.state.Oid, currentSession)
-            this.setState({userSelect: this.state.userSelect, videos: videos})
+            if (this.state.Oid) {
+                let currentSession = await this.getSessionsKey(this.state.Oid)
+                console.log(this.state.Oid)
+                let videos = await this.getSession(this.state.Oid, currentSession)
+                this.setState({userSelect: this.state.userSelect, videos: videos})
+            }
         }
 
 
@@ -506,7 +521,7 @@ export default class EditUsers extends Component {
                     <div className="wrap-contact100-back-btn">
                         <div className="contact100-back-bgbtn"></div>
 
-                        <button hidden={this.state.type === 'user'} id='submit' type='button'
+                        <button hidden={this.state.type === 'user' || !this.state.editor} id='submit' type='button'
                                 className="contact100-back-btn"
                                 onClick={() => {
                                     let user = this.newUserAuthentication()

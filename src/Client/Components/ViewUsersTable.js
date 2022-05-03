@@ -4,7 +4,12 @@ import DataGrid, {
   Export,
   MasterDetail,
   FilterRow,
+  Pager,
+  Paging,
+
 } from "devextreme-react/data-grid";
+import Button from "@mui/material/Button";
+import {loadPage} from "./ManagerComponents";
 
 var options = {
   cla: "Classical/Traditional",
@@ -14,6 +19,8 @@ var options = {
   pra: "Prayer Songs (Piyutim)",
   mid: "Middle Eastern music",
 };
+
+const pageSizes = [10, 25, 50, 100];
 
 var languageNames = DisplayNames("en", "language");
 
@@ -37,7 +44,10 @@ function getSring(user, type) {
 export default class ViewUsersTable extends Component {
   constructor(props) {
     super(props);
+    console.log(props)
     this.state = {
+      props : this.props,
+      currentUser:this.props.currentUser,
       type: this.props.type,
       users: [],
       dataForGrid: [],
@@ -73,10 +83,15 @@ export default class ViewUsersTable extends Component {
             Age: new Date().getFullYear() - user.birthYear,
             Languages: getSring(user, "LanguageAtTwenty"),
             Genres: getSring(user, "Geners"),
+            Edit: <button>click</button>,
+            View: "view",
+            Delete: "delete",
+            user:user,
           };
           ID++;
           dataForGrid.push(temp);
         });
+        console.log(dataForGrid)
         ID = 1;
         return (
           <DataGrid
@@ -92,13 +107,13 @@ export default class ViewUsersTable extends Component {
               dataField="FirstName"
               caption="First Name"
               cssClass="grid-col-right"
-              width={130}
+              width={100}
             />
             <Column
               dataField="LastName"
               caption="Last Name"
               cssClass="grid-col-right"
-              width={130}
+              width={100}
             />
             <Column
               dataField="UserName"
@@ -126,10 +141,90 @@ export default class ViewUsersTable extends Component {
               caption="Genres"
               cssClass="grid-col-right"
               dataType="number"
+              width={150}
             />
+
+
+            <Column
+                dataField="Edit"
+                caption="Edit"
+                cssClass="grid-col-right"
+                cellRender={(data)=>{
+
+                  return (
+                      <div>
+                        <Button
+                            size="small"
+                            onClick={(e) => {
+                              data.data.user.editor = false;
+                              loadPage(this.props.props, "edit", this.state.currentUser, data.data.user);
+                            }}
+                        >
+                          <i
+                              className="fa fa-address-card fa-2x"
+                              aria-hidden="true"
+                              style={{ padding_right: "10px" }}
+                          ></i>
+                          &nbsp;View &nbsp;
+                        </Button>
+                      <Button
+                      size="small"
+                      onClick={(e) => {
+                        data.data.user.editor = true;
+                        loadPage(this.props.props, "edit", this.state.currentUser, data.data.user);
+                      }}
+                  >
+                    <i
+                        className="fa fa-pencil fa-2x"
+                        aria-hidden="true"
+                        style={{ padding_right: "10px" }}
+                    ></i>
+                    &nbsp;Edit &nbsp;
+                  </Button>
+
+                        <Button
+                            size="small"
+                            onClick={() => {
+                              alert("do you want remove this user?");
+
+                              axios.get(url + "/admin/DeleteUser/" + data.data.user.Oid).then((res) => {
+                                console.log("the user removed");
+                                alert("the user removed");
+                                loadPage(
+                                    this.props.props,
+                                    "ViewUsers",
+                                    this.state.currentUser,
+                                    this.state.currentUser,
+                                );
+
+                                // alert("successful\n the user " + this.state.first_name + "\n" +
+                                //     "add to system with id -  " + res.data.insertedId + "\n" +
+                                //     "type " + this.state.type)
+                                // loadPage(this.props, "admin", this.state.user,this.state.user)
+                                // loadPage(this.props,"",this.state,this.state.user)
+                              });
+                            }}
+                        >
+                          <i
+                              className="fa fa-trash fa-2x"
+                              aria-hidden="true"
+                              style={{ padding_right: "10px" }}
+                          ></i>
+                          &nbsp; Delete
+                        </Button>
+                        </div>)
+                }
+                }
+                width={270}
+            />
+
+
+            <Pager allowedPageSizes={pageSizes} showPageSizeSelector={true} />
+            <Paging defaultPageSize={10} />
           </DataGrid>
         );
-      } else if (this.state.type === "researcher") {
+      }
+      else if (this.state.type === "researcher") {
         this.state.users.forEach((researcher) => {
           temp = {
             ID: ID,
@@ -138,6 +233,7 @@ export default class ViewUsersTable extends Component {
             Email: researcher.email,
             UserName: researcher.user_name,
             Researches: researcher.Researches,
+            user:researcher,
           };
           ID++;
           dataForGrid.push(temp);
@@ -182,9 +278,84 @@ export default class ViewUsersTable extends Component {
               cssClass="grid-col-right"
               dataType="number"
             /> */}
+            <Column
+                dataField="Edit"
+                caption="Edit"
+                cssClass="grid-col-right"
+                cellRender={(data)=>{
+
+                  return (
+                      <div>
+                        <Button
+                            size="small"
+                            onClick={(e) => {
+                              data.data.user.editor = false;
+                              loadPage(this.props.props, "edit", this.state.currentUser, data.data.user);
+                            }}
+                        >
+                          <i
+                              className="fa fa-address-card fa-2x"
+                              aria-hidden="true"
+                              style={{ padding_right: "10px" }}
+                          ></i>
+                          &nbsp;View &nbsp;
+                        </Button>
+                        <Button
+                            size="small"
+                            onClick={(e) => {
+                              data.data.user.editor = true;
+                              loadPage(this.props.props, "edit", this.state.currentUser, data.data.user);
+                            }}
+                        >
+                          <i
+                              className="fa fa-pencil fa-2x"
+                              aria-hidden="true"
+                              style={{ padding_right: "10px" }}
+                          ></i>
+                          &nbsp;Edit &nbsp;
+                        </Button>
+
+                        <Button
+                            size="small"
+                            onClick={() => {
+                              alert("do you want remove this user?");
+
+                              axios.get(url + "/admin/DeleteUser/" + data.data.user.Oid).then((res) => {
+                                console.log("the user removed");
+                                alert("the user removed");
+                                loadPage(
+                                    this.props.props,
+                                    "ViewUsers",
+                                    this.state.currentUser,
+                                    this.state.currentUser,
+                                );
+
+                                // alert("successful\n the user " + this.state.first_name + "\n" +
+                                //     "add to system with id -  " + res.data.insertedId + "\n" +
+                                //     "type " + this.state.type)
+                                // loadPage(this.props, "admin", this.state.user,this.state.user)
+                                // loadPage(this.props,"",this.state,this.state.user)
+                              });
+                            }}
+                        >
+                          <i
+                              className="fa fa-trash fa-2x"
+                              aria-hidden="true"
+                              style={{ padding_right: "10px" }}
+                          ></i>
+                          &nbsp; Delete
+                        </Button>
+                      </div>)
+                }
+                }
+                width={270}
+            />
+            <Pager allowedPageSizes={pageSizes} showPageSizeSelector={true} />
+            <Paging defaultPageSize={10} />
           </DataGrid>
         );
-      } else {
+      }
+      else {
         this.state.users.forEach((other) => {
           temp = {
             ID: ID,
@@ -192,6 +363,7 @@ export default class ViewUsersTable extends Component {
             LastName: other.last_name,
             Email: other.email,
             UserName: other.user_name,
+            user:other,
           };
           ID++;
           dataForGrid.push(temp);
@@ -231,6 +403,80 @@ export default class ViewUsersTable extends Component {
               dataType="number"
               width={150}
             />
+            <Column
+                dataField="Edit"
+                caption="Edit"
+                cssClass="grid-col-right"
+                cellRender={(data)=>{
+
+                  return (
+                      <div>
+                        <Button
+                            size="small"
+                            onClick={(e) => {
+                              data.data.user.editor = false;
+                              loadPage(this.props.props, "edit", this.state.currentUser, data.data.user);
+                            }}
+                        >
+                          <i
+                              className="fa fa-address-card fa-2x"
+                              aria-hidden="true"
+                              style={{ padding_right: "10px" }}
+                          ></i>
+                          &nbsp;View &nbsp;
+                        </Button>
+                        <Button
+                            size="small"
+                            onClick={(e) => {
+                              data.data.user.editor = true;
+                              loadPage(this.props.props, "edit", this.state.currentUser, data.data.user);
+                            }}
+                        >
+                          <i
+                              className="fa fa-pencil fa-2x"
+                              aria-hidden="true"
+                              style={{ padding_right: "10px" }}
+                          ></i>
+                          &nbsp;Edit &nbsp;
+                        </Button>
+
+                        <Button
+                            size="small"
+                            onClick={() => {
+                              alert("do you want remove this user?");
+
+                              axios.get(url + "/admin/DeleteUser/" + data.data.user.Oid).then((res) => {
+                                console.log("the user removed");
+                                alert("the user removed");
+                                loadPage(
+                                    this.props.props,
+                                    "ViewUsers",
+                                    this.state.currentUser,
+                                    this.state.currentUser,
+                                );
+
+                                // alert("successful\n the user " + this.state.first_name + "\n" +
+                                //     "add to system with id -  " + res.data.insertedId + "\n" +
+                                //     "type " + this.state.type)
+                                // loadPage(this.props, "admin", this.state.user,this.state.user)
+                                // loadPage(this.props,"",this.state,this.state.user)
+                              });
+                            }}
+                        >
+                          <i
+                              className="fa fa-trash fa-2x"
+                              aria-hidden="true"
+                              style={{ padding_right: "10px" }}
+                          ></i>
+                          &nbsp; Delete
+                        </Button>
+                      </div>)
+                }
+                }
+                width={270}
+            />
+            <Pager allowedPageSizes={pageSizes} showPageSizeSelector={true} />
+            <Paging defaultPageSize={10} />
           </DataGrid>
         );
       }
