@@ -44,9 +44,7 @@ function getSring(user, type) {
 export default class ViewUsersTable extends Component {
   constructor(props) {
     super(props);
-    console.log(props)
     this.state = {
-      props : this.props,
       currentUser:this.props.currentUser,
       type: this.props.type,
       users: [],
