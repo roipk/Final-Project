@@ -277,6 +277,7 @@ export default class EditUsers extends Component {
         let lastTime = new Date()
         lastTime = lastTime.getFullYear() - 20 - lastTime.getFullYear() % 10
         let birthYearDecade = birthYear - birthYear % 10
+        decade.push(LanguageAtTwenty)
         for (let i = birthYearDecade; i <= lastTime; i += 10) {
             let hundred = Math.floor(i/100) +1
             let dc =  i%1000===0?"00": i%100
