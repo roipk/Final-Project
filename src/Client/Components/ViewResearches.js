@@ -10,6 +10,70 @@ import collect from "collect.js";
 const ExcelJS = require("exceljs");
 import { saveAs } from "file-saver";
 
+
+/*diagram*/
+
+import ColumnChartwithIndexlabel from "../Diagrams/views/overview/Column Chart with Indexlabel";
+import ChartWithCrosshair from "../Diagrams/views/overview/Chart with Crosshair";
+import ChartWithZoom from "../Diagrams/views/overview/Chart with Zoom";
+import AnimatedChart from "../Diagrams/views/overview/Animated Chart";
+import MultiseriesChart from "../Diagrams/views/overview/Multiseries Chart";
+import MultipleAxisChart from "../Diagrams/views/overview/Multiple Axis Chart";
+import ChartWithScaleBreaks from "../Diagrams/views/overview/Chart with Scale Breaks";
+import ChartWithLogarithmicAxis from "../Diagrams/views/overview/Chart with Logarithmic Axis";
+import PerformanceDemo from "../Diagrams/views/overview/Performance Demo";
+import ChartWithDrillDown from "../Diagrams/views/overview/Chart with Drilldown";
+
+import LineChart from "../Diagrams/views/line charts/Line Chart";
+import SplineChart from "../Diagrams/views/line charts/Spline Chart";
+import StepLineChart from "../Diagrams/views/line charts/Step Line Chart";
+
+import AreaChart from "../Diagrams/views/area charts/Area Chart";
+import MultiSeriesAreaChart from "../Diagrams/views/area charts/Multi Series Area Chart";
+import SplineAreaChart from "../Diagrams/views/area charts/Spline Area Chart";
+import StepAreaChart from "../Diagrams/views/area charts/Step Area Chart";
+import RangeAreaChart from "../Diagrams/views/area charts/Range Area Chart";
+import RangeSplineAreaChart from "../Diagrams/views/area charts/Range Spline Area Chart";
+import StackedAreaChart from "../Diagrams/views/area charts/Stacked Area Chart";
+import StackedArea100Chart from "../Diagrams/views/area charts/Stacked Area 100 Chart";
+
+import ColumnChart from "../Diagrams/views/column charts/Column Chart";
+import BarChart from "../Diagrams/views/column charts/Bar Chart";
+import RangeColumnChart from "../Diagrams/views/column charts/Range Column Chart";
+import StackedColumnChart from "../Diagrams/views/column charts/Stacked Column Chart";
+import StackedColumn100Chart from "../Diagrams/views/column charts/Stacked Column 100 Chart";
+import RangeBarChart from "../Diagrams/views/column charts/Range Bar Chart";
+import StackedBarChart from "../Diagrams/views/column charts/Stacked Bar Chart";
+import StackedBar100Chart from "../Diagrams/views/column charts/Stacked Bar 100 Chart";
+import WaterfallChart from "../Diagrams/views/column charts/Waterfall Chart";
+
+import PieChart from "../Diagrams/views/pie & funnel charts/Pie Chart";
+import PieChartWithCustomization from "../Diagrams/views/pie & funnel charts/Pie Chart with Customization";
+import DoughnutChart from "../Diagrams/views/pie & funnel charts/Doughnut Chart";
+import FunnelChart from "../Diagrams/views/pie & funnel charts/Funnel Chart";
+import FunnelChartWithCustomNeck from "../Diagrams/views/pie & funnel charts/Funnel Chart with Custom Neck";
+import PyramidChart from "../Diagrams/views/pie & funnel charts/Pyramid Chart";
+
+import CandlestickChart from "../Diagrams/views/financial charts/Candlestick Chart";
+import OhlcChart from "../Diagrams/views/financial charts/OHLC Chart";
+
+import ScatterChart from "../Diagrams/views/scatter & bubble charts/Scatter Chart";
+import ScatterChartWithCustomMarkers from "../Diagrams/views/scatter & bubble charts/Scatter Chart with Custom Markers";
+import BubbleChart from "../Diagrams/views/scatter & bubble charts/Bubble Chart";
+
+import BoxAndWhiskerChart from "../Diagrams/views/box & whisker charts/Box & Whisker Chart";
+import BoxAndWhiskerChartWithCustomization from "../Diagrams/views/box & whisker charts/Box & Whisker Chart with Customization";
+
+import ErrorChart from "../Diagrams/views/combination charts/Error Chart";
+import ErrorLineChart from "../Diagrams/views/combination charts/Error Line Chart";
+import ParetoChart from "../Diagrams/views/combination charts/Pareto Chart";
+import ColumnLineAreaChart from "../Diagrams/views/combination charts/Column Line Area Chart";
+
+/*diagram*/
+
+
+
+
 var currentUser = {};
 
 export default class ViewResearches extends Component {
@@ -150,15 +214,15 @@ export default class ViewResearches extends Component {
           }
         });
       });
-
+      console.log(userData)
       ID = 1;
       return (
-        <ResearchCard
-          key={this.state.researchName}
-          data={researchDetails}
-          userdata={userData}
-          onExport={this.createExcelWorkbook}
-        ></ResearchCard>
+          <ResearchCard
+              key={this.state.researchName}
+              data={researchDetails}
+              userdata={userData}
+              onExport={this.createExcelWorkbook}
+          ></ResearchCard>
       );
     }
   }

@@ -6,6 +6,7 @@ import DataGrid, {
   MasterDetail,
   FilterRow,
 } from "devextreme-react/data-grid";
+import PieChart from "../Diagrams/views/pie & funnel charts/Pie Chart";
 
 const sessionDetailsGrid = (props) => {
   var songs = props.data.data.SessionSongs;
@@ -63,6 +64,7 @@ const sessionsGrid = (props) => {
     };
 
     data.push(temp);
+
   }
 
   return (
@@ -86,6 +88,7 @@ export default class ResearchCard extends Component {
       participantsElders: this.props.data.participantsElders,
       eldersDetails: [],
       userData: [],
+      currentData:[],
       onExport: this.props.onExport,
     };
   }
@@ -98,12 +101,46 @@ export default class ResearchCard extends Component {
   }
 
   export = (e) => {
+    console.log(e)
     e.cancel = true;
     let dataToExport = e.component.getVisibleRows();
     this.props.onExport(dataToExport);
   };
+  currentData= (e) => {
+    console.log("0")
+    console.log(e)
+
+  }
+  currentData1(e){
+    console.log("1")
+    console.log(e.component.getVisibleRows())
+    var currentData = e.component.getVisibleRows()
+    var dat = []
+
+    currentData.forEach((d) =>  {
+      let isLargeNumber = (element) => element.label === d.data.BirthYear;
+      let exsist = dat.findIndex(isLargeNumber);
+      if(exsist<0)
+      {
+        dat.push({ y: 1, label:  d.data.BirthYear })
+      }
+      else
+      {
+        dat[exsist].y+=1
+      }
+      dat.sort((a, b) => {
+        return b.label - a.label;
+      });
+      this.setState({currentData:dat})
+    })
+
+  }
+
   render() {
     return (
+        <div>
+
+
       <DataGrid
         id="grid-container"
         dataSource={this.state.userData}
@@ -112,9 +149,11 @@ export default class ResearchCard extends Component {
         remoteOperations={true}
         wordWrapEnabled={true}
         onExporting={this.export}
+        onFocusedCellChanging={this.currentData}
+        onFocusedCellChanging={(e)=>this.currentData1(e)}
       >
-        <FilterRow visible={true} />
-        <Column dataField="FirstName" caption="First Name" width={100} />
+        <FilterRow visible={true}/>
+        <Column dataField="FirstName" caption="First Name" width={100}  />
         <Column dataField="LastName" caption="Last Name" width={100} />
         <Column
           dataField="BirthYear"
@@ -132,6 +171,10 @@ export default class ResearchCard extends Component {
         />
         <Export enabled={true} />
       </DataGrid>
+          {
+            this.state.currentData.length>0?<PieChart data={this.state.currentData}/>:<div></div>
+          }
+        </div>
     );
   }
 }
