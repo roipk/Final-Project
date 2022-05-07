@@ -205,6 +205,21 @@ export default class SongDebugCard extends Component {
   render() {
     return (
       <div key={this.state.currentSong.title}>
+        <div>
+          <div className="wrap-input100 validate-input">
+            <div className="song-debug-grid">
+              <span className="label-input100">
+                Song Name: {this.state.currentSong.title}
+              </span>
+              <span className="label-input100" style={{ textAlign: "center" }}>
+                Artist Name: {this.state.currentSong.artistName}
+              </span>
+              <span className="label-input100" style={{ textAlign: "right" }}>
+                Year: {this.state.currentSong.year}
+              </span>
+            </div>
+          </div>
+        </div>
         <div className="song-grid-container">
           <div className="song-grid-item item1">
             <input

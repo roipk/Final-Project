@@ -942,6 +942,11 @@ textarea.input100 {
   grid-template-columns: 30% 30% 30%;
 }
 
+.song-debug-grid {
+  display: grid;
+  grid-template-columns: 35% 40% 25%;
+}
+
 .grid-col-right {
   text-align: left !important;
 }

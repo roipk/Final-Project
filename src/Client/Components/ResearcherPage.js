@@ -46,7 +46,7 @@ export default class ResearcherPage extends Component {
                   </span>
                   <div className="container-section-space">
                     <div className="container-section">
-                      <div className="container-contact100-form-btn">
+                      <div className="container-contact100-form-btn" hidden={this.state.currentUserDetails.isViewerResearcher}>
                         <div className="wrap-contact100-form-btn">
                           <div className="research contact100-form-bgbtn"></div>
                           <button

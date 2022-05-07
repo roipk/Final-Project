@@ -416,7 +416,7 @@ export default class SignUp extends Component {
             className="wrap-input100 validate-input"
             data-validate="ID is required"
           >
-            <span className="label-input100">ID*</span>
+            <span className="label-input100">ID</span>
             <input
               value={this.state.id}
               id="id"
@@ -685,7 +685,7 @@ export default class SignUp extends Component {
           </div>
           <div className="wrap-input100 input100-select">
             <span className="label-input100">
-              Languages spoken at Youth (ages 10-25)
+              Languages spoken at Youth (ages 10-25) Please choose up to two languages
             </span>
             <div>
               <Select
