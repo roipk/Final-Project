@@ -209,6 +209,7 @@ export default class SignUp extends Component {
     lastTime = lastTime.getFullYear() - 20 - (lastTime.getFullYear() % 10);
     let birthYearDecade = birthYear - (birthYear % 10);
     LanguageAtTwenty.forEach((language) => {
+      decade.push(language);
       for (let i = birthYearDecade; i <= birthYearDecade + 30; i += 10) {
         let hundred = Math.floor(i / 100) + 1;
         let dc = i % 1000 === 0 ? "00" : i % 100;

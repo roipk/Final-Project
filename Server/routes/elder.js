@@ -185,7 +185,10 @@ async function CreateSession(session, algorithm) {
   }
   songs = await getSongs(session, songs);
   var songSession = [];
-  await songs.songsView.forEach((song) => {
+  await songs.songsView.forEach((song) =>
+ {
+   // console.log("190")
+   // console.log(song)
     songSession.push({
       date: new Date(),
       RecordDisplayId: song._id || song.RecordDisplayId,
@@ -193,6 +196,7 @@ async function CreateSession(session, algorithm) {
       youtube: song.youtube,
       originArtistName: song.originArtistName,
       score: -1 || song.score,
+      playlistName:song.playlistName
     });
   });
   session.sessions[algorithm].sessions.push(songSession);
@@ -333,6 +337,8 @@ async function createFilter(songs = {}, filters, sort) {
   // console.log(randomized)
   // console.log(randomized)
   randomized = randomized.sort(() => Math.random() - 0.5);
+  // console.log("339");
+  // console.log(randomized);
   console.log((filters.Cognitive / randomized.length).toFixed());
 
   var counter = songs.songsView.length;
@@ -349,7 +355,7 @@ async function createFilter(songs = {}, filters, sort) {
         if (index > -1) {
           item.record.splice(index, 1);
         }
-
+        song.playlistName = item.name
         songs.songsView.push(song);
         songs.songsBlock.push(song._id.toString());
         index = randomized.indexOf(item);
