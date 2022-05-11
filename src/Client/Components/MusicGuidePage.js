@@ -43,7 +43,10 @@ export default class MusicGuidePage extends Component {
     res.data.forEach((playlist) => {
       if (
         playlist.name.split("-").length === 3 ||
-        genres.includes(playlist.name)
+        genres.includes(playlist.name) ||
+        playlist.name === "arame" ||
+        playlist.name === "arana" ||
+        playlist.name === "spa"
       )
         playlists.push({
           value: playlist._id,

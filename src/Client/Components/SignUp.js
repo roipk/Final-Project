@@ -257,6 +257,7 @@ export default class SignUp extends Component {
     LanguageAtTwenty.forEach((Language) => {
       playlist.push(Language);
     });
+
     playlist = [...new Set(playlist)];
     return playlist;
   }
@@ -686,7 +687,8 @@ export default class SignUp extends Component {
           </div>
           <div className="wrap-input100 input100-select">
             <span className="label-input100">
-              Languages spoken at Youth (ages 10-25) Please choose up to two languages
+              Languages spoken at Youth (ages 10-25) Please choose up to two
+              languages
             </span>
             <div>
               <Select
@@ -715,6 +717,7 @@ export default class SignUp extends Component {
                   this.setState({
                     LanguageAtTwenty: languageAtTwenty,
                   });
+                  console.log(languageAtTwenty);
                 }}
               />
             </div>
@@ -1034,17 +1037,16 @@ export default class SignUp extends Component {
                                     console.log(id);
                                     let researcherInfo =
                                       this.newResearcherData(id);
-                                    axios
-                                      .post(
-                                        url + "/admin/create/ResearchersInfo",
-                                        researcherInfo
-                                      )
-                                      // .then((res) => {
-                                      //   alert(
-                                      //     "Added also to researcherInfo:" +
-                                      //       res.data
-                                      //   );
-                                      // });
+                                    axios.post(
+                                      url + "/admin/create/ResearchersInfo",
+                                      researcherInfo
+                                    );
+                                    // .then((res) => {
+                                    //   alert(
+                                    //     "Added also to researcherInfo:" +
+                                    //       res.data
+                                    //   );
+                                    // });
                                     loadPage(
                                       this.props,
                                       "admin",
@@ -1169,10 +1171,21 @@ function getOpt(start, end = new Date().getFullYear()) {
 
 function getLanguageList() {
   languages.map((language, index) => {
-    selectLanguage.push({
-      value: language[1].iso6392B,
-      label: language[1].name,
-    });
+    if (language[1].name === "Arabic") {
+      selectLanguage.push({
+        value: language[1].iso6392B + "na",
+        label: language[1].name + " North Africa",
+      });
+      selectLanguage.push({
+        value: language[1].iso6392B + "me",
+        label: language[1].name + " Middle East",
+      });
+    } else {
+      selectLanguage.push({
+        value: language[1].iso6392B,
+        label: language[1].name,
+      });
+    }
   });
   return selectLanguage;
 }
@@ -1193,9 +1206,9 @@ function getGenre() {
   var options = [
     { value: "cla", label: "Classical/Traditional" },
     { value: "yid", label: "Yiddish" },
-    { value: "ara", label: "Arabic" },
-    { value: "arana", label: "ArabicNA" },
-    { value: "arame", label: "ArabicME" },
+    // { value: "ara", label: "Arabic" },
+    // { value: "arana", label: "ArabicNA" },
+    // { value: "arame", label: "ArabicME" },
     { value: "lad", label: "Ladino" },
     { value: "pra", label: "Prayer Songs (Piyutim)" },
     { value: "mid", label: "Middle Eastern music" },
