@@ -1206,7 +1206,7 @@ function getGenre() {
   var options = [
     { value: "cla", label: "Classical/Traditional" },
     { value: "yid", label: "Yiddish" },
-    // { value: "ara", label: "Arabic" },
+    { value: "cha", label: "Chazanut" },
     // { value: "arana", label: "ArabicNA" },
     // { value: "arame", label: "ArabicME" },
     { value: "lad", label: "Ladino" },

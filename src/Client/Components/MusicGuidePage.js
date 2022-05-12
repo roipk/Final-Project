@@ -8,7 +8,7 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 var currentUser = {};
 
-const genres = ["cla", "yid", "ara", "lad", "pra", "mid"];
+const genres = ["cla", "yid", "cha", "lad", "pra", "mid"];
 
 export default class MusicGuidePage extends Component {
   constructor(props) {
