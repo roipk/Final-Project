@@ -10,6 +10,8 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const VerifyToken = require("../middleware/user").VerifyToken;
 const CreateToken = require("../middleware/user").CreateToken;
+const Config = require("../src/Config.json")
+
 
 routerElder
   .route("/currentSession/:id/:algorithm?")
@@ -172,9 +174,9 @@ async function CreateSession(session, algorithm) {
   ) {
     var prevSong = await getBestsongPrevSessions(
       session.sessions[algorithm].sessions,
-      3,
-      4,
-      3
+        Config.numSessionPrev,
+        Config.minScore,
+        Config.maxSong
     );
     songs.songsBlock = prevSong.block;
     songs.songsViewBefor = prevSong.view.map((s) => {

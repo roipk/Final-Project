@@ -139,7 +139,7 @@ export default class SignUp extends Component {
       yearAtTwenty: "",
       yearOfImmigration: "",
       maxSession: 7,
-      Cognitive: Config.HIGH_COGNITIVE,
+      Cognitive: Config.COGNITIVE,
       currentSession: "personal",
       checked: true,
     };
@@ -790,85 +790,15 @@ export default class SignUp extends Component {
 
             <span className="focus-input100"></span>
           </div>
-          {/*<div className="wrap-input100 input100-select">*/}
-          {/*    <span className="label-input100">sessions number per week*</span>*/}
-          {/*    <div>*/}
+        {/*select playlist*/}
 
-          {/*        <Select label="select_sessions_number"*/}
-          {/*            // onChange={e=>{}}*/}
-          {/*                style={{zIndex:100}}*/}
-          {/*                className="basic-multi-select"*/}
-          {/*                closeMenuOnSelect={true}*/}
-          {/*                value={this.state.maxSession?findArrayData(this.state.maxSession, getOpt(1,7)):null}*/}
-          {/*                options={getOpt(1,7)}//start, end-> today year*/}
-          {/*                menuPlacement="auto"*/}
-          {/*                menuPosition="fixed"*/}
-          {/*                onChange={(e)=>{*/}
-          {/*                    console.log("in1")*/}
-          {/*                    this.setState({maxSession: e.value})*/}
-          {/*                }}*/}
-          {/*        />*/}
-          {/*    </div>*/}
-          {/*    <span className="focus-input100"></span>*/}
-          {/*</div>*/}
-          <div className="wrap-input100 input100-select">
-            <span className="label-input100">Good Cognitive</span>
-            {/*<div>*/}
 
-            {/*    <Select label="select sessions number"*/}
-            {/*        // onChange={e=>{}}*/}
-            {/*            style={{zIndex:100}}*/}
-            {/*            className="basic-multi-select"*/}
-            {/*            closeMenuOnSelect={true}*/}
-            {/*            value={this.state.Cognitive?findArrayData(this.state.Cognitive, Cognitive):null}*/}
-            {/*            options={Cognitive}//start, end-> today year*/}
-            {/*            menuPlacement="auto"*/}
-            {/*            menuPosition="fixed"*/}
-            {/*            onChange={(e)=>{*/}
-            {/*                this.setState({Cognitive: e.value})*/}
-            {/*            }}*/}
-            {/*    />*/}
-            {/*</div>*/}
-            <div>
-              <Switch
-                onChange={(check) => {
-                  check
-                    ? this.setState({
-                        checked: check,
-                        Cognitive: Config.HIGH_COGNITIVE,
-                      })
-                    : this.setState({
-                        checked: check,
-                        Cognitive: Config.LOW_COGNITIVE,
-                      });
-                }}
-                checked={this.state.checked}
-              />
-            </div>
-            <span className="focus-input100"></span>
-          </div>
-          {/*<div className="wrap-input100 input100-select">*/}
-          {/*    <span className="label-input100">Algorithm*</span>*/}
-          {/*    <div>*/}
 
-          {/*        <Select label="select year"*/}
-          {/*            // onChange={e=>{}}*/}
 
-          {/*                style={{zIndex:100}}*/}
-          {/*                className="basic-multi-select"*/}
-          {/*                closeMenuOnSelect={true}*/}
-          {/*                value={this.state.currentSession?findArrayData(this.state.currentAlgorithm, algo):null}*/}
-          {/*                options={algo}//start, end-> today year*/}
-          {/*                menuPlacement="auto"*/}
-          {/*                menuPosition="fixed"*/}
-          {/*                onChange={(e)=>{*/}
-          {/*                    this.setState({currentSession: e.value})*/}
-          {/*                }}*/}
 
-          {/*        />*/}
-          {/*    </div>*/}
-          {/*    <span className="focus-input100"></span>*/}
-          {/*</div>*/}
+
+
+
         </div>
       );
   }

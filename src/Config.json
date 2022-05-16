@@ -1,5 +1,9 @@
 {
   "LOW_COGNITIVE": 8,
-  "HIGH_COGNITIVE": 15
+  "HIGH_COGNITIVE": 15,
+  "COGNITIVE": 10,
+  "numSessionPrev": 3,
+  "minScore": 4,
+  "maxSong": 3
 
 }
