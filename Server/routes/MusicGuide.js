@@ -24,6 +24,13 @@ router.route("/getSongsByPlaylist/:playlist").get(async function (req, res) {
   res.status(200).json(songs);
 });
 
+
+router.route("/getAllSongsForDebug").get(async function (req, res) {
+  // console.log(playlist);
+  let songs = await getSongsForDebug("SongsDebug");
+  res.status(200).json(songs);
+});
+
 router.route("/getSongsForDebug/:playlist").get(async function (req, res) {
   let playlist = req.params.playlist;
   // console.log(playlist);
@@ -60,7 +67,11 @@ async function getSongsByPlaylist(nameCollection, playlist) {
 }
 
 async function getSongsForDebug(nameCollection, playlist) {
-  var newData = db.collection(nameCollection).find({ playlist: playlist });
+  var newData
+  if(playlist)
+    newData = db.collection(nameCollection).find({ playlist: playlist });
+  else
+    newData = db.collection(nameCollection)
   let songs = [];
   await newData.forEach((song) => {
     songs.push(song);

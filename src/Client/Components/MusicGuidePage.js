@@ -145,6 +145,21 @@ export default class MusicGuidePage extends Component {
               "Playlist is empty"
             )}
             <div className="container-contact100-back-btn">
+              <div className="wrap-contact100-back-btn">
+                <div className="contact100-back-bgbtn"></div>
+                <button id='main' type='button' className="contact100-back-btn" onClick={async () => {
+                  let res = await axios.get(
+                          url + "/MusicGuide/getAllSongsForDebug/"
+                      );
+                  console.log(res.data.length)
+
+                }}>
+                 Download data
+                </button>
+              </div>
+            </div>
+
+            <div className="container-contact100-back-btn">
               <div className="music-guide-wrap-btn" style={{ zIndex: 0 }}>
                 <div className="container-contact100-form-btn">
                   <div className="wrap-contact100-form-btn">
