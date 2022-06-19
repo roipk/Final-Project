@@ -135,6 +135,31 @@ export default class ResearcherPage extends Component {
                         <div className="wrap-contact100-form-btn">
                           <div className="research contact100-form-bgbtn"></div>
                           <button
+                              id="editResearch"
+                              type="button"
+                              className="contact100-form-btn"
+                              onClick={() => {
+                                loadPage(
+                                    this.props,
+                                    "researcher/portal-researches",
+                                    this.state.user,
+                                    this.state.user
+                                );
+                              }}
+                          >
+                            <i
+                                className="fa fa-search"
+                                aria-hidden="true"
+                                style={{ padding_right: "10px" }}
+                            ></i>
+                            <span>&nbsp;&nbsp;&nbsp;&nbsp;Portal Research</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="container-contact100-form-btn">
+                        <div className="wrap-contact100-form-btn">
+                          <div className="research contact100-form-bgbtn"></div>
+                          <button
                             id="logOut"
                             type="button"
                             className="contact100-form-btn"
@@ -153,6 +178,7 @@ export default class ResearcherPage extends Component {
                           </button>
                         </div>
                       </div>
+
                     </div>
                   </div>
                 </form>

@@ -6,8 +6,27 @@ import { url } from "./AllPages";
 import SongDebugCard from "./SongDebugCard";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-var currentUser = {};
+import {CSVDownload, CSVLink} from "react-csv";
+// import DownloadUserCSVButton from "./DownloadData/csv"
 
+
+var currentUser = {};
+var headers = [
+  {label:"Oid",key:"Oid"},
+  {label: "artistName",key: "artistName"},
+  {label: "isBrokenLink",key: "isBrokenLink"},
+  {label: "isLowQualitySound",key: "isLowQualitySound"},
+  {label: "isLowQualityVideo",key: "isLowQualityVideo"},
+  { label: "isNoSound",key: "isNoSound"},
+  {label: "isNoVideo",key: "isNoVideo"},
+  { label: "playlist",key: "playlist"},
+  { label: "playlistComments", key: "playlistComments"},
+  { label: "songComments", key: "songComments"},
+  {label: "title",key: "title"},
+  {label: "year",key: "year"},
+  {label: "videoId",key: "videoId"},
+  {label: "_id",key: "_id"},
+];
 const genres = ["cla", "yid", "cha", "lad", "pra", "mid"];
 
 export default class MusicGuidePage extends Component {
@@ -18,6 +37,8 @@ export default class MusicGuidePage extends Component {
       playlistsOptions: [],
       playlistToView: { value: "", label: "" },
       songs: [],
+      DataReport:[],
+      loading: false
     };
   }
 
@@ -108,13 +129,60 @@ export default class MusicGuidePage extends Component {
 
     return res.data;
   }
+  dataFromListOfDataReport = () => {
+    return this.state.DataReport;
+  }
 
+  getReport = (event, done) => {
+    if(!this.state.loading) {
+      this.setState({
+        loading: true
+      });
+      axios.get(
+          url + "/MusicGuide/getAllSongsForDebug/"
+      ).then(async(res) =>
+      {
+        console.log(res.data)
+        var data = res.data
+        var DataReport = []
+        await data.forEach(song => {
+          DataReport.push({
+            Oid: song.Oid,
+            artistName: song.artistName,
+            isBrokenLink: song.isBrokenLink,
+            isLowQualitySound: song.isLowQualitySound,
+            isLowQualityVideo: song.isLowQualityVideo,
+            isNoSound: song.isNoSound,
+            isNoVideo: song.isNoVideo,
+            playlist: song.playlist,
+            playlistComments: song.playlistComments,
+            songComments: song.songComments,
+            title: song.title,
+            year: song.year,
+            videoId: song.youtube.videoId,
+            _id: song._id,
+          })
+        })
+        this.setState({
+          listOfData: DataReport,
+          loading: false
+        });
+
+      }).catch(() => {
+        this.setState({
+          loading: false
+        });
+        done(false);
+      });
+    }
+  }
   async getSongsForDebug(playlist) {
     var res = await axios.get(url + "/MusicGuide/getSongsForDebug/" + playlist);
     return res.data;
   }
 
   render() {
+    const {loading} = this.state;
     return (
       <div key={this.state.playlistToView}>
         <div className="container-researcher-edit" style={{ zIndex: -1 }}>
@@ -144,18 +212,95 @@ export default class MusicGuidePage extends Component {
             ) : (
               "Playlist is empty"
             )}
+
             <div className="container-contact100-back-btn">
               <div className="wrap-contact100-back-btn">
                 <div className="contact100-back-bgbtn"></div>
+                {/*<CSVLink*/}
+                {/*    data={this.dataFromListOfDataReport}*/}
+                {/*    asyncOnClick={true}*/}
+                {/*    onClick={this.getReport}*/}
+                {/*>*/}
+                {/*  {loading ? 'Loading csv...' : 'Download me'}*/}
+                {/*</CSVLink>;*/}
+                {/*<button*/}
+                {/*    onClick={this.getReport}*/}
+                {/*>*/}
+                {/*  {loading ? 'Loading csv...' : 'Download me'}*/}
+                {/*</button>;*/}
+
+                {/*<DownloadUserCSVButton/>*/}
                 <button id='main' type='button' className="contact100-back-btn" onClick={async () => {
-                  let res = await axios.get(
-                          url + "/MusicGuide/getAllSongsForDebug/"
-                      );
-                  console.log(res.data.length)
+                  axios({
+                    url: url + "/MusicGuide/getAllSongsForDebug/",
+                    method: 'GET',
+                    responseType: 'json', // important
+                  }).then(async(res) => {
+                    console.log(res.data)
+                    var DataReport=[]
+                    await res.data.forEach(song=>{
+                      DataReport.push({
+                        Oid: song.Oid,
+                        artistName: song.artistName,
+                        isBrokenLink: song.isBrokenLink,
+                        isLowQualitySound: song.isLowQualitySound,
+                        isLowQualityVideo: song.isLowQualityVideo,
+                        isNoSound: song.isNoSound,
+                        isNoVideo: song.isNoVideo,
+                        playlist: song.playlist,
+                        playlistComments: song.playlistComments,
+                        songComments: song.songComments,
+                        title: song.title,
+                        year:song.year,
+                        videoId:song.youtube.videoId,
+                      _id:song._id,
+                    })
+                    })
+                    // <CSVLink data={this.state.DataReport} headers={headers}  filename={"Songs Report.xlsx"}  target="_blank">
+                    //     Download Report
+                    // </CSVLink>;
+                    const url = window.URL.createObjectURL(new Blob(DataReport));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', 'file.csv'); //or any other extension
+                    document.body.appendChild(link);
+                    link.click();
+                  });
+
+
+                  // let res = await axios.get(
+                  //         url + "/MusicGuide/getAllSongsForDebug/"
+                  //     );
+                  // var data = res.data
+                  // var DataReport=[]
+                  // await data.forEach(song=>{
+                  //   DataReport.push({
+                  //     Oid: song.Oid,
+                  //     artistName: song.artistName,
+                  //     isBrokenLink: song.isBrokenLink,
+                  //     isLowQualitySound: song.isLowQualitySound,
+                  //     isLowQualityVideo: song.isLowQualityVideo,
+                  //     isNoSound: song.isNoSound,
+                  //     isNoVideo: song.isNoVideo,
+                  //     playlist: song.playlist,
+                  //     playlistComments: song.playlistComments,
+                  //     songComments: song.songComments,
+                  //     title: song.title,
+                  //     year:song.year,
+                  //     videoId:song.youtube.videoId,
+                  //   _id:song._id,
+                  // })
+                  // })
+                  //   this.setState({DataReport:DataReport})
+                  //   console.log("load done load ")
+
 
                 }}>
-                 Download data
+                 Load data
                 </button>
+                <CSVLink data={this.state.DataReport} headers={headers}  filename={"Songs Report.xlsx"}  target="_blank">
+                  Download Report
+                </CSVLink>;
               </div>
             </div>
 

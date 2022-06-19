@@ -26,8 +26,10 @@ import ResearcherPage from "./ResearcherPage";
 import CreateResearch from "./CreateResearch";
 import EditResearch from "./EditResearch";
 import ViewResearches from "./ViewResearches";
+import PortalPage from "./PortalPage";
 import ExportData from "./ExportData";
 import MusicGuidePage from "./MusicGuidePage";
+import Template from "../Diagrams/views/Template";
 import Login from "./Login";
 //69666
 
@@ -62,11 +64,13 @@ export default class AllPages extends Component {
           {/*<Route exact path="/admin" component={NotFoundPage}/>*/}
           {/*<Route exact path="/404" component={NotFoundPage}/>*/}
           <Route exact path="/musicGuide" component={MusicGuidePage} />
-      
+
           <Route exact path="/researcher" component={ResearcherPage} />
           <Route excat path="/researcher/new-research" component={CreateResearch} />
           <Route excat path="/researcher/edit-research" component={EditResearch} />
           <Route excat path="/researcher/view-researches" component={ViewResearches} />
+          <Route excat path="/researcher/portal-researches" component={PortalPage} />
+          <Route excat path="/portal" component={Template} />
           <Route exact path="/export-data" component={ExportData} />
 
 

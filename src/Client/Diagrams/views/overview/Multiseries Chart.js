@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import CanvasJSReact from '../../assets/canvasjs.react';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
- 
-class MultiseriesChart extends Component {	
+
+
+class MultiseriesChart extends Component {
+
 	render() {
-		const options = {
-				animationEnabled: true,	
+
+
+		var options = {
+				animationEnabled: true,
 				title:{
-					text: "Number of New Customers"
+					text: "Number of Elders"
 				},
 				axisY : {
 					title: "Number of Customers",
@@ -16,7 +20,8 @@ class MultiseriesChart extends Component {
 				toolTip: {
 					shared: true
 				},
-				data: [{
+				data: [
+					{
 					type: "spline",
 					name: "2016",
 					showInLegend: true,
@@ -55,11 +60,11 @@ class MultiseriesChart extends Component {
 					]
 				}]
 		}
-		
+
 		return (
 		<div>
-			<h1>React Multiseries Chart</h1>
-			<CanvasJSChart options = {options} 
+			<h1>Researches Data</h1>
+			<CanvasJSChart options = {options}
 				/* onRef={ref => this.chart = ref} */
 			/>
 			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}

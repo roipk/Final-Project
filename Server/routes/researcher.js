@@ -61,6 +61,14 @@ router.route("/getAllResearches").get(async function (req, res) {
   res.status(200).json(researches);
 });
 
+router.route("/getAllUsersByResearch/:research").get(async function (req, res) {
+  console.log(req.params)
+  let users = await getAllUserByResearch("UserSessions", req.params.research);
+  res.status(200).json(users);
+});
+
+
+
 router.route("createUser").post(async function (req, res) {
   let user = await addUser(req, "users");
   console.log("create user");
@@ -110,6 +118,8 @@ router.route("/getAllUserByType/:type").get(async function (req, res) {
   let users = await getAllAuthType("Authentication", req.params.type);
   res.status(200).json(users);
 });
+
+
 
 router.route("/getUserById/:Oid").get(async function (req, res) {
   let user = await getData("UserInfo", req.params.Oid);
@@ -246,6 +256,16 @@ async function deleteData(nameCollection, Oid) {
 }
 
 async function getAllAuthType(nameCollection, type) {
+  var newData = await db.collection(nameCollection).find({ type: type });
+  let users = [];
+  await newData.forEach((user) => {
+    user.password = "";
+    users.push(user);
+  });
+  return users;
+}
+
+async function getAllUsersByResearch(nameCollection, type) {
   var newData = await db.collection(nameCollection).find({ type: type });
   let users = [];
   await newData.forEach((user) => {
