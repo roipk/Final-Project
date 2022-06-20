@@ -1,184 +1,99 @@
 import React, { Component } from 'react';
 import CanvasJSReact from '../Diagrams/assets/canvasjs.react';
-import collect from "collect.js";
-import ResearchCard from "./ResearchCard";
-import axios from "axios";
-import {url} from "./AllPages";
 import "./portal.css"
-import {forEach} from "react-bootstrap/ElementChildren";
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+import BarChart from "../Diagrams/views/column charts/Bar Chart";
+import MultiseriesChart from "../Diagrams/views/overview/Multiseries Chart";
+import PieChart from "../Diagrams/views/pie & funnel charts/Pie Chart";
 
-var status=""
-var optionsData = []
-var optionPie=[]
+const type = {
+    spline: "spline",
+    line: "line",
+    stepLine: "stepLine",
+    bar: "bar",
+    column: "column",
+    stackedColumn: "stackedColumn",
+    pie:"pie",
+}
+
 var table={}
-var newOp=[]
+var love = {data:[],type:type.column,text:{ title: "Songs Love",
+    axisX:"Name elders",
+    axisY: "Number Songs"}}
+var hate = {data:[],type:type.column,text:{ title: "Songs not like",
+    axisX:"Name elders",
+    axisY: "Number Songs"}}
+var notRated = {data:[],type:type.column,text:{ title: "Songs not rated",
+    axisX:"Name elders",
+    axisY: "Number Songs"}}
+var notlisten = {data:[],type:type.column,text:{ title: "Songs not listen",
+    axisX:"Name elders",
+    axisY: "Number Songs"}}
+var songRated = {data:[],type:type.spline,text:{ title: "Songs Rated",
+    axisX:"Number song",
+    axisY: "Number rated"}}
+var optionPie = {data:[],type:type.pie,text:{ title: "Playlist",
+    axisX:"Number song",
+    axisY: "Number rated"}}
+
+var usersDataView = []
+
+
 class PortalData extends Component {
     constructor(props) {
         super(props);
 
-        optionsData = this.Elders(props.elders)
-       this.getElderData(props.elders,props.elderDataSong).then(res=>{
-           optionPie = res
-        })
-        status = props.status
-        newOp = props.op
+
         table = props.table
+        usersDataView = props.usersDataView
+        love.data = this.CreateChartData(usersDataView,"numberSongLike")
+        hate.data = this.CreateChartData(usersDataView,"numberSongDisLike")
+        notRated.data = this.CreateChartData(usersDataView,"numberSongNotRated")
+        notlisten.data = this.CreateChartData(usersDataView,"numberSongNotlisten")
+        songRated.data = this.CreateChartDataLine(usersDataView,type.spline)
+        optionPie.data = this.CreatePieChartData(table.playlist)
+
     }
 
-    eldersGrid(researchName, researchDetails) {
-            var details = this.getDetials(researchDetails);
-            let elders = researchDetails.participantsElders;
-            let eldersCollection = collect(details.participantsElders);
-            let userData = [];
-            let temp = {};
-            let ID = 1;
-            let playlists = [];
-
-            userData = new Promise((resolve, reject) => {
-                let arra = [];
-                eldersCollection.each(async (elder, index, arr) => {
-                    await this.getElderDetails(elder.value).then((result) => {
-                        playlists = result.playlists.slice(0, result.playlists.length - 2);
-                        temp = {
-                            ID: ID,
-                            ResearchName: this.state.researchName,
-                            FirstName: result.firstName,
-                            LastName: result.lastName,
-                            BirthYear: parseInt(result.yearAtTwenty) - 20,
-                            Playlists: playlists,
-                            Sessions: result.sessions,
-                        };
-                        ID++;
-                        arra.push(temp);
-                    });
-                    if (arr.length - 1 === index) {
-                        resolve(arra);
-                    }
-                });
-            });
-            ID = 1;
+    CreateChartData(DataView, index) {
+        let data = DataView.map(item => {
+            return {y: item[index], label: item.fullName}
+        })
+        return data
     }
 
+    CreateChartDataLine(DataView,type) {
+        console.log(DataView)
+        var el = DataView.map((item)=>{
+            let sessions =[];
 
-    getDetials(research) {
-        let details = {
-            researchName: research.researchName,
-            startDate: new Date(research.startDate),
-            endDate: new Date(research.endDate),
-            numberOfSessions: research.numberOfSessions,
-            sessionDuration: {
-                hours: research.sessionDuration.hours,
-                minutes: research.sessionDuration.minutes,
-            },
-            participantsElders: research.participantsElders,
-            participantsResearchers: [],
-            algorithm: research.currentSession,
-        };
-
-        research.participantsResearchers.forEach((researcher) => {
-            details.participantsResearchers.push(researcher.label);
-        });
-
-        return details;
-    }
-
-    async getElderDetails(elderOid) {
-        var res = await axios.get(url + "/researcher/getUserSessions/" + elderOid);
-        return res.data;
-    }
-
-
-
-    async getResearchDetails(researchName) {
-        var res = await axios.get(
-            url + "/researcher/getResearchByName/" + researchName
-        );
-        return res.data[0];
-    }
-
-    async getElderData(elders,participantsEldersInfo)
-    {
-
-        table.numberOfSong = 0
-        table.numberSongLike = 0
-        table.numberSongDisLike = 0
-        table.numberSongNotRated = 0
-        table.numberSongNotlisten = 0
-        table.numberElder = elders.length
-        table.playlist = {}
-        await participantsEldersInfo.map(async(data)=>{
-            let found = false
-            elders.some(element=>{
-                if(element.value === data.user) {
-                    found = true
-                    return
-                }
-            })
-            if(!found)
-                return
-            await data.researchDataUser.sessions.map(async songs=>{
-                await songs.map(song=>{
-                    table.numberOfSong++
-                    if(song.score > 3)
-                        table.numberSongLike++
-                    else if(song.score < 3 && song.score > 0)
-                        table. numberSongDisLike++
-                    else if(song.score === 0)
-                        table.numberSongNotRated++
-                    else
-                        table.numberSongNotlisten++
-
-                    if(table.playlist[song.playlistName])
-                        table.playlist[song.playlistName]++
-                    else
-                        table.playlist[song.playlistName]=1
-
-                })
-            })
+            for(var i=0;i <item.sessions[0].length;i++)
+            {
+                sessions.push({ y:item.sessions[0][i].score  , label: "song "+(i+1) },)
+            }
+            let option = {
+                type:type,
+                name: item.fullName,
+                showInLegend: true,
+                dataPoints: sessions
+            }
+            return option;
         })
 
+        return el
+    }
+
+    CreatePieChartData(data) {
         let options =[]
-        await Object.entries(table.playlist).map(item=>{
-            options.push( { y: item[0]+"", label: item[1]+"" },)
+         Object.entries(data).map(item=>{
+            options.push( { y: item[1]+"", label: item[0]+"" },)
             return
         })
 
 
         return options
-
     }
 
-    Elders = (elders)=>{
-        var el = elders.map((label)=>{
-            let sessions =[];
 
-            for(var i=1;i<=10;i++)
-            {
-                sessions.push({ y: Math.floor(Math.random() * 6) , label: "song "+i },)
-            }
-            let option = {
-                type: "spline",
-                //type: "line",
-                //type: "stepLine",
-                //type: "bar",
-                // type: "column",
-                // type: "stackedColumn",
-                name: label.label,
-                showInLegend: true,
-                dataPoints:sessions
-            }
-
-
-            return option;
-        })
-        return el
-    }
-    // componentDidMount() {
-    // 	var elders = props.elders.map((label)=>{
-    // 		return label.label
-    // 	})
-    // }
     componentDidMount() {
         console.log("componentDidMount")
 
@@ -186,12 +101,14 @@ class PortalData extends Component {
 
     componentWillReceiveProps(nextProps, nextContext) {
         console.log("componentWillReceiveProps")
-        console.log(nextProps)
-        status = nextProps.status
-        optionsData = this.Elders(nextProps.elders)
-        // optionPie = this.getElderData(nextProps.elders,nextProps.elderDataSong)
-        newOp = nextProps.op
         table = nextProps.table
+        usersDataView = nextProps.usersDataView
+        love.data = this.CreateChartData(usersDataView,"numberSongLike")
+        hate.data = this.CreateChartData(usersDataView,"numberSongDisLike")
+        notRated.data = this.CreateChartData(usersDataView,"numberSongNotRated")
+        notlisten.data = this.CreateChartData(usersDataView,"numberSongNotlisten")
+        songRated.data = this.CreateChartDataLine(usersDataView,type.spline)
+        optionPie.data = this.CreatePieChartData(table.playlist)
     }
 
 
@@ -199,41 +116,6 @@ class PortalData extends Component {
     render() {
 
 
-        var options = {
-            animationEnabled: true,
-            title: {
-                text: "Number of Elders",
-            },
-            axisY: {
-                title: "Rate song in session 1",
-                includeZero: false
-            },
-            toolTip: {
-                shared: true
-            },
-            data: optionsData
-        }
-       console.log(newOp)
-        var options1 = {
-            exportEnabled: true,
-            animationEnabled: true,
-            title: {
-                text: "Website Traffic Sources"
-            },
-            data: [
-                {
-                type: "pie",
-                startAngle: 75,
-                toolTipContent: "<b>{label}</b>: {y} songs",
-                showInLegend: "true",
-                legendText: "{label}",
-                indexLabelFontSize: 16,
-                indexLabel: "{label} - {y} songs",
-                dataPoints:newOp
-
-            },
-            ]
-        }
 
 
         return (
@@ -300,8 +182,14 @@ class PortalData extends Component {
                     {/*<CanvasJSChart options = {options1}/>*/}
                     {/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
                 </div>
-            <div><CanvasJSChart options = {options}/></div>
-                <div><CanvasJSChart options = {options1}/></div>
+                <div><MultiseriesChart data = {songRated}/></div>
+                <div><PieChart data = {optionPie}/></div>
+                <div><BarChart data = {love}/></div>
+                <div><BarChart data = {hate}/></div>
+                <div><BarChart data = {notRated}/></div>
+                <div><BarChart data = {notlisten}/></div>
+             x
+
 
 </div>
 

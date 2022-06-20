@@ -43,6 +43,9 @@ var table={
     playlist:{},
 }
 
+
+var elderTableData=[]
+
 export default class PortalPage extends Component {
     constructor(props) {
         super(props);
@@ -109,6 +112,7 @@ export default class PortalPage extends Component {
 
     async getElderData(elders,participantsEldersInfo)
     {
+        elderTableData=[]
         table.numberOfSong = 0
         table.numberSongLike = 0
         table.numberSongDisLike = 0
@@ -118,33 +122,69 @@ export default class PortalPage extends Component {
         table.playlist = {}
         await participantsEldersInfo.map(async(data)=>{
             let found = false
+            let name=""
             elders.some(element=>{
                 if(element.value === data.user) {
                     found = true
+                    name = element.label
                     return
                 }
             })
             if(!found)
                 return
+
+
+            var elderTableTemplate={
+                fullName:name,
+                numberOfSong:0,
+                numberSessions:0,
+                numberSongLike:0,
+                numberSongDisLike:0,
+                numberSongNotRated:0,
+                numberSongNotlisten:0,
+                playlist:{},
+                sessions:[],
+            }
+
+            elderTableTemplate.numberSessions = data.researchDataUser.sessions.length
             await data.researchDataUser.sessions.map(async songs=>{
+                let session=[]
                 await songs.map(song=>{
+                        session.push(song)
+                    elderTableTemplate.numberOfSong++
                     table.numberOfSong++
                     if(song.score > 3)
+                    {
+                        elderTableTemplate.numberSongLike++
                         table.numberSongLike++
+                    }
                     else if(song.score < 3 && song.score > 0)
+                    {
+                        elderTableTemplate. numberSongDisLike++
                         table. numberSongDisLike++
+                    }
                     else if(song.score === 0)
+                    {
+                        elderTableTemplate.numberSongNotRated++
                         table.numberSongNotRated++
+                    }
                     else
+                    {
+                        elderTableTemplate.numberSongNotlisten++
                         table.numberSongNotlisten++
+                    }
 
                     if(table.playlist[song.playlistName])
                         table.playlist[song.playlistName]++
                     else
                         table.playlist[song.playlistName]=1
 
+                    elderTableTemplate.playlist[song.playlistName]=1
+
                 })
+                elderTableTemplate.sessions.push(session)
             })
+            elderTableData.push(elderTableTemplate)
         })
 
         let options =[]
@@ -222,6 +262,7 @@ export default class PortalPage extends Component {
             currentSession: res.data[0].currentSession,
             creatorResearcher: creatorResearcher,
             table:table,
+            elderTableData:elderTableData,
         });
     }
 
@@ -293,6 +334,7 @@ export default class PortalPage extends Component {
             this.getElderData(selectedEldersOption,this.state.participantsEldersInfo).then(res=>{
             this.setState({
                 table:table,
+                elderTableData:elderTableData,
                 participantsElders: selectedEldersOption,
                 participantsEldersOptions:res
             });
@@ -701,7 +743,7 @@ export default class PortalPage extends Component {
                                     <h1>portal</h1>
                                     <h1>General research info</h1>
                                     {/* {/*<PortalData researchName={this.state.researchName} researchDetails={this.state.researchDetails} researchToView={this.state.researchToView}/>*/}
-                                    <PortalData table = {this.state.table} op ={this.state.participantsEldersOptions} elders={this.state.participantsElders}  researchName={this.state.researchName} researchDetails={this.state.researchDetails} researchToView={this.state.researchToView} elderDataSong={this.state.participantsEldersInfo}/>
+                                    <PortalData usersDataView={this.state.elderTableData} table = {this.state.table}/>
 
                                 </div>
 

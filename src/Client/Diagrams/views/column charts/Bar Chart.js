@@ -2,8 +2,32 @@ import React, { Component } from 'react';
 import CanvasJSReact from '../../assets/canvasjs.react';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 var CanvasJS = CanvasJSReact.CanvasJS;
- 
+
+var data = []
+var text = {
+			title: "",
+			axisX:"",
+			axisY: ""
+}
+var type="bar"
+
 class BarChart extends Component {
+	constructor(props) {
+		super(props);
+		console.log(props)
+		data = props.data.data
+		text = props.data.text
+		type = props.data.type
+
+	}
+
+	componentWillUpdate(nextProps, nextState, nextContext) {
+		console.log(nextProps)
+		data = nextProps.data.data
+		text = nextProps.data.text
+		type = nextProps.data.type
+	}
+
 	addSymbols(e){
 		var suffixes = ["", "K", "M", "B"];
 		var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
@@ -17,34 +41,33 @@ class BarChart extends Component {
 			animationEnabled: true,
 			theme: "light2",
 			title:{
-				text: "Most Popular Social Networking Sites"
+				text: text.title//"Most Popular Social Networking Sites"
 			},
 			axisX: {
-				title: "Social Network",
-				reversed: true,
+				title: text.axisX,//"Social Network",
+				// reversed: true,
 			},
 			axisY: {
-				title: "Monthly Active Users",
+				title: text.axisY,//"Monthly Active Users",
 				labelFormatter: this.addSymbols
 			},
 			data: [{
-				type: "bar",
-				dataPoints: [
-					{ y:  2200000000, label: "Facebook" },
-					{ y:  1800000000, label: "YouTube" },
-					{ y:  800000000, label: "Instagram" },
-					{ y:  563000000, label: "Qzone" },
-					{ y:  376000000, label: "Weibo" },
-					{ y:  336000000, label: "Twitter" },
-					{ y:  330000000, label: "Reddit" }
-				]
+				type: type,
+				 dataPoints:data //[
+				// 	{ y:  2200000000, label: "Facebook" },
+				// 	{ y:  1800000000, label: "YouTube" },
+				// 	{ y:  800000000, label: "Instagram" },
+				// 	{ y:  563000000, label: "Qzone" },
+				// 	{ y:  376000000, label: "Weibo" },
+				// 	{ y:  336000000, label: "Twitter" },
+				// 	{ y:  330000000, label: "Reddit" }
+				// ]
 			}]
 		}
-		
+
 		return (
 		<div>
-			<h1>React Bar Chart</h1>
-			<CanvasJSChart options = {options} 
+			<CanvasJSChart options = {options}
 				/* onRef={ref => this.chart = ref} */
 			/>
 			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
