@@ -18,6 +18,7 @@ export default class SongDebugCard extends Component {
       songComments: props.songs[0].songComments,
       playlistComments: props.songs[0].playlistComments,
       isBrokenLink: props.songs[0].isBrokenLink,
+      isGoodLink: props.songs[0].isGoodLink,
       isNoVideo: props.songs[0].isNoVideo,
       isLowQualityVideo: props.songs[0].isLowQualityVideo,
       isNoSound: props.songs[0].isNoSound,
@@ -55,7 +56,12 @@ export default class SongDebugCard extends Component {
     });
   }
 
-  setNoVideoCheckbox(event) {
+  setGoodLinkCheckbox(event) {
+    this.setState({
+      isGoodLink: event.target.checked,
+    });
+  }
+    setNoVideoCheckbox(event) {
     this.setState({
       isNoVideo: event.target.checked,
     });
@@ -92,6 +98,7 @@ export default class SongDebugCard extends Component {
       comments: this.state.comments,
       songComments: this.state.songComments,
       isBrokenLink: this.state.isBrokenLink,
+      isGoodLink: this.state.isGoodLink,
       isNoVideo: this.state.isNoVideo,
       isLowQualityVideo: this.state.isLowQualityVideo,
       isNoSound: this.state.isNoSound,
@@ -109,6 +116,7 @@ export default class SongDebugCard extends Component {
       comments: this.state.songs[index].comments,
       songComments: this.state.songs[index].songComments,
       isBrokenLink: this.state.songs[index].isBrokenLink,
+      isGoodLink: this.state.songs[index].isGoodLink,
       isNoVideo: this.state.songs[index].isNoVideo,
       isLowQualityVideo: this.state.songs[index].isLowQualityVideo,
       isNoSound: this.state.songs[index].isNoSound,
@@ -129,6 +137,7 @@ export default class SongDebugCard extends Component {
       comments: this.state.comments,
       songComments: this.state.songComments,
       isBrokenLink: this.state.isBrokenLink,
+      isGoodLink: this.state.isGoodLink,
       isNoVideo: this.state.isNoVideo,
       isLowQualityVideo: this.state.isLowQualityVideo,
       isNoSound: this.state.isNoSound,
@@ -146,6 +155,7 @@ export default class SongDebugCard extends Component {
       comments: this.state.songs[index].comments,
       songComments: this.state.songs[index].songComments,
       isBrokenLink: this.state.songs[index].isBrokenLink,
+      isGoodLink: this.state.songs[index].isGoodLink,
       isNoVideo: this.state.songs[index].isNoVideo,
       isLowQualityVideo: this.state.songs[index].isLowQualityVideo,
       isNoSound: this.state.songs[index].isNoSound,
@@ -165,6 +175,7 @@ export default class SongDebugCard extends Component {
       comments: this.state.comments,
       songComments: this.state.songComments,
       playlistComments: this.state.playlistComments,
+      isGoodLink: this.state.isGoodLink,
       isBrokenLink: this.state.isBrokenLink,
       isNoVideo: this.state.isNoVideo,
       isLowQualityVideo: this.state.isLowQualityVideo,
@@ -222,6 +233,14 @@ export default class SongDebugCard extends Component {
         </div>
         <div className="song-grid-container">
           <div className="song-grid-item item1">
+            <input
+              type="checkbox"
+              id="goodLink"
+              defaultChecked={this.state.isGoodLink}
+              onClick={(e) => this.setGoodLinkCheckbox(e)}
+            ></input>
+            <label htmlFor="brokingLink">Good Link</label>
+            <br></br>
             <input
               type="checkbox"
               id="brokenLink"
