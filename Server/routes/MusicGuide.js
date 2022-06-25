@@ -92,6 +92,7 @@ async function updateSongDebug(nameCollection, updatedSong) {
         songComments: updatedSong.songComments,
         playlistComments: updatedSong.playlistComments,
         isGoodLink: updatedSong.isGoodLink,
+        isDuplicate: updatedSong.isDuplicate,
         isBrokenLink: updatedSong.isBrokenLink,
         isNoVideo: updatedSong.isNoVideo,
         isLowQualityVideo: updatedSong.isLowQualityVideo,

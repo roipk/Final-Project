@@ -19,6 +19,7 @@ export default class SongDebugCard extends Component {
       playlistComments: props.songs[0].playlistComments,
       isBrokenLink: props.songs[0].isBrokenLink,
       isGoodLink: props.songs[0].isGoodLink,
+      isDuplicate: props.songs[0].isDuplicate,
       isNoVideo: props.songs[0].isNoVideo,
       isLowQualityVideo: props.songs[0].isLowQualityVideo,
       isNoSound: props.songs[0].isNoSound,
@@ -61,6 +62,12 @@ export default class SongDebugCard extends Component {
       isGoodLink: event.target.checked,
     });
   }
+    setDuplicateCheckbox(event) {
+    this.setState({
+      isDuplicate: event.target.checked,
+    });
+  }
+
     setNoVideoCheckbox(event) {
     this.setState({
       isNoVideo: event.target.checked,
@@ -99,6 +106,7 @@ export default class SongDebugCard extends Component {
       songComments: this.state.songComments,
       isBrokenLink: this.state.isBrokenLink,
       isGoodLink: this.state.isGoodLink,
+      isDuplicate: this.state.isDuplicate,
       isNoVideo: this.state.isNoVideo,
       isLowQualityVideo: this.state.isLowQualityVideo,
       isNoSound: this.state.isNoSound,
@@ -117,6 +125,7 @@ export default class SongDebugCard extends Component {
       songComments: this.state.songs[index].songComments,
       isBrokenLink: this.state.songs[index].isBrokenLink,
       isGoodLink: this.state.songs[index].isGoodLink,
+      isDuplicate: this.state.songs[index].isDuplicate,
       isNoVideo: this.state.songs[index].isNoVideo,
       isLowQualityVideo: this.state.songs[index].isLowQualityVideo,
       isNoSound: this.state.songs[index].isNoSound,
@@ -138,6 +147,7 @@ export default class SongDebugCard extends Component {
       songComments: this.state.songComments,
       isBrokenLink: this.state.isBrokenLink,
       isGoodLink: this.state.isGoodLink,
+      isDuplicate: this.state.isDuplicate,
       isNoVideo: this.state.isNoVideo,
       isLowQualityVideo: this.state.isLowQualityVideo,
       isNoSound: this.state.isNoSound,
@@ -156,6 +166,7 @@ export default class SongDebugCard extends Component {
       songComments: this.state.songs[index].songComments,
       isBrokenLink: this.state.songs[index].isBrokenLink,
       isGoodLink: this.state.songs[index].isGoodLink,
+      isDuplicate: this.state.songs[index].isDuplicate,
       isNoVideo: this.state.songs[index].isNoVideo,
       isLowQualityVideo: this.state.songs[index].isLowQualityVideo,
       isNoSound: this.state.songs[index].isNoSound,
@@ -176,6 +187,7 @@ export default class SongDebugCard extends Component {
       songComments: this.state.songComments,
       playlistComments: this.state.playlistComments,
       isGoodLink: this.state.isGoodLink,
+      isDuplicate: this.state.isDuplicate,
       isBrokenLink: this.state.isBrokenLink,
       isNoVideo: this.state.isNoVideo,
       isLowQualityVideo: this.state.isLowQualityVideo,
@@ -204,6 +216,7 @@ export default class SongDebugCard extends Component {
   }
 
   async updateSongForDebug(document) {
+    console.log(document)
     axios.post(url + "/MusicGuide/updateSongDebug/SongsDebug", document);
   }
 
@@ -239,7 +252,7 @@ export default class SongDebugCard extends Component {
               defaultChecked={this.state.isGoodLink}
               onClick={(e) => this.setGoodLinkCheckbox(e)}
             ></input>
-            <label htmlFor="brokingLink">Good Link</label>
+            <label htmlFor="goodLink">Good Link</label>
             <br></br>
             <input
               type="checkbox"
@@ -280,6 +293,14 @@ export default class SongDebugCard extends Component {
               onClick={(e) => this.setLowQualitySoundCheckbox(e)}
             ></input>
             <label htmlFor="soundLowQuality">Low Quality Sound</label>
+            <input
+                type="checkbox"
+                id="duplicate"
+                defaultChecked={this.state.isDuplicate}
+                onClick={(e) => this.setDuplicateCheckbox(e)}
+            ></input>
+            <label htmlFor="duplicate">Delete Song</label>
+            <br></br>
           </div>
           <div className="song-grid-item item2">
             {/* <p>{this.state.currentSong.title}</p> */}
