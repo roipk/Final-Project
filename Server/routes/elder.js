@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const VerifyToken = require("../middleware/user").VerifyToken;
 const CreateToken = require("../middleware/user").CreateToken;
-const Config = require("../src/Config.json")
+const Config = require("../../src/Config.json")
 
 
 routerElder

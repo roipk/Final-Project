@@ -11,6 +11,9 @@ require("dotenv").config();
 const VerifyToken = require("../middleware/user").VerifyToken;
 const CreateToken = require("../middleware/user").CreateToken;
 
+
+
+
 router.route("/getAllPlaylists").get(async function (req, res) {
   // console.log(req.params);
   let playlists = await getAllPlaylists("NewPlaylists");
@@ -39,12 +42,18 @@ router.route("/getSongsForDebug/:playlist").get(async function (req, res) {
 });
 
 router
-  .route("/updateSongDebug/:nameCollection")
-  .post(async function (req, res) {
-    let updatedSong = await updateSongDebug(req.params.nameCollection, req.body);
-    console.log(updatedSong);
-    res.status(200).json(updatedSong);
-  });
+    .route("/updateSongDebug/:nameCollection")
+    .post(async function (req, res) {
+      let updatedSong = await updateSongDebug(req.params.nameCollection, req.body);
+      res.status(200).json(updatedSong);
+    });
+router
+    .route("/updatePlaylist/:playlistName")
+    .post(async function (req, res) {
+      // console.log(req.body)
+      let updatedPlaylist = await updatedSongInPlaylist(req.params.playlistName, req.body);
+      res.status(200).json(updatedPlaylist);
+    });
 
 module.exports = router;
 
@@ -69,38 +78,79 @@ async function getSongsByPlaylist(nameCollection, playlist) {
 async function getSongsForDebug(nameCollection, playlist) {
   var newData
   if(playlist)
-    newData = db.collection(nameCollection).find({ playlist: playlist });
+    newData = await db.collection(nameCollection).find({ playlist: playlist });
   else
-    newData = db.collection(nameCollection)
+    newData = await db.collection(nameCollection)
   let songs = [];
   await newData.forEach((song) => {
     songs.push(song);
   });
+
   return songs;
 }
 
+async function updatedSongInPlaylist(playlistName,objReplace)
+{
+  var playlist = await db.collection("NewPlaylists").find({ name: playlistName })
+  await playlist.forEach((item) => {
+    var records = []
+    // records.push(item)
+    // console.log(item)
+     item.records.forEach((song) => {
+      let index = objReplace.findIndex(object => {
+        return object.Oid == song._id;
+      });
+      if(index > -1 && !objReplace[index].isDuplicate) {
+
+         if(objReplace[index].changeLink && objReplace[index].changeLink.length > 0)
+         {
+           song.youtube.videoFullId = objReplace[index].changeLink
+           let id = objReplace[index].changeLink.split("?v=")[1]??""
+           song.youtube.videoId = id.split("&")[0]??""
+         }
+         records.push(song)
+       }
+    })
+    item.records = records;
+
+    db.collection("NewPlaylists").replaceOne({ _id: item._id },item,
+        {upsert: true,})
+  });
+
+
+  return playlist
+}
+
+
+
 async function updateSongDebug(nameCollection, updatedSong) {
-  db.collection(nameCollection).updateOne(
-    { Oid: updatedSong.Oid },
-    {
-      $set: {
-        title: updatedSong.title,
-        artistName: updatedSong.artistName,
-        year: updatedSong.year,
-        playlist: updatedSong.playlist,
-        youtube: updatedSong.youtube,
-        songComments: updatedSong.songComments,
-        playlistComments: updatedSong.playlistComments,
-        isGoodLink: updatedSong.isGoodLink,
-        isDuplicate: updatedSong.isDuplicate,
-        isBrokenLink: updatedSong.isBrokenLink,
-        isNoVideo: updatedSong.isNoVideo,
-        isLowQualityVideo: updatedSong.isLowQualityVideo,
-        isNoSound: updatedSong.isNoSound,
-        isLowQualitySound: updatedSong.isLowQualitySound,
-      },
-    }
+  var update  = await db.collection(nameCollection).updateOne(
+      { Oid: updatedSong.Oid },
+      {
+        $set: {
+          title: updatedSong.title??false,
+          artistName: updatedSong.artistName??false,
+          year: updatedSong.year??false,
+          playlist: updatedSong.playlist??false,
+          youtube: updatedSong.youtube??false,
+          songComments: updatedSong.songComments??false,
+          playlistComments: updatedSong.playlistComments??false,
+          isGoodLink: updatedSong.isGoodLink??false,
+          isDuplicate: updatedSong.isDuplicate??false,
+          isBrokenLink: updatedSong.isBrokenLink??false,
+          isNoVideo: updatedSong.isNoVideo??false,
+          isLowQualityVideo: updatedSong.isLowQualityVideo??false,
+          isNoSound: updatedSong.isNoSound??false,
+          isLowQualitySound: updatedSong.isLowQualitySound??false,
+        },
+      }
   );
+
+  return update
+
+
+
+
 }
 // async function createSongs(nameCollection, updatedSong){
 //   db.collection(nameCollection).insertOne(updatedSong)
