@@ -134,11 +134,11 @@ export default class DeleteUsers extends Component {
 
 
 
-    getDec(birthYear, LanguageAtTwenty, coutry) {
+    getDec(yearAtTwenty, LanguageAtTwenty, coutry) {
         let decade = [];
         let lastTime = new Date()
         lastTime = lastTime.getFullYear() - 20 - lastTime.getFullYear() % 10
-        let birthYearDecade = birthYear - birthYear % 10
+        let birthYearDecade = yearAtTwenty - yearAtTwenty % 10
         decade.push(LanguageAtTwenty)
         for (let i = birthYearDecade; i <= lastTime; i += 10) {
             decade.push(LanguageAtTwenty + coutry + i + "DC")
@@ -151,7 +151,7 @@ export default class DeleteUsers extends Component {
         let playlists = {}
 
         for (let i = 0; i < this.state.LanguageAtTwenty.length; i++) {
-            let dec = this.getDec(this.state.birthYear, this.state.LanguageAtTwenty[i], this.state.countryAtTwenty)
+            let dec = this.getDec(this.state.yearAtTwenty, this.state.LanguageAtTwenty[i], this.state.countryAtTwenty)
             playlists[`Language${i + 1}`] = {
                 language: this.state.LanguageAtTwenty[i],
                 playlists: {

@@ -203,11 +203,11 @@ export default class SignUp extends Component {
     return elderData;
   }
 
-  getDec(birthYear, LanguageAtTwenty) {
+  getDec(yearAtTwenty, LanguageAtTwenty) {
     let decade = [];
     let lastTime = new Date();
     lastTime = lastTime.getFullYear() - 20 - (lastTime.getFullYear() % 10);
-    let birthYearDecade = birthYear - (birthYear % 10);
+    let birthYearDecade = yearAtTwenty - (yearAtTwenty % 10);
     LanguageAtTwenty.forEach((language) => {
       decade.push(language);
       for (let i = birthYearDecade; i <= birthYearDecade + 30; i += 10) {
@@ -249,8 +249,8 @@ export default class SignUp extends Component {
     };
     return userSessionData;
   }
-  getPlaylist(birthYear, LanguageAtTwenty, genres) {
-    var playlist = this.getDec(birthYear, LanguageAtTwenty);
+  getPlaylist(yearAtTwenty, LanguageAtTwenty, genres) {
+    var playlist = this.getDec(yearAtTwenty, LanguageAtTwenty);
     genres.forEach((genre) => {
       playlist.push(genre);
     });

@@ -41,19 +41,26 @@ router.route("/getSongsForDebug/:playlist").get(async function (req, res) {
   res.status(200).json(songs);
 });
 
-router
-    .route("/updateSongDebug/:nameCollection")
+router.route("/updateSongDebug/:nameCollection")
     .post(async function (req, res) {
       let updatedSong = await updateSongDebug(req.params.nameCollection, req.body);
       res.status(200).json(updatedSong);
     });
-router
-    .route("/updatePlaylist/:playlistName")
+
+router.route("/updatePlaylist/:playlistName")
     .post(async function (req, res) {
       // console.log(req.body)
       let updatedPlaylist = await updatedSongInPlaylist(req.params.playlistName, req.body);
       res.status(200).json(updatedPlaylist);
     });
+
+router.route("/addSong")
+    .post(async function (req, res) {
+        let addnewSong = await db.collection("records").insertOne(req.body)
+        res.status(200).json(addnewSong);
+    });
+
+
 
 module.exports = router;
 
@@ -78,9 +85,9 @@ async function getSongsByPlaylist(nameCollection, playlist) {
 async function getSongsForDebug(nameCollection, playlist) {
   var newData
   if(playlist)
-    newData = await db.collection(nameCollection).find({ playlist: playlist });
+    newData = await db.collection(nameCollection).find({ playlist: playlist }).toArray();
   else
-    newData = await db.collection(nameCollection)
+    newData = await db.collection(nameCollection).find({}).toArray()
   let songs = [];
   await newData.forEach((song) => {
     songs.push(song);
@@ -92,31 +99,34 @@ async function getSongsForDebug(nameCollection, playlist) {
 async function updatedSongInPlaylist(playlistName,objReplace)
 {
   var playlist = await db.collection("NewPlaylists").find({ name: playlistName })
-  await playlist.forEach((item) => {
-    var records = []
-    // records.push(item)
-    // console.log(item)
-     item.records.forEach((song) => {
-      let index = objReplace.findIndex(object => {
-        return object.Oid == song._id;
-      });
-      if(index > -1 && !objReplace[index].isDuplicate) {
 
-         if(objReplace[index].changeLink && objReplace[index].changeLink.length > 0)
-         {
-           song.youtube.videoFullId = objReplace[index].changeLink
-           let id = objReplace[index].changeLink.split("?v=")[1]??""
-           song.youtube.videoId = id.split("&")[0]??""
-         }
-         records.push(song)
-       }
-    })
-    item.records = records;
+      await playlist.forEach((item) => {
+          var records = []
+          // records.push(item)
+          // console.log(item)
 
-    db.collection("NewPlaylists").replaceOne({ _id: item._id },item,
-        {upsert: true,})
+          item.records.forEach((song) => {
+              let index = objReplace.findIndex(object => {
+                  return object.Oid == song._id;
+              });
+              if (index > -1 && !objReplace[index].isDuplicate) {
+
+                  if (objReplace[index].changeLink && objReplace[index].changeLink.length > 0) {
+                      song.youtube.videoFullId = objReplace[index].changeLink
+                      let id = objReplace[index].changeLink.split("?v=")[1] ?? ""
+                      song.youtube.videoId = id.split("&")[0] ?? ""
+                  }
+                  records.push(song)
+              }
+
+          })
+          item.records = records;
+
+          db.collection("NewPlaylists").replaceOne({_id: item._id}, item,
+              {upsert: true,})
+
+
   });
-
 
   return playlist
 }
@@ -133,8 +143,8 @@ async function updateSongDebug(nameCollection, updatedSong) {
           year: updatedSong.year??false,
           playlist: updatedSong.playlist??false,
           youtube: updatedSong.youtube??false,
-          songComments: updatedSong.songComments??false,
-          playlistComments: updatedSong.playlistComments??false,
+          songComments: updatedSong.songComments??"",
+          playlistComments: updatedSong.playlistComments??"",
           isGoodLink: updatedSong.isGoodLink??false,
           isDuplicate: updatedSong.isDuplicate??false,
           isBrokenLink: updatedSong.isBrokenLink??false,

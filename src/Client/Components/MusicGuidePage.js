@@ -7,6 +7,7 @@ import SongDebugCard from "./SongDebugCard";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import {CSVDownload, CSVLink} from "react-csv";
+import YoutubeData from "./YoutubeView";
 // import DownloadUserCSVButton from "./DownloadData/csv"
 
 
@@ -31,6 +32,17 @@ var headers = [
 ];
 const genres = ["cla", "yid", "cha", "lad", "pra", "mid"];
 
+var newSong={
+  title:"",
+  originTitle:"",
+  year:"",
+  artistName:"",
+  youtube:{
+    videoFullId:"",
+    videoId:"",
+  }
+}
+
 export default class MusicGuidePage extends Component {
   constructor(props) {
     super(props);
@@ -40,7 +52,8 @@ export default class MusicGuidePage extends Component {
       playlistToView: { value: "", label: "" },
       songs: [],
       DataReport:[],
-      loading: false
+      loading: false,
+      newSong:newSong,
     };
   }
 
@@ -185,6 +198,41 @@ export default class MusicGuidePage extends Component {
     return res.data;
   }
 
+
+
+  async addSong()
+  {
+    // var Oid = await axios.post(url + "/MusicGuide/addSong",this.state.newSong );
+    // console.log(Oid)
+    // console.log(Oid.data)
+    var document = {
+      Oid: 1111,//Oid.data.insertedId,
+      title: this.state.newSong.title,
+      artistName:this.state.newSong.artistName,
+      year: this.state.newSong.year,
+      playlist: this.state.playlistToView.label,
+      youtube: this.state.newSong.youtube,
+      comments: "",
+      songComments: "",
+      changeLink: "",
+      playlistComments: "",
+      isGoodLink: true,
+      isDuplicate: false,
+      isBrokenLink: false,
+      isNoVideo: false,
+      isLowQualityVideo: false,
+      isNoSound: false,
+      isLowQualitySound: false,
+    };
+    // var newId = await axios.post(url + "/MusicGuide/addSong",this.state.newSong );
+    // document._id = newId.data.insertedId;
+
+    let newSongs = this.state.songs;
+    newSongs.push(document)
+    this.setState({songs:newSongs})
+  }
+
+
   render() {
     const {loading} = this.state;
     return (
@@ -209,10 +257,143 @@ export default class MusicGuidePage extends Component {
               <span className="focus-input100"></span>
             </div>
             {this.state.songs.length != 0 ? (
+                <div>
               <SongDebugCard
                 key={this.state.playlistToView.label}
                 songs={this.state.songs}
               ></SongDebugCard>
+                  <table style={{"textAlign":"center","width":"50%"}}>
+                    <thead>
+                    <tr>
+                      <th colSpan="2">הוספת שיר</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td style={{"width":"50%"}}>קישור יוטיוב לשיר</td>
+                      <td style={{"width":"30%"}}>
+                        <input placeholder={"הכנס קישור"} value={ this.state.newSong.youtube.videoFullId} onChange={(e)=>{
+                          newSong = this.state.newSong
+                          newSong.youtube.videoFullId = e.target.value
+                          let id = e.target.value.split("?v=")[1]??""
+                          newSong.youtube.videoId = id.split("&")[0]??""
+                          if(newSong.youtube.videoId==="")
+                          {
+                            newSong.youtube.videoFullId = 'https://www.youtube.com/watch?v='+e.target.value
+                            newSong.youtube.videoId = e.target.value
+                          }
+                          this.setState({newSong:newSong})
+                        }}/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{"width":"50%"}}>שם</td>
+                      <td style={{"width":"30%"}}>
+                        <input placeholder={"הכנס שם שיר"} value={ this.state.newSong.title}onChange={(e)=>{
+                          newSong = this.state.newSong
+                          newSong.title = e.target.value
+                          this.setState({newSong:newSong})
+                        }}/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{"width":"50%"}}>שם האמן</td>
+                      <td style={{"width":"30%"}}>
+                        <input placeholder={"הכנס שם אמן"} value={ this.state.newSong.artistName}onChange={(e)=>{
+                          newSong = this.state.newSong
+                          newSong.artistName = e.target.value
+                          this.setState({newSong:newSong})
+                        }}/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{"width":"50%"}}>שנת הוצאה</td>
+                      <td style={{"width":"30%"}}>
+                        <input placeholder={"הכנס שנת הוצאה"} value={ this.state.newSong.year}onChange={(e)=>{
+                          newSong = this.state.newSong
+                          newSong.year = e.target.value
+                          this.setState({newSong:newSong})
+                        }}/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{"width":"50%"}}>קישור יוטיוב id</td>
+                      <td style={{"width":"30%"}}>
+                        <input placeholder={"הכנס id של השיר"} value={this.state.newSong.youtube.videoId} onChange={(e)=>{
+                          newSong = this.state.newSong
+                          newSong.youtube.videoFullId = e.target.value
+                          let id = e.target.value.split("?v=")[1]??""
+                          newSong.youtube.videoId = id.split("&")[0]??""
+                          if(newSong.youtube.videoId==="")
+                          {
+                            newSong.youtube.videoFullId = 'https://www.youtube.com/watch?v='+e.target.value
+                            newSong.youtube.videoId = e.target.value
+                          }
+                          this.setState({newSong:newSong})
+                        }}/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th colSpan="2">
+                        {this.state.newSong.youtube.videoFullId.length>0?<YoutubeData
+                            key={newSong.youtube.videoFullId}
+                            url={newSong.youtube.videoFullId}
+                            onReady={(e)=>{
+                              console.log(e.target)
+                              newSong = this.state.newSong
+                              newSong.year = this.state.playlistToView.label.split("DC")[0]
+                              let hundred = newSong.year.split("-")[1]??""
+                              let decade = newSong.year.split("-")[2]??""
+                              newSong.year = (parseInt(hundred)*100) - 100+parseInt(decade)+5
+                              if(hundred ==="")
+                                newSong.year=0
+                              if(newSong.originTitle !== e.target.videoTitle)
+                              {
+                                newSong.originTitle = e.target.videoTitle
+                                newSong.title = e.target.videoTitle
+                                this.setState({newSong:newSong})
+                              }
+                            }
+                            }
+                        />:
+                            "סרטון יוצג במקום זה"
+
+                        }
+
+                      </th>
+                    </tr>
+                    <tr>
+                      <td style={{"width":"50%"}}>
+                        <button style={{color:"blue"}} onClick={()=>{
+                          console.log(this.state.newSong)
+                          this.addSong()
+                        }}>הוספה</button>
+                      </td>
+                      <td style={{"width":"30%"}}>
+                        <button style={{color:"blue"}}onClick={()=>{
+                          console.log("click clear")
+                          newSong = {
+                            title: "",
+                            originTitle: "",
+                            year: "",
+                            artistName: "",
+                            youtube: {
+                              videoFullId: "",
+                              videoId: "",
+                            }
+                          }
+                          this.setState({newSong:newSong})
+                        }}> איפוס</button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+
+
+
+
+
+                 </div>
             ) : (
               "Playlist is empty"
             )}
@@ -235,76 +416,38 @@ export default class MusicGuidePage extends Component {
 
                 {/*<DownloadUserCSVButton/>*/}
                 <button id='main' type='button' className="contact100-back-btn" onClick={async () => {
-                  axios({
-                    url: url + "/MusicGuide/getAllSongsForDebug/",
-                    method: 'GET',
-                    responseType: 'json', // important
-                  }).then(async(res) => {
-                    console.log(res.data)
-                    var DataReport=[]
-                    await res.data.forEach(song=>{
-                      DataReport.push({
-                        Oid: song.Oid,
-                        artistName: song.artistName,
-                        isBrokenLink: song.isBrokenLink,
-                        isLowQualitySound: song.isLowQualitySound,
-                        isLowQualityVideo: song.isLowQualityVideo,
-                        isGoodLink: song.isGoodLink,
-                        isDuplicate: song.isDuplicate,
-                        isNoSound: song.isNoSound,
-                        isNoVideo: song.isNoVideo,
-                        playlist: song.playlist,
-                        playlistComments: song.playlistComments,
-                        songComments: song.songComments,
-                        title: song.title,
-                        year:song.year,
-                        videoId:song.youtube.videoId,
-                      _id:song._id,
-                    })
-                    })
-                    // <CSVLink data={this.state.DataReport} headers={headers}  filename={"Songs Report.xlsx"}  target="_blank">
-                    //     Download Report
-                    // </CSVLink>;
-                    const url = window.URL.createObjectURL(new Blob(DataReport));
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.setAttribute('download', 'file.csv'); //or any other extension
-                    document.body.appendChild(link);
-                    link.click();
-                  });
-
-
-                  // let res = await axios.get(
-                  //         url + "/MusicGuide/getAllSongsForDebug/"
-                  //     );
-                  // var data = res.data
-                  // var DataReport=[]
-                  // await data.forEach(song=>{
-                  //   DataReport.push({
-                  //     Oid: song.Oid,
-                  //     artistName: song.artistName,
-                  //     isBrokenLink: song.isBrokenLink,
-                  //     isLowQualitySound: song.isLowQualitySound,
-                  //     isLowQualityVideo: song.isLowQualityVideo,
-                  //     isNoSound: song.isNoSound,
-                  //     isNoVideo: song.isNoVideo,
-                  //     playlist: song.playlist,
-                  //     playlistComments: song.playlistComments,
-                  //     songComments: song.songComments,
-                  //     title: song.title,
-                  //     year:song.year,
-                  //     videoId:song.youtube.videoId,
-                  //   _id:song._id,
-                  // })
-                  // })
-                  //   this.setState({DataReport:DataReport})
-                  //   console.log("load done load ")
+                  let res = await axios.get(
+                          url + "/MusicGuide/getAllSongsForDebug/"
+                      );
+                  var data = res.data
+                  var DataReport=[]
+                  await data.forEach(song=>{
+                    DataReport.push({
+                      Oid: song.Oid,
+                      artistName: song.artistName,
+                      isBrokenLink: song.isBrokenLink,
+                      isLowQualitySound: song.isLowQualitySound,
+                      isLowQualityVideo: song.isLowQualityVideo,
+                      isNoSound: song.isNoSound,
+                      isNoVideo: song.isNoVideo,
+                      playlist: song.playlist,
+                      playlistComments: song.playlistComments,
+                      songComments: song.songComments,
+                      title: song.title,
+                      year:song.year,
+                      videoId:song.youtube.videoId,
+                    _id:song._id,
+                  })
+                  })
+                    this.setState({DataReport:DataReport})
+                    console.log("load done load ")
+                  alert("the data ready to download")
 
 
                 }}>
                  Load data
                 </button>
-                <CSVLink data={this.state.DataReport} headers={headers}  filename={"Songs Report.xlsx"}  target="_blank">
+                <CSVLink data={this.state.DataReport} headers={headers}  filename={"Songs Report"}  target="_blank">
                   Download Report
                 </CSVLink>;
               </div>
