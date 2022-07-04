@@ -321,6 +321,7 @@ async function createFilter(songs = {}, filters, sort) {
     var newItemRecord = [];
 
     item.records.forEach((song) => {
+
       if (
         !songs.songsBlock.includes(
           song._id.toString() &&
@@ -328,6 +329,7 @@ async function createFilter(songs = {}, filters, sort) {
         )
       ) {
         newItemRecord.push(song);
+        songs.songsBlock.push(song);
       } else {
         console.log(song);
       }
@@ -341,12 +343,11 @@ async function createFilter(songs = {}, filters, sort) {
   randomized = randomized.sort(() => Math.random() - 0.5);
   // console.log("339");
   // console.log(randomized);
-  console.log((filters.Cognitive / randomized.length).toFixed());
+  // console.log((filters.Cognitive / randomized.length).toFixed());
 
   var counter = songs.songsView.length;
   while (counter < filters.Cognitive) {
     randomized.forEach((item) => {
-      console.log(item.record.length);
       if (
         item.record.length > 0 &&
         songs.songsView.length < filters.Cognitive
@@ -378,7 +379,7 @@ async function createFilter(songs = {}, filters, sort) {
   // console.log(tempSong.length)
 
   // console.log("------")
-  // console.log(count1)
+  // console.log(count1)`
   // console.log("------")
   // console.log(songs.songsView.length)
   // console.log(songs.songsView.length)
@@ -415,7 +416,7 @@ async function getBestsongPrevSessions(
   var prevSong = { view: [], block: [] };
 
   // for(var i=1;i<=numSessionPrev && AllSessions.length-i>=0 ;i++)
-  for (var i = 1; i <= 2 && AllSessions.length - i >= 0; i++) {
+  for (var i = 1; i <= numSessionPrev && AllSessions.length - i >= 0; i++) {
     console.log(i);
     var arr = AllSessions[AllSessions.length - i];
 
@@ -423,9 +424,9 @@ async function getBestsongPrevSessions(
       arr.filter((s) => s.score >= minScore)
     );
     prevSong.block = prevSong.block
-      .concat(arr.filter((s) => s.score < minScore && s.score > -1))
+      .concat(arr.filter((s) => s.score < minScore && s.score > 0))
       .map((s) => {
-        if (s.RecordDisplayId) return s.RecordDisplayId.toString();
+        if (s && s.RecordDisplayId) return s.RecordDisplayId.toString();
         else return;
       });
   }

@@ -26,7 +26,7 @@ router.route("createResearch").post(async function (req, res) {
 });
 
 router.route("/getResearchByName/:researchName").get(async function (req, res) {
-  // console.log(req.params);
+  console.log(req.params);
   let researches = await getResearch("Researches", req.params.researchName);
   res.status(200).json(researches);
 });
@@ -61,13 +61,17 @@ router.route("/getAllResearches").get(async function (req, res) {
   res.status(200).json(researches);
 });
 
-router.route("/getAllUsersByResearch/:research").get(async function (req, res) {
-  console.log(req.params)
-  let users = await getAllUserByResearch("UserSessions", req.params.research);
-  res.status(200).json(users);
-});
-
-
+router
+  .route("/getAllUsersByResearch/:research")
+  .post(async function (req, res) {
+    console.log("65=> " + req.params.research);
+    let users = await getAllUsersByResearch(
+      "UserSessions",
+      req.params.research,
+      req.body
+    );
+    res.status(200).json(users);
+  });
 
 router.route("createUser").post(async function (req, res) {
   let user = await addUser(req, "users");
@@ -118,8 +122,6 @@ router.route("/getAllUserByType/:type").get(async function (req, res) {
   let users = await getAllAuthType("Authentication", req.params.type);
   res.status(200).json(users);
 });
-
-
 
 router.route("/getUserById/:Oid").get(async function (req, res) {
   let user = await getData("UserInfo", req.params.Oid);
@@ -176,7 +178,9 @@ async function getAllResearchesByResearcher(nameCollection, researcherOid) {
 }
 
 async function getResearcherDetails(nameCollection, researcherOid) {
-  let researcher = await db.collection(nameCollection).findOne({ Oid: researcherOid });
+  let researcher = await db
+    .collection(nameCollection)
+    .findOne({ Oid: researcherOid });
   return researcher;
 }
 
@@ -265,13 +269,15 @@ async function getAllAuthType(nameCollection, type) {
   return users;
 }
 
-async function getAllUsersByResearch(nameCollection, type) {
-  var newData = await db.collection(nameCollection).find({ type: type });
+async function getAllUsersByResearch(nameCollection, type, elders) {
+  var newData = db.collection(nameCollection).find({ Oid: { $in: elders } });
   let users = [];
   await newData.forEach((user) => {
+    console.log(user);
     user.password = "";
     users.push(user);
   });
+  console.log(users);
   return users;
 }
 //
