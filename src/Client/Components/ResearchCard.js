@@ -64,7 +64,6 @@ const sessionsGrid = (props) => {
     };
 
     data.push(temp);
-
   }
 
   return (
@@ -88,12 +87,13 @@ export default class ResearchCard extends Component {
       participantsElders: this.props.data.participantsElders,
       eldersDetails: [],
       userData: [],
-      currentData:[],
+      currentData: [],
       onExport: this.props.onExport,
     };
   }
   async componentDidMount() {
     this.props.userdata.then((value) => {
+      console.log(value);
       this.setState({
         userData: value,
       });
@@ -101,80 +101,70 @@ export default class ResearchCard extends Component {
   }
 
   export = (e) => {
-    console.log(e)
+    console.log(e);
     e.cancel = true;
     let dataToExport = e.component.getVisibleRows();
     this.props.onExport(dataToExport);
   };
-  currentData= (e) => {
-    console.log("0")
-    console.log(e)
+  currentData = (e) => {
+    console.log("0");
+    console.log(e);
+  };
+  currentData1(e) {
+    console.log("1");
+    console.log(e.component.getVisibleRows());
+    var currentData = e.component.getVisibleRows();
+    var dat = [];
 
-  }
-  currentData1(e){
-    console.log("1")
-    console.log(e.component.getVisibleRows())
-    var currentData = e.component.getVisibleRows()
-    var dat = []
-
-    currentData.forEach((d) =>  {
+    currentData.forEach((d) => {
       let isLargeNumber = (element) => element.label === d.data.BirthYear;
       let exsist = dat.findIndex(isLargeNumber);
-      if(exsist<0)
-      {
-        dat.push({ y: 1, label:  d.data.BirthYear })
-      }
-      else
-      {
-        dat[exsist].y+=1
+      if (exsist < 0) {
+        dat.push({ y: 1, label: d.data.BirthYear });
+      } else {
+        dat[exsist].y += 1;
       }
       dat.sort((a, b) => {
         return b.label - a.label;
       });
-      this.setState({currentData:dat})
-    })
-
+      this.setState({ currentData: dat });
+    });
   }
 
   render() {
     return (
-        <div>
+      <div>
+        <DataGrid
+          id="grid-container"
+          dataSource={this.state.userData}
+          keyExpr="ID"
+          showBorders={true}
+          remoteOperations={true}
+          wordWrapEnabled={true}
+          onExporting={this.export}
+          onFocusedCellChanging={this.currentData}
+          // onFocusedCellChanging={(e)=>this.currentData1(e)}
+        >
+          <FilterRow visible={true} />
+          <Column dataField="FirstName" caption="First Name" width={100} />
+          <Column dataField="LastName" caption="Last Name" width={100} />
+          <Column
+            dataField="BirthYear"
+            caption="Birth Year"
+            width={80}
+            dataType="number"
+            cssClass="grid-col-right"
+          />
+          <Column dataField="Playlists" caption="Playlists" />
 
-
-      <DataGrid
-        id="grid-container"
-        dataSource={this.state.userData}
-        keyExpr="ID"
-        showBorders={true}
-        remoteOperations={true}
-        wordWrapEnabled={true}
-        onExporting={this.export}
-        onFocusedCellChanging={this.currentData}
-        onFocusedCellChanging={(e)=>this.currentData1(e)}
-      >
-        <FilterRow visible={true}/>
-        <Column dataField="FirstName" caption="First Name" width={100}  />
-        <Column dataField="LastName" caption="Last Name" width={100} />
-        <Column
-          dataField="BirthYear"
-          caption="Birth Year"
-          width={80}
-          dataType="number"
-          cssClass="grid-col-right"
-        />
-        <Column dataField="Playlists" caption="Playlists" />
-
-        <MasterDetail
-          enabled={true}
-          component={sessionsGrid}
-          data={this.state.userData.Sessions + this.state.researchName}
-        />
-        <Export enabled={true} />
-      </DataGrid>
-          {
-            this.state.currentData.length>0?<PieChart data={this.state.currentData}/>:<div></div>
-          }
-        </div>
+          <MasterDetail
+            enabled={true}
+            component={sessionsGrid}
+            data={this.state.userData.Sessions + this.state.researchName}
+          />
+          <Export enabled={true} />
+        </DataGrid>
+      </div>
     );
   }
 }

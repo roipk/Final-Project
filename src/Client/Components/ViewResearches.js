@@ -10,7 +10,6 @@ import collect from "collect.js";
 const ExcelJS = require("exceljs");
 import { saveAs } from "file-saver";
 
-
 /*diagram*/
 
 import ColumnChartwithIndexlabel from "../Diagrams/views/overview/Column Chart with Indexlabel";
@@ -70,9 +69,6 @@ import ParetoChart from "../Diagrams/views/combination charts/Pareto Chart";
 import ColumnLineAreaChart from "../Diagrams/views/combination charts/Column Line Area Chart";
 
 /*diagram*/
-
-
-
 
 var currentUser = {};
 
@@ -196,14 +192,14 @@ export default class ViewResearches extends Component {
         let arra = [];
         eldersCollection.each(async (elder, index, arr) => {
           await this.getElderDetails(elder.value).then((result) => {
-            playlists = result.playlists.slice(0, result.playlists.length - 2);
+            // playlists = result.playlists.slice(0, result.playlists.length - 2);
             temp = {
               ID: ID,
               ResearchName: this.state.researchName,
               FirstName: result.firstName,
               LastName: result.lastName,
               BirthYear: parseInt(result.yearAtTwenty) - 20,
-              Playlists: playlists,
+              Playlists: result.playlists,
               Sessions: result.sessions,
             };
             ID++;
@@ -214,15 +210,15 @@ export default class ViewResearches extends Component {
           }
         });
       });
-      console.log(userData)
+      console.log(userData);
       ID = 1;
       return (
-          <ResearchCard
-              key={this.state.researchName}
-              data={researchDetails}
-              userdata={userData}
-              onExport={this.createExcelWorkbook}
-          ></ResearchCard>
+        <ResearchCard
+          key={this.state.researchName}
+          data={researchDetails}
+          userdata={userData}
+          onExport={this.createExcelWorkbook}
+        ></ResearchCard>
       );
     }
   }

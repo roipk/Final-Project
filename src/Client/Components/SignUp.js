@@ -203,14 +203,14 @@ export default class SignUp extends Component {
     return elderData;
   }
 
-  getDec(birthYear, LanguageAtTwenty) {
+  getDec(yearAtTwenty, LanguageAtTwenty) {
     let decade = [];
     let lastTime = new Date();
     lastTime = lastTime.getFullYear() - 20 - (lastTime.getFullYear() % 10);
-    let birthYearDecade = birthYear - (birthYear % 10);
+    let birthYearDecade = yearAtTwenty - (yearAtTwenty % 10);
     LanguageAtTwenty.forEach((language) => {
       decade.push(language);
-      for (let i = birthYearDecade; i <= birthYearDecade + 30; i += 10) {
+      for (let i = birthYearDecade; i <= birthYearDecade + 20; i += 10) {
         let hundred = Math.floor(i / 100) + 1;
         let dc = i % 1000 === 0 ? "00" : i % 100;
         decade.push(language + "-" + hundred + "-" + dc + "DC");
@@ -236,7 +236,7 @@ export default class SignUp extends Component {
       // Geners:this.state.Geners,
       // LanguageAtTwenty:this.state.LanguageAtTwenty,
       playlists: this.getPlaylist(
-        this.state.birthYear,
+        this.state.yearAtTwenty,
         this.state.LanguageAtTwenty,
         this.state.Geners
       ),
@@ -599,7 +599,10 @@ export default class SignUp extends Component {
                 onChange={(e) => {
                   // this.getDec(e.value)
                   console.log(e.value);
-                  this.setState({ birthYear: e.value });
+                  this.setState({
+                    birthYear: e.value,
+                    yearAtTwenty: e.value + 20,
+                  });
                 }}
                 style={{ zIndex: 100 }}
                 closeMenuOnSelect={true}
@@ -790,15 +793,7 @@ export default class SignUp extends Component {
 
             <span className="focus-input100"></span>
           </div>
-        {/*select playlist*/}
-
-
-
-
-
-
-
-
+          {/*select playlist*/}
         </div>
       );
   }

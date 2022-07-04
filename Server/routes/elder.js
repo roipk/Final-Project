@@ -10,8 +10,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const VerifyToken = require("../middleware/user").VerifyToken;
 const CreateToken = require("../middleware/user").CreateToken;
-const Config = require("../../src/Config.json")
-
+const Config = require("../../src/Config.json");
 
 routerElder
   .route("/currentSession/:id/:algorithm?")
@@ -67,11 +66,11 @@ routerElder.route("/session/:id/:algorithm?").get(async function (req, res) {
   // console.log(session)
 
   if (algorithm === undefined) {
-    let keys = []
+    let keys = [];
     Object.entries(session.sessions).forEach(([key, value]) => {
       if (value.isActive) keys.push(key);
     });
-    let data = { keys: keys, currentSession: session.currentSession}
+    let data = { keys: keys, currentSession: session.currentSession };
     return res.status(200).json(data);
   } else if (
     algorithm &&
@@ -136,24 +135,27 @@ routerElder
     }
 
     var songs = await CreateSession(session, algorithm);
-    await setUserCurrentSession(id, algorithm)
+    await setUserCurrentSession(id, algorithm);
 
     return res.status(200).json(songs.songsView);
   });
 
 routerElder
-  .route("/update/session/:id/:algorithm")
+  .route("/update/session/:id/:currentSession")
   .get(async function (req, res) {
     let id = req.params.id;
-    let algorithm = req.params.algorithm;
+    let currentSession = req.params.currentSession;
     let session = await getData("UserSessions", id);
     // var songs = await CreateSession(session, algorithm);
-    var updated = await setSessionIsActive(session, algorithm);
+    var updated = await setSessionIsActive(session, currentSession);
     return res.status(200).json(updated);
   });
 
-async function setSessionIsActive(session, algorithm) {
-  session.sessions[algorithm].isActive = !session.sessions[algorithm].isActive;
+async function setSessionIsActive(session, currentSession) {
+  session.sessions[currentSession].isActive =
+    !session.sessions[currentSession].isActive;
+  if (!session.sessions[currentSession.isActive])
+    session.currentSession = "personal";
   await updateData("UserSessions", session.Oid, session);
 }
 
@@ -174,9 +176,9 @@ async function CreateSession(session, algorithm) {
   ) {
     var prevSong = await getBestsongPrevSessions(
       session.sessions[algorithm].sessions,
-        Config.numSessionPrev,
-        Config.minScore,
-        Config.maxSong
+      Config.numSessionPrev,
+      Config.minScore,
+      Config.maxSong
     );
     songs.songsBlock = prevSong.block;
     songs.songsViewBefor = prevSong.view.map((s) => {
@@ -187,10 +189,9 @@ async function CreateSession(session, algorithm) {
   }
   songs = await getSongs(session, songs);
   var songSession = [];
-  await songs.songsView.forEach((song) =>
- {
-   // console.log("190")
-   // console.log(song)
+  await songs.songsView.forEach((song) => {
+    // console.log("190")
+    // console.log(song)
     songSession.push({
       date: new Date(),
       RecordDisplayId: song._id || song.RecordDisplayId,
@@ -198,7 +199,7 @@ async function CreateSession(session, algorithm) {
       youtube: song.youtube,
       originArtistName: song.originArtistName,
       score: -1 || song.score,
-      playlistName:song.playlistName
+      playlistName: song.playlistName,
     });
   });
   session.sessions[algorithm].sessions.push(songSession);
@@ -234,7 +235,6 @@ routerElder
     console.log(req.params);
   });
 
-
 routerElder
   .route("/RateSession/:id/:algorithm")
   .post(async function (req, res) {
@@ -256,7 +256,7 @@ routerElder
     }
   });
 
-async function setUserCurrentSession(id, sessionName){
+async function setUserCurrentSession(id, sessionName) {
   db.collection("UserSessions").updateOne(
     { Oid: id },
     {
@@ -357,7 +357,7 @@ async function createFilter(songs = {}, filters, sort) {
         if (index > -1) {
           item.record.splice(index, 1);
         }
-        song.playlistName = item.name
+        song.playlistName = item.name;
         songs.songsView.push(song);
         songs.songsBlock.push(song._id.toString());
         index = randomized.indexOf(item);
