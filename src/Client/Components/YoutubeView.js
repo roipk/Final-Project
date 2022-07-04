@@ -172,6 +172,7 @@ export function YoutubeView (userID,algorithm,videos,sessionNumber){
 
 function YoutubeData({url,onReady})
 {
+    console.log(onReady)
     const onItemTest = useCallback(event => {
         console.log('You clicked ', event.target.getVideoData().title);
         onReady = event.target.getVideoData().title

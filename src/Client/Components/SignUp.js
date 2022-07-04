@@ -249,8 +249,8 @@ export default class SignUp extends Component {
     };
     return userSessionData;
   }
-  getPlaylist(birthYear, LanguageAtTwenty, genres) {
-    var playlist = this.getDec(birthYear, LanguageAtTwenty);
+  getPlaylist(yearAtTwenty, LanguageAtTwenty, genres) {
+    var playlist = this.getDec(yearAtTwenty, LanguageAtTwenty);
     genres.forEach((genre) => {
       playlist.push(genre);
     });

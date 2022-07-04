@@ -40,6 +40,12 @@ export default class SongDebugCard extends Component {
     }
   }
 
+
+  async componentWillUpdate(nextProps, nextState, nextContext) {
+
+  }
+
+
   setSongComments(event) {
     this.setState({
       songComments: event.target.value,
@@ -241,7 +247,7 @@ export default class SongDebugCard extends Component {
       // }
     });
 
-    this.updatedPlaylist(updatedSongs[0].playlist,updatedSongs)
+    // this.updatedPlaylist(updatedSongs[0].playlist,updatedSongs)
 
     alert("Saved!");
   }
@@ -274,6 +280,8 @@ async DeleteSongForDebug(document)
 
     return res.data;
   }
+
+
 
   render() {
     return (
